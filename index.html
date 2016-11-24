@@ -2,15 +2,162 @@
 <html>
 
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta charset="utf-8" />
 		<title></title>
-		<link href="css/mui.min.css" />
-		<link href="css/animate.css" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/animate.css" rel="stylesheet" />
+		<link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
+		<style type="text/css">
+			html,
+			#body {
+				max-width: 750px;
+			}
+			
+			html,
+			body,
+			#body {
+				width: 100%;
+				min-height: 100%;
+				margin: 0 auto;
+				font-family: Helvetica Neue, Helvetica, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+			}
+			
+			img {
+				max-width: 100%;
+			}
+			
+			.detail {
+				width: 95%;
+				margin: 2.5%;
+				padding: 2.5%;
+				line-height: 1.5625rem;
+				display: inline-block;
+			}
+			
+			#useravatar1 {
+				width: 3rem;
+				height: 3rem;
+				border-radius: 50%;
+				border: 2px solid #fff;
+			}
+			
+			.cover {
+				background: RGBA(255, 255, 255, 0.6);
+				height: 100%;
+				z-index: -1;
+				border-radius: 10px;
+				margin-top: 4rem !important;
+			}
+			
+			.bg {
+				width: 100%;
+				position: relative;
+				z-index: 1;
+				min-height: 100%;
+			}
+			
+			.fa-music {
+				padding: 0.35rem;
+				background: #fff;
+				border-radius: 50px;
+				color: #333;
+				box-shadow: 0px 0px 1px #333;
+				width: 1.5rem;
+				height: 1.5rem;
+				box-shadow: 0px 0.05px 0.05px #333;
+			}
+			
+			.fa-music[play=stop] {
+				animation: rotate 4s linear infinite;
+				-webkit-animation: rotate 4s linear infinite;
+				-ms-animation: rotate 4s linear infinite;
+				-moz-animation: rotate 4s linear infinite;
+				-o-animation: rotate 4s linear infinite;
+			}
+			/**通用样式**/
+			
+			.music {
+				width: 100%;
+				height: 42px;
+				border-radius: 5px;
+				margin: 10px 8px 0 0;
+				background: #f6f6f6;
+				padding: 0;
+				line-height: 42px;
+				cursor: pointer;
+			}
+			
+			.music[play=on] i {
+				background-image: url("img/on.png");
+			}
+			
+			.music[play=stop] i {
+				background-image: url("img/off.png");
+			}
+			
+			.music i {
+				float: left;
+				width: 25px;
+				height: 25px;
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				margin: 8px 10px 0 15px;
+			}
+			
+			.music span {
+				width: calc(100% - 70px);
+				width: -webkit-calc(100% - 70px);
+				margin: 0;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				float: left;
+				text-align: left;
+			}
+			/*模板选择*/
+			
+			#temps {
+				background: #eee;
+				height: 100px;
+				position: fixed;
+				bottom: 0px;
+				top: auto;
+				z-index: 99999;
+				border: 0px;
+			}
+			
+			.temp {
+				width: 80px !important;
+				height: 80px !important;
+				padding: 0px !important;
+				position: relative;
+				margin-left: 8px !important;
+			}
+			
+			.temp:first-child {
+				margin-left: 10px !important;
+			}
+			
+			.temp:last-child {
+				margin-right: 10px !important;
+			}
+			
+			.temp img {
+				width: 100% !important;
+				height: 100% !important;
+			}
+			
+			.temp.hover img {
+				border: 2px solid #ed5565;
+			}
+		</style>
 	</head>
 
 	<body>
 		<div class="mui-content mui-scroll-wrapper">
-			<div class="mui-scroll bg">
+			<div class="mui-scroll bg" id="bg">
 				<!--通用样式-->
 				<div id="main0" class="hide">
 					<div class="f13 tl detail">
@@ -24,7 +171,7 @@
 								<span id="musicname0"></span>
 							</p>
 						</div>
-						<div class="c000 full mt20" id="desc0">
+						<div class="c000 full mt20 mb20" id="desc0">
 						</div>
 					</div>
 				</div>
@@ -45,7 +192,7 @@
 								<span class="ml10" id="views1"></span>
 							</p>
 						</div>
-						<div class="c000 full" id="desc1">
+						<div class="c000 full mb20" id="desc1">
 						</div>
 					</div>
 				</div>
@@ -57,6 +204,7 @@
 <script src="js/jquery-1.10.2.min.js"></script>
 <script src="js/music.js"></script>
 <script src="js/mui.min.js"></script>
+<script type="text/javascript" src="http://player.youku.com/jsapi"></script>
 <script type="text/javascript">
 	var MusicID = 0;
 	var MusicUrl = "";
@@ -70,9 +218,14 @@
 			deceleration: deceleration
 		});
 
-		mui.getJSON("http://139.224.51.196/Home/Index", {
-			Number: "111"
+		var key = GetParameter("key");
+		mui.getJSON("http://139.224.51.196/Home/Info", {
+			key: key
 		}, function(data) {
+			if(!data.result) {
+				return mui.toast(data.message);
+			}
+			data = data.message;
 			//段落
 			var html = [];
 			var parts = data.ArticlePart;
@@ -86,8 +239,15 @@
 					html.push('<div class="full f13 mt10">' + part.Introduction + '</div>');
 				} else if(part.Types == 3) {
 					//视频
-					html = appendStr("点击添加视频", "video", part.ID);
+					html.push('<div class="full f13 mt10">' + AppendVideo(part.Introduction) + '</div>');
 				}
+			}
+
+			if(!IsNullOrEmpty(data.Cover)) {
+				$("#bg").css({
+					"background": "url(" + data.Cover + ") no-repeat",
+					"background-size": "100% auto"
+				});
 			}
 
 			$("#footer_zan").html(data.Goods);
@@ -101,13 +261,20 @@
 			$("#views" + mainIndex).html("阅读  " + data.Views);
 			$("#desc" + mainIndex).html(html.join(""));
 
+			//实例化播放器
+			$(".youku_player").each(function() {
+				var $this = $(this);
+				ShowVideo($this.attr("id"), $this.attr("sid"));
+			});
+
 			//音乐
 			MusicID = "music" + mainIndex;
 			MusicUrl = data.MusicUrl;
-			if(!base.IsNullOrEmpty(MusicUrl)) {
+			if(!IsNullOrEmpty(MusicUrl)) {
 				if(data.AutoMusic == "1") {
 					document.addEventListener('touchstart', startsound);
 				}
+				$("#music" + mainIndex).removeClass("hide");
 			} else {
 				$("#music" + mainIndex).addClass("hide");
 			}
@@ -115,7 +282,6 @@
 			switch(mainIndex) {
 				case 0:
 					$("#musicname0").html(data.MusicName);
-					$("#main" + mainIndex).removeClass("hide");
 					break;
 				case 1:
 					$("#useravatar1").attr("src", data.Avatar);
@@ -126,4 +292,66 @@
 			}
 		});
 	});
+
+	function ShowVideo(domid, vid) {
+		player = new YKU.Player(domid, {
+			client_id: base.youku_client_id,
+			styleid: '0',
+			vid: vid,
+			autoplay: false,
+			show_related: false
+		});
+	}
+
+	function AppendVideo(sourceurl) {
+		var html = [];
+		//优酷
+		if(sourceurl.indexOf(".") < 0) {
+			return '<div class="media-cont audio-cont" style="margin-top: 10px; width: 100%;"><div id="youku_player_' + sourceurl + '" sid="' + sourceurl + '" class="youku_player" style="width:100%;height:400px;"></div></div>';
+		}
+		//SWF
+		if(sourceurl.toLowerCase().indexOf(".swf") > 0) {
+			return '<div class="media-cont audio-cont" style="margin-top:10px;width: 100%;"><embed src="' + sourceurl + '" allowfullscreen="true" quality="high" width="100%"  height="400" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash"></embed></div>';
+		}
+		return "";
+	}
+
+	function IsNullOrEmpty(str) {
+		if(str == null || str == undefined || str == "") {
+			return true;
+		}
+		return false;
+	}
+
+	/*获取html的参数**********************************************/
+	function GetParameter(param) {
+		var query = window.location.search;
+		query = doFilter(query);
+		var iLen = param.length;
+		var iStart = query.indexOf(param);
+		if(iStart == -1) {
+			return "";
+		}
+		iStart += iLen + 1;
+		var iEnd = query.indexOf("&", iStart);
+		if(iEnd == -1) {
+			return query.substring(iStart);
+		}
+		return query.substring(iStart, iEnd);
+	};
+
+	//过滤多余问号的情况
+	function doFilter(query) {
+		//出现多个？的情况，保留第一个，其他都改为&
+		var queryParam = query.split('?');
+		if(queryParam.length > 1) {
+			var _index = query.indexOf("?") + 1;
+			var queryBefore = query.substr(0, _index);
+			var queryAfter = query.substr(_index);
+			queryAfter = queryAfter.replace("?", "&");
+			//替换除第一？外的情况
+			query = queryBefore + queryAfter;
+		}
+		return query;
+	};
 </script>
