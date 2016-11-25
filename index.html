@@ -47,12 +47,11 @@
 				height: 100%;
 				z-index: -1;
 				border-radius: 10px;
-				margin-top: 4rem !important;
+				margin-top: 1rem !important;
 			}
 			
 			.bg {
 				width: 100%;
-				position: relative;
 				z-index: 1;
 				min-height: 100%;
 			}
@@ -156,8 +155,8 @@
 	</head>
 
 	<body>
-		<div class="mui-content mui-scroll-wrapper">
-			<div class="mui-scroll bg" id="bg">
+		<div class="mui-content mui-scroll-wrapper bg" id="bg">
+			<div class="mui-scroll">
 				<!--通用样式-->
 				<div id="main0" class="hide">
 					<div class="f13 tl detail">
@@ -244,10 +243,7 @@
 			}
 
 			if(!IsNullOrEmpty(data.Cover)) {
-				$("#bg").css({
-					"background": "url(" + data.Cover + ") no-repeat",
-					"background-size": "100% auto"
-				});
+				ChangeBg(data.Background, data.Cover);
 			}
 
 			$("#footer_zan").html(data.Goods);
@@ -293,9 +289,38 @@
 		});
 	});
 
+	//背景状态切换
+	function ChangeBg(index, cover) {
+		switch(index) {
+			case 0:
+				//全屏
+				$("#bg").css({
+					"background": "url(" + cover + ") no-repeat",
+					"background-size": "100% 100%"
+				});
+				break;
+			case 1:
+				//居顶
+				$("#bg").css({
+					"background": "url(" + cover + ") no-repeat top",
+					"background-size": "100% auto"
+				});
+				break;
+			case 2:
+				//平铺
+				$("#bg").css({
+					"background": "url(" + cover + ") repeat",
+					"background-size": "auto auto"
+				});
+				break;
+			default:
+				break;
+		}
+	}
+
 	function ShowVideo(domid, vid) {
 		player = new YKU.Player(domid, {
-			client_id: base.youku_client_id,
+			client_id: "59bec9b0be1fc34b",
 			styleid: '0',
 			vid: vid,
 			autoplay: false,
