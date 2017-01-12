@@ -27,7 +27,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name", "Summary").From<Help>().Where<Help>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name", "Summary").From<Help>().Where<Help>(x => x.ID > 0);
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Help>();

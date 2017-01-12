@@ -25,30 +25,53 @@ namespace EGT_OTA.Models
     /// 帮助中心
     /// </summary>
     [Serializable]
-    public class Help : BaseModel
+    public class Help
     {
+        public Help() { }
+        public Help(int id, int helpType, string name, string summary)
+        {
+            this.ID = id;
+            this.HelpType = helpType;
+            this.Name = name;
+            this.Summary = summary;
+        }
+
         /// <summary>
         /// ID
         /// </summary>
-        [SubSonicPrimaryKey]
         public int ID { get; set; }
+
+        /// <summary>
+        /// 帮助类型
+        /// </summary>
+        public int HelpType { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
-        [SubSonicStringLength(100), SubSonicNullString]
         public string Name { get; set; }
 
         /// <summary>
         /// 简介
         /// </summary>
-        [SubSonicStringLength(500), SubSonicNullString]
         public string Summary { get; set; }
+    }
 
-        /// <summary>
-        /// 详细说明
-        /// </summary>
-        [SubSonicLongString, SubSonicNullString]
-        public string Introduction { get; set; }
+    /// <summary>
+    /// 帮助分类
+    /// </summary>
+    [Serializable]
+    public class HelpType
+    {
+        public HelpType() { }
+        public HelpType(int id, string name, string cover)
+        {
+            this.ID = id;
+            this.Name = name;
+            this.Cover = cover;
+        }
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Cover { get; set; }
     }
 }
