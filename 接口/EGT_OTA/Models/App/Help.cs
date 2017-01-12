@@ -28,7 +28,7 @@ namespace EGT_OTA.Models
     public class Help
     {
         public Help() { }
-        public Help(int id, int helpType, string name, string summary)
+        public Help(int helpType, int id, string name, string summary)
         {
             this.ID = id;
             this.HelpType = helpType;

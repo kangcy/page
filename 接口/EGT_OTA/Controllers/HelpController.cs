@@ -19,6 +19,20 @@ namespace EGT_OTA.Controllers
     /// </summary>
     public class HelpController : BaseController
     {
+        public ActionResult HelpType()
+        {
+            try
+            {
+                var list = InitHelpType();
+                return Json(list, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("HelpController_HelpType:" + ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         /// <summary>
         /// 列表
         /// </summary>
@@ -26,26 +40,9 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name", "Summary").From<Help>().Where<Help>(x => x.ID > 0);
-                var recordCount = query.GetRecordCount();
-                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Help>();
-                var newlist = (from l in list
-                               select new
-                               {
-                                   ID = l.ID,
-                                   Name = l.Name,
-                                   Summary = l.Summary
-                               }).ToList();
-                var result = new
-                {
-                    currpage = pager.Index,
-                    records = recordCount,
-                    totalpage = totalPage,
-                    list = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
+                var type = ZNRequest.GetInt("type");
+                var list = GetHelp().FindAll(x => x.HelpType == type);
+                return Json(list, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
