@@ -1,0 +1,23 @@
+523883324@qq.com  密码：xw321123321
+
+139.224.51.196（公）
+10.47.198.94（内）
+
+004451   登录密码：Xw321123321
+
+
+18974840893  wjl321123321
+https://openhome.alipay.com/platform/home.htm
+蚂蚁金服
+
+
+2432762585@qq.com xw321123321
+微信
+
+
+生成签名：
+1：cd C:\Program Files\Java\jdk1.8.0_25\bin
+2：keytool -genkey -alias go -keyalg RSA -validity 20000 -keystore go.keystore
+生成android签名的命令
+keytool -list -v -keystore F:\HBuider\MyApp\go.keystore
+在标题栏右键选择标记复制其中的SHA1的值，即为android的签名
