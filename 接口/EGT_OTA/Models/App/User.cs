@@ -188,6 +188,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public string Number { get; set; }
 
+        /// <summary>
+        /// 启用水印
+        /// </summary>
+        public int UseDraw { get; set; }
+
         #region  扩展字段
 
         /// <summary>

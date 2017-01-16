@@ -376,6 +376,32 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 修改启用水印
+        /// </summary>
+        public ActionResult EditUseDraw()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                user.UseDraw = ZNRequest.GetInt("UseDraw");
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("UserController_EditUseDraw" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 修改打赏
         /// </summary>
         public ActionResult EditPay()
