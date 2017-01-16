@@ -417,6 +417,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="bin\zh-Hans\" />
+    <Folder Include="Images\Help\" />
     <Folder Include="Upload\" />
   </ItemGroup>
   <ItemGroup>
