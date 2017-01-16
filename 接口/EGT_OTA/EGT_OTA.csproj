@@ -264,6 +264,7 @@
     <Content Include="Images\Help\6.png" />
     <Content Include="Images\Help\7.png" />
     <Content Include="Images\Help\8.png" />
+    <Content Include="Images\logo.png" />
     <Content Include="obj\Debug\EGT_OTA.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\EGT_OTA.dll" />
     <Content Include="obj\Debug\EGT_OTA.pdb" />

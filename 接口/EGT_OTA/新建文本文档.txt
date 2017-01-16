@@ -15,6 +15,10 @@ https://openhome.alipay.com/platform/home.htm
 微信
 
 
+QQ互联 账号：523883324   密码：WoShiYaoMouRen
+吴国鑫 14:06:03
+微信开放平台：2432762585@qq.com  密码：xw321123321
+
 生成签名：
 1：cd C:\Program Files\Java\jdk1.8.0_25\bin
 2：keytool -genkey -alias go -keyalg RSA -validity 20000 -keystore go.keystore
