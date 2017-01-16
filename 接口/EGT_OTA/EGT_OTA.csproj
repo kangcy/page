@@ -256,6 +256,14 @@
     <Content Include="Global.asax" />
     <Content Include="Config\log4net.config" />
     <Content Include="Images\default.png" />
+    <Content Include="Images\Help\1.png" />
+    <Content Include="Images\Help\2.png" />
+    <Content Include="Images\Help\3.png" />
+    <Content Include="Images\Help\4.png" />
+    <Content Include="Images\Help\5.png" />
+    <Content Include="Images\Help\6.png" />
+    <Content Include="Images\Help\7.png" />
+    <Content Include="Images\Help\8.png" />
     <Content Include="obj\Debug\EGT_OTA.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\EGT_OTA.dll" />
     <Content Include="obj\Debug\EGT_OTA.pdb" />
@@ -417,7 +425,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="bin\zh-Hans\" />
-    <Folder Include="Images\Help\" />
     <Folder Include="Upload\" />
   </ItemGroup>
   <ItemGroup>

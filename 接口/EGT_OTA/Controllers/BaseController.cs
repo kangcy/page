@@ -293,14 +293,14 @@ namespace EGT_OTA.Controllers
         protected List<HelpType> InitHelpType()
         {
             List<HelpType> helpTypes = new List<HelpType>() { };
-            helpTypes.Add(new HelpType(1, "使用说明", Base_Url + "Images/Help/01.png"));
-            helpTypes.Add(new HelpType(2, "常见使用问题", Base_Url + "Images/Help/02.png"));
-            helpTypes.Add(new HelpType(3, "账户问题", Base_Url + "Images/Help/03.png"));
-            helpTypes.Add(new HelpType(4, "投稿相关问题", Base_Url + "Images/Help/04.png"));
-            helpTypes.Add(new HelpType(5, "音乐与视频相关", Base_Url + "Images/Help/05.png"));
-            helpTypes.Add(new HelpType(6, "文章丢失相关问题", Base_Url + "Images/Help/06.png"));
-            helpTypes.Add(new HelpType(7, "互动相关问题", Base_Url + "Images/Help/07.png"));
-            helpTypes.Add(new HelpType(8, "打赏相关", Base_Url + "Images/Help/08.png"));
+            helpTypes.Add(new HelpType(1, "使用说明", Base_Url + "Images/Help/1.png"));
+            helpTypes.Add(new HelpType(2, "常见使用问题", Base_Url + "Images/Help/2.png"));
+            helpTypes.Add(new HelpType(3, "账户问题", Base_Url + "Images/Help/3.png"));
+            helpTypes.Add(new HelpType(4, "投稿相关问题", Base_Url + "Images/Help/4.png"));
+            helpTypes.Add(new HelpType(5, "音乐与视频相关", Base_Url + "Images/Help/5.png"));
+            helpTypes.Add(new HelpType(6, "文章丢失相关问题", Base_Url + "Images/Help/6.png"));
+            helpTypes.Add(new HelpType(7, "互动相关问题", Base_Url + "Images/Help/7.png"));
+            helpTypes.Add(new HelpType(8, "打赏相关", Base_Url + "Images/Help/8.png"));
             return helpTypes;
         }
 
