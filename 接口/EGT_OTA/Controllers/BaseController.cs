@@ -56,7 +56,7 @@ namespace EGT_OTA.Controllers
         /// </summary>
         protected string SqlFilter(string inputString, bool nohtml = true)
         {
-            string SqlStr = @"and|or|exec|execute|insert|select|delete|update|alter|create|drop|count|\*|chr|char|asc|mid|substring|master|truncate|declare|xp_cmdshell|restore|backup|net +user|net +localgroup +administrators";
+            string SqlStr = @"script|and|or|exec|execute|insert|select|delete|update|alter|create|drop|count|\*|chr|char|asc|mid|substring|master|truncate|declare|xp_cmdshell|restore|backup|net +user|net +localgroup +administrators";
             try
             {
                 if (!string.IsNullOrEmpty(inputString))
@@ -475,20 +475,20 @@ namespace EGT_OTA.Controllers
                 if (watermarkmodel.Cate == 1) //判断水印类型
                 {
                     //水印图片
-                    Image copyImage = Image.FromFile(System.Web.HttpContext.Current.Server.MapPath("/Image/WaterMark/" + watermarkmodel.ImageUrl));
+                    Image copyImage = Image.FromFile(System.Web.HttpContext.Current.Server.MapPath(watermarkmodel.ImageUrl));
                     int width = 0;
                     int height = 0;
                     switch (watermarkmodel.Location)
                     {
-                        case 1: width = 0; height = 0; break;
-                        case 2: width = (image.Width - copyImage.Width) / 2; height = 0; break;
-                        case 3: width = image.Width - copyImage.Width; height = 0; break;
-                        case 4: width = 0; height = (image.Height - copyImage.Height) / 2; break;
-                        case 5: width = (image.Width - copyImage.Width) / 2; height = (image.Height - copyImage.Height) / 2; break;
+                        case 1: width = 0; height = 0; break;//左上角
+                        case 2: width = (image.Width - copyImage.Width) / 2; height = 0; break;//左上居中
+                        case 3: width = image.Width - copyImage.Width; height = 0; break;//右上
+                        case 4: width = 0; height = (image.Height - copyImage.Height) / 2; break;//左中
+                        case 5: width = (image.Width - copyImage.Width) / 2; height = (image.Height - copyImage.Height) / 2; break;//中间
                         case 6: width = image.Width - copyImage.Width; height = (image.Height - copyImage.Height) / 2; break;
                         case 7: width = 0; height = image.Height - copyImage.Height; break;
                         case 8: width = (image.Width - copyImage.Width) / 2; height = image.Height - copyImage.Height; break;
-                        case 9: width = image.Width - copyImage.Width; height = image.Height - copyImage.Height; break;
+                        case 9: width = image.Width - copyImage.Width; height = image.Height - copyImage.Height; break;//右下角
                     }
                     Graphics g = Graphics.FromImage(image);
                     g.DrawImage(copyImage, new Rectangle(width, height, Convert.ToInt16(watermarkmodel.Width), Convert.ToInt16(watermarkmodel.Height)), 0, 0, copyImage.Width, copyImage.Height, GraphicsUnit.Pixel);

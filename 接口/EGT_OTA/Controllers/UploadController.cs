@@ -113,6 +113,11 @@ namespace EGT_OTA.Controllers
                 int isDraw = ZNRequest.GetInt("isDraw");  //是否生成水印
                 int isThumb = ZNRequest.GetInt("isThumb"); //是否生成缩略图
 
+                if (standards != "Article")
+                {
+                    isDraw = 0;
+                }
+
                 if (isThumb == 1 && !String.IsNullOrEmpty(standards))
                 {
                     UploadConfig.ConfigItem config = UploadConfig.Instance.GetConfig(standards);

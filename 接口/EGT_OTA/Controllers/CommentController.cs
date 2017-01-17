@@ -92,11 +92,12 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请填写评论内容" }, JsonRequestBehavior.AllowGet);
                 }
-                summary = AntiXssChineseString.ChineseStringSanitize(summary);
-                if (string.IsNullOrWhiteSpace(summary))
-                {
-                    return Json(new { result = false, message = "XSS攻击" }, JsonRequestBehavior.AllowGet);
-                }
+                //summary = AntiXssChineseString.ChineseStringSanitize(summary);
+
+                //if (string.IsNullOrWhiteSpace(summary))
+                //{
+                //    return Json(new { result = false, message = "XSS攻击" }, JsonRequestBehavior.AllowGet);
+                //}
                 if (HasDirtyWord(summary))
                 {
                     return Json(new { result = false, message = "您的输入内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
