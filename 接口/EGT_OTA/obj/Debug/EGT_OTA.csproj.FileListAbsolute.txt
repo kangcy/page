@@ -169,6 +169,7 @@ F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.dll
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.pdb
+F:\HBuider\Home\接口\EGT_OTA\bin\Axon.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\Castle.Core.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\HtmlSanitizationLibrary.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\IPay.dll

@@ -213,12 +213,13 @@ namespace EGT_OTA.Controllers
                 //创建订单
                 Order order = new Order();
                 order.OrderNumber = Guid.NewGuid().ToString("N");
-                order.Price = 0.01;
+                order.Price = 1;//单位：分
                 order.CreateDate = DateTime.Now;
                 order.PayType = 2;
                 order.Status = Enum_Status.Audit;
                 order.Summary = "我的GO-打赏";
                 order.UserID = ZNRequest.GetInt("UserID");
+                db.Add<Order>(order);
 
                 string wx_prepay = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
@@ -234,7 +235,13 @@ namespace EGT_OTA.Controllers
                 string total_fee = order.Price.ToString();//总金额。
 
                 string signString = "appid=" + appid + "&attach=" + body + "&body=" + body + "&mch_id=" + partner + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=APP" + "&key=" + partnerKey;
-                string md5SignValue = MD5Helper.GetMD532(signString).ToUpper();
+
+                //string signString = "appid=" + appid + "&body=" + body + "&mch_id=" + partner + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=APP" + "&key=" + partnerKey;
+
+
+                //string signString = "appid=wxbf415b2a2d7f5af2&attach=我的GO-打赏&body=我的GO-打赏&mch_id=1433821002&nonce_str=6CE43B0481ACC0E4487AA2AC95317DFC&notify_url=http://localhost/Notify/WxPay/&out_trade_no=eaf2a3e06f5345158a124270afc90c64&spbill_create_ip=127.0.0.1&total_fee=1&trade_type=APP&key=463e9c33de5b4ce698c72c7cad6eb846";
+
+                string md5SignValue = MD5.Encrypt(signString, 32).ToUpper();
 
                 StringBuilder strXML = new StringBuilder();
                 strXML.Append("<xml>");
@@ -251,6 +258,8 @@ namespace EGT_OTA.Controllers
                 strXML.Append("<sign>" + md5SignValue + "</sign>");
                 strXML.Append("</xml>");
 
+                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder:" + strXML.ToString());
+
                 string strSource = GetHttp(wx_prepay, strXML.ToString());
 
                 LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder:" + strSource);
@@ -264,7 +273,7 @@ namespace EGT_OTA.Controllers
                     string timeStamp = UnixTimeHelper.FromDateTime(DateTime.Now).ToString();
                     signString = "appid=" + appid + "&noncestr=" + nonce_str + "&package=Sign=WXPay&partnerid=" + partner + "&prepayid=" + prepayid + "&timestamp=" + timeStamp + "&key=" + partnerKey;
 
-                    md5SignValue = MD5Helper.GetMD532(signString).ToUpper();
+                    md5SignValue = MD5.Encrypt(signString, 32).ToUpper();
                     //result.State = "success";
                     //result.Msg = new { appid, nonce_str, pck = "Sign=WXPay", partner, prepayid = prepayid, sign = md5SignValue, timeStamp };
 
@@ -295,7 +304,7 @@ namespace EGT_OTA.Controllers
         /// <returns>返回网页源文件</returns>   
         private string GetHttp(string url, string param)
         {
-            Encoding encoding = Encoding.Default;
+            Encoding encoding = Encoding.UTF8;
             string responseData = String.Empty;
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(ValidateServerCertificate);
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
@@ -321,6 +330,26 @@ namespace EGT_OTA.Controllers
             }
 
             return responseData;
+        }
+
+
+        public class MD5
+        {
+            public static string Encrypt(string str, int code)
+            {
+                if (code == 8) //16位MD5加密（取32位加密的9~25字符） 
+                {
+                    return Axon.Crypto.MD5.Encrypt(str, 32).ToLower().Substring(8, 8);
+                }
+                if (code == 16) //16位MD5加密（取32位加密的9~25字符） 
+                {
+                    return Axon.Crypto.MD5.Encrypt(str, 16).ToLower();
+                }
+                else//32位加密 
+                {
+                    return Axon.Crypto.MD5.Encrypt(str, 32).ToLower();
+                }
+            }
         }
 
         #endregion
