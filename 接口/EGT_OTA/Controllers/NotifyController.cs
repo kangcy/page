@@ -120,7 +120,6 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-
                     LogHelper.InfoLoger.Info("NotifyController_WxPay:" + "微信支付签名验证失败");
                 }
             }
@@ -170,7 +169,7 @@ namespace EGT_OTA.Controllers
             string partnerKey = System.Configuration.ConfigurationManager.AppSettings["wxapppartnerkey"];
             str += "&key=" + partnerKey;
             //MD5加密
-            str = MD5Helper.GetMD532(str);
+            str = MD5.Encrypt(str, 32);
             //所有字符转为大写
             return str.ToUpper();
         }
@@ -237,9 +236,6 @@ namespace EGT_OTA.Controllers
 
                 string signString = "appid=" + appid + "&attach=" + body + "&body=" + body + "&mch_id=" + partner + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=APP" + "&key=" + partnerKey;
 
-
-                //string signString = "appid=wxbf415b2a2d7f5af2&attach=我的GO-打赏&body=我的GO-打赏&mch_id=1433821002&nonce_str=6CE43B0481ACC0E4487AA2AC95317DFC&notify_url=http://localhost/Notify/WxPay/&out_trade_no=eaf2a3e06f5345158a124270afc90c64&spbill_create_ip=127.0.0.1&total_fee=1&trade_type=APP&key=463e9c33de5b4ce698c72c7cad6eb846";
-
                 string md5SignValue = MD5.Encrypt(signString, 32).ToUpper();
 
                 StringBuilder strXML = new StringBuilder();
@@ -273,22 +269,16 @@ namespace EGT_OTA.Controllers
                     signString = "appid=" + appid + "&noncestr=" + nonce_str + "&package=Sign=WXPay&partnerid=" + partner + "&prepayid=" + prepayid + "&timestamp=" + timeStamp + "&key=" + partnerKey;
 
                     md5SignValue = MD5.Encrypt(signString, 32).ToUpper();
-                    //result.State = "success";
-                    //result.Msg = new { appid, nonce_str, pck = "Sign=WXPay", partner, prepayid = prepayid, sign = md5SignValue, timeStamp };
 
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = new { appid = appid, noncestr = nonce_str, package = "Sign=WXPay", partnerid = partner, prepayid = prepayid, timeStamp = timeStamp, sign = md5SignValue } }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    //result.State = "fail";
-                    //result.Msg = strSource;
                     return Json(new { result = false, message = strSource }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
             {
-                //result.State = "fail";
-                //result.Msg = e.Message;
                 return Json(new { result = false, message = e.Message }, JsonRequestBehavior.AllowGet);
 
             }
