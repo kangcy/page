@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
@@ -236,8 +237,6 @@ namespace EGT_OTA.Controllers
 
                 string signString = "appid=" + appid + "&attach=" + body + "&body=" + body + "&mch_id=" + partner + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=APP" + "&key=" + partnerKey;
 
-                //string signString = "appid=" + appid + "&body=" + body + "&mch_id=" + partner + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=APP" + "&key=" + partnerKey;
-
 
                 //string signString = "appid=wxbf415b2a2d7f5af2&attach=我的GO-打赏&body=我的GO-打赏&mch_id=1433821002&nonce_str=6CE43B0481ACC0E4487AA2AC95317DFC&notify_url=http://localhost/Notify/WxPay/&out_trade_no=eaf2a3e06f5345158a124270afc90c64&spbill_create_ip=127.0.0.1&total_fee=1&trade_type=APP&key=463e9c33de5b4ce698c72c7cad6eb846";
 
@@ -335,20 +334,16 @@ namespace EGT_OTA.Controllers
 
         public class MD5
         {
-            public static string Encrypt(string str, int code)
+            public static string Encrypt(string str, int length)
             {
-                if (code == 8) //16位MD5加密（取32位加密的9~25字符） 
+                MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+                byte[] bt = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < bt.Length; i++)
                 {
-                    return Axon.Crypto.MD5.Encrypt(str, 32).ToLower().Substring(8, 8);
+                    sb.AppendFormat("{0:x2}", bt[i]);
                 }
-                if (code == 16) //16位MD5加密（取32位加密的9~25字符） 
-                {
-                    return Axon.Crypto.MD5.Encrypt(str, 16).ToLower();
-                }
-                else//32位加密 
-                {
-                    return Axon.Crypto.MD5.Encrypt(str, 32).ToLower();
-                }
+                return sb.ToString().ToLower().Substring(0, length);
             }
         }
 
