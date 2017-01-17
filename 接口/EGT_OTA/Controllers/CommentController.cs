@@ -248,21 +248,21 @@ namespace EGT_OTA.Controllers
                 }
 
                 //父评论人
-                var ParentUserID = ZNRequest.GetInt("ParentUserID");
-                if (ParentUserID > 0)
-                {
-                    query = query.And("ParentUserID").IsEqualTo(ParentUserID);
-                }
+                //var ParentUserID = ZNRequest.GetInt("ParentUserID");
+                //if (ParentUserID > 0)
+                //{
+                //    query = query.And("ParentUserID").IsEqualTo(ParentUserID);
+                //}
 
-                var IsReply = ZNRequest.GetInt("IsReply", 0);
-                if (IsReply == 0)
-                {
-                    query = query.And("ParentCommentID").IsEqualTo(0);
-                }
-                else if (IsReply == 1)
-                {
-                    query = query.And("ParentCommentID").IsGreaterThan(0);
-                }
+                //var IsReply = ZNRequest.GetInt("IsReply", 0);
+                //if (IsReply == 0)
+                //{
+                //    query = query.And("ParentCommentID").IsEqualTo(0);
+                //}
+                //else if (IsReply == 1)
+                //{
+                //    query = query.And("ParentCommentID").IsGreaterThan(0);
+                //}
 
                 var recordCount = query.GetRecordCount();
 
