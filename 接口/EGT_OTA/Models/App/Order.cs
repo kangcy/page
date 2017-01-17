@@ -31,7 +31,7 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 支付金额
         /// </summary>
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
         /// <summary>
         /// 订单状态
@@ -47,5 +47,10 @@ namespace EGT_OTA.Models
         /// 下单时间
         /// </summary>
         public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string Summary { get; set; }
     }
 }
