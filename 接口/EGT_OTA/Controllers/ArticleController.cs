@@ -263,6 +263,12 @@ namespace EGT_OTA.Controllers
                 //浏览数
                 new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();
 
+                //打赏数
+                model.Pays = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.ToArticleNumber == model.Number && x.Status == Enum_Status.Approved).GetRecordCount();
+
+                //收藏数
+                model.Keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.ArticleNumber == model.Number).GetRecordCount();
+
                 //创建人
                 User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
                 if (createUser != null)

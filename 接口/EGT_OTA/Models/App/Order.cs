@@ -26,12 +26,25 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 用户编号
         /// </summary>
-        public int UserID { get; set; }
+        [SubSonicStringLength(32), SubSonicNullString]
+        public string UserNumber { get; set; }
 
         /// <summary>
-        /// 支付金额
+        /// 打赏对象
         /// </summary>
-        public double Price { get; set; }
+        [SubSonicStringLength(32), SubSonicNullString]
+        public string ToUserNumber { get; set; }
+
+        /// <summary>
+        /// 打赏文章
+        /// </summary>
+        [SubSonicStringLength(32), SubSonicNullString]
+        public string ToArticleNumber { get; set; }
+
+        /// <summary>
+        /// 支付金额（单位：分）
+        /// </summary>
+        public int Price { get; set; }
 
         /// <summary>
         /// 订单状态

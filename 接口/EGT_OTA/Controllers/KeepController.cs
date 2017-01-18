@@ -41,7 +41,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Keep model = db.Single<Keep>(x => x.CreateUserID == user.ID && x.ArticleNumber == article.Number && x.Status == Enum_Status.Approved);
+                Keep model = db.Single<Keep>(x => x.CreateUserID == user.ID && x.ArticleNumber == article.Number);
                 if (model == null)
                 {
                     model = new Keep();
@@ -51,16 +51,10 @@ namespace EGT_OTA.Controllers
                 }
                 model.ArticleNumber = article.Number;
                 model.ArticleUserID = article.CreateUserID;
-                model.Status = Enum_Status.Approved;
                 var result = false;
                 if (model.ID == 0)
                 {
                     result = Tools.SafeInt(db.Add<Keep>(model)) > 0;
-                    //修改收藏数
-                    if (result)
-                    {
-                        result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
-                    }
                 }
                 else
                 {
@@ -95,19 +89,9 @@ namespace EGT_OTA.Controllers
                 if (model != null)
                 {
                     var result = db.Delete<Keep>(id) > 0;
-
-                    //修改文章收藏数
                     if (result)
                     {
-                        Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Keeps").From<Article>().Where<Article>(x => x.Number == model.ArticleNumber).ExecuteSingle<Article>();
-                        if (article != null && article.Keeps > 0)
-                        {
-                            new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps - 1).Where<Article>(x => x.Number == model.ArticleNumber).Execute();
-                        }
-                        if (result)
-                        {
-                            return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                        }
+                        return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                     }
                 }
             }
@@ -126,7 +110,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.ID > 0);
                 var CreateUserID = ZNRequest.GetInt("CreateUserID");
                 if (CreateUserID > 0)
                 {

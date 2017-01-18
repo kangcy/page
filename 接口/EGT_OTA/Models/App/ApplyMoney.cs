@@ -38,7 +38,7 @@ namespace EGT_OTA.Models
         public string AccountName { get; set; }
 
         ///<summary>
-        ///发送结果
+        ///提现状态
         ///</summary>
         public int Status { get; set; }
 

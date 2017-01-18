@@ -20,7 +20,7 @@ QQ互联 账号：523883324   密码：WoShiYaoMouRen
 
 微信开放平台账号：2432762585@qq.com  密码：xw321123321   03cdde17b14e84a45fbe666cb2428492
 微信商户号：1433821002   
-登录号：1433821002@1433821002   密码：307738
+登录号：1433821002@1433821002   密码：307738    463e9c33de5b4ce698c72c7cad6eb846
 APPID：wxbf415b2a2d7f5af2
 
 
@@ -30,3 +30,8 @@ APPID：wxbf415b2a2d7f5af2
 生成android签名的命令
 keytool -list -v -keystore F:\HBuider\MyApp\go.keystore
 在标题栏右键选择标记复制其中的SHA1的值，即为android的签名
+
+//官方
+{"retcode":0,"retmsg":"ok","appid":"wx0411fa6a39d61297","noncestr":"626702db8bc3aea492f2b4c354d8033c","package":"Sign=WXPay","partnerid":"1230636401","prepayid":"220103200017011856118c5cd0fc4db2","timestamp":1484711518,"sign":"82fe1973728fd2a8f39a88970b611a2592d04840"}
+
+{"retcode":0,"retmsg":"ok","appid":"wxbf415b2a2d7f5af2","noncestr":"8076431E328B40E6F72AFBCE4F21EB76","package":"Sign=WXPay","partnerid":"1433821002","prepayid":"wx201701181342281f42c9d47e0576961366","timestamp":1484718149,"sign":"8F93CC8359B40FF7B9F810D2EF587CA5"}
