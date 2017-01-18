@@ -170,7 +170,7 @@ namespace EGT_OTA.Controllers
             string partnerKey = System.Configuration.ConfigurationManager.AppSettings["wxapppartnerkey"];
             str += "&key=" + partnerKey;
             //MD5加密
-            str = MD5.Encrypt(str, 32);
+            str = GetMD5(str);
             //所有字符转为大写
             return str.ToUpper();
         }
@@ -267,18 +267,22 @@ namespace EGT_OTA.Controllers
                     XmlNode node_prepay_id = doc.LastChild.ChildNodes.Item(7);
                     string prepayid = node_prepay_id.InnerText;
                     long timeStamp = MakeTimestamp();
-                    signString = "appid=" + appid + "&noncestr=" + nonce_str + "&package=Sign=WXPay&partnerid=" + partner + "&prepayid=" + prepayid + "&timestamp=" + timeStamp + "&key=" + partnerKey;
 
-                    md5SignValue = GetMD5(signString);
+                    Hashtable paySignReqHandler = new Hashtable();
+                    paySignReqHandler.Add("appid", appid);
+                    paySignReqHandler.Add("partnerid", partner);
+                    paySignReqHandler.Add("prepayid", prepayid);
+                    paySignReqHandler.Add("noncestr", nonce_str);
+                    paySignReqHandler.Add("package", "Sign=WXPay");
+                    paySignReqHandler.Add("timestamp", timeStamp.ToString());
+                    var paySign = CreateMd5Sign(paySignReqHandler, partnerKey);
 
+                    LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder3:" + paySign);
 
-                    LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder3:" + signString);
-                    LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder4:" + md5SignValue);
+                    var obj = new { appid = appid, noncestr = nonce_str, package = "Sign=WXPay", partnerid = partner, prepayid = prepayid, timestamp = timeStamp, sign = paySign };
 
-                    var obj = new { appid = appid, noncestr = nonce_str, package = "Sign=WXPay", partnerid = partner, prepayid = prepayid, timestamp = timeStamp, sign = md5SignValue };
-
-                    //return Json(new { result = true, message = Newtonsoft.Json.JsonConvert.SerializeObject(obj) }, JsonRequestBehavior.AllowGet);
-                    return Content(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
+                    return Json(new { result = true, message = obj }, JsonRequestBehavior.AllowGet);
+                    //return Content(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
                 }
                 else
                 {
