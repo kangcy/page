@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -224,7 +225,7 @@ namespace EGT_OTA.Controllers
                 string wx_prepay = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
                 string body = order.Summary;
-                string nonce_str = MD5Helper.GetMD532(DateTime.Now.ToString("yyyyMMdd")).ToUpper();
+                string nonce_str = GetMD5(DateTime.Now.ToString("yyyyMMddhhmmssffff"));
                 string notify_url = Base_Url + "Notify/WxPay/";//支付成功回调
                 string out_trade_no = order.OrderNumber;
                 string appid = System.Configuration.ConfigurationManager.AppSettings["wxappid"];
@@ -236,7 +237,7 @@ namespace EGT_OTA.Controllers
 
                 string signString = "appid=" + appid + "&attach=" + body + "&body=" + body + "&mch_id=" + partner + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=APP" + "&key=" + partnerKey;
 
-                string md5SignValue = MD5.Encrypt(signString, 32).ToUpper();
+                string md5SignValue = GetMD5(signString);
 
                 StringBuilder strXML = new StringBuilder();
                 strXML.Append("<xml>");
@@ -253,11 +254,11 @@ namespace EGT_OTA.Controllers
                 strXML.Append("<sign>" + md5SignValue + "</sign>");
                 strXML.Append("</xml>");
 
-                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder:" + strXML.ToString());
+                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder1:" + strXML.ToString());
 
                 string strSource = GetHttp(wx_prepay, strXML.ToString());
 
-                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder:" + strSource);
+                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder2:" + strSource);
 
                 if (strSource.IndexOf("prepay_id") > 0)
                 {
@@ -265,12 +266,19 @@ namespace EGT_OTA.Controllers
                     doc.LoadXml(strSource);
                     XmlNode node_prepay_id = doc.LastChild.ChildNodes.Item(7);
                     string prepayid = node_prepay_id.InnerText;
-                    string timeStamp = UnixTimeHelper.FromDateTime(DateTime.Now).ToString();
+                    long timeStamp = MakeTimestamp();
                     signString = "appid=" + appid + "&noncestr=" + nonce_str + "&package=Sign=WXPay&partnerid=" + partner + "&prepayid=" + prepayid + "&timestamp=" + timeStamp + "&key=" + partnerKey;
 
-                    md5SignValue = MD5.Encrypt(signString, 32).ToUpper();
+                    md5SignValue = GetMD5(signString);
 
-                    return Json(new { result = true, message = new { appid = appid, noncestr = nonce_str, package = "Sign=WXPay", partnerid = partner, prepayid = prepayid, timeStamp = timeStamp, sign = md5SignValue } }, JsonRequestBehavior.AllowGet);
+
+                    LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder3:" + signString);
+                    LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder4:" + md5SignValue);
+
+                    var obj = new { appid = appid, noncestr = nonce_str, package = "Sign=WXPay", partnerid = partner, prepayid = prepayid, timestamp = timeStamp, sign = md5SignValue };
+
+                    //return Json(new { result = true, message = Newtonsoft.Json.JsonConvert.SerializeObject(obj) }, JsonRequestBehavior.AllowGet);
+                    return Content(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
                 }
                 else
                 {
@@ -280,10 +288,40 @@ namespace EGT_OTA.Controllers
             catch (Exception e)
             {
                 return Json(new { result = false, message = e.Message }, JsonRequestBehavior.AllowGet);
-
             }
         }
 
+        private Int64 MakeTimestamp()
+        {
+            TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalSeconds);
+        }
+
+        private string CreateMd5Sign(Hashtable parameters, string ApiKey)
+        {
+            var sb = new StringBuilder();
+            var akeys = new ArrayList(parameters.Keys);
+            akeys.Sort();//排序，这是微信要求的
+            foreach (string k in akeys)
+            {
+                var v = (string)parameters[k];
+                sb.Append(k + "=" + v + "&");
+            }
+            sb.Append("key=" + ApiKey);
+            string sign = GetMD5(sb.ToString());
+            return sign;
+        }
+
+        private string GetMD5(string src)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] data = Encoding.UTF8.GetBytes(src);
+            byte[] md5data = md5.ComputeHash(data);
+            md5.Clear();
+            var retStr = BitConverter.ToString(md5data);
+            retStr = retStr.Replace("-", "").ToUpper();
+            return retStr;
+        }
 
         /// <summary>   
         /// 用HttpWebRequest取得网页源码   
@@ -322,20 +360,20 @@ namespace EGT_OTA.Controllers
         }
 
 
-        public class MD5
-        {
-            public static string Encrypt(string str, int length)
-            {
-                MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-                byte[] bt = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < bt.Length; i++)
-                {
-                    sb.AppendFormat("{0:x2}", bt[i]);
-                }
-                return sb.ToString().ToLower().Substring(0, length);
-            }
-        }
+        //public class MD5
+        //{
+        //    public static string Encrypt(string str, int length)
+        //    {
+        //        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+        //        byte[] bt = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+        //        StringBuilder sb = new StringBuilder();
+        //        for (int i = 0; i < bt.Length; i++)
+        //        {
+        //            sb.AppendFormat("{0:x2}", bt[i]);
+        //        }
+        //        return sb.ToString().ToLower().Substring(0, length);
+        //    }
+        //}
 
         #endregion
     }
