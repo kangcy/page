@@ -117,7 +117,6 @@ namespace EGT_OTA.Controllers
 
                 model.Province = ZNRequest.GetString("Province");
                 model.City = ZNRequest.GetString("City");
-                model.Status = Enum_Status.Approved;
                 model.CreateDate = DateTime.Now;
                 model.CreateUserID = user.ID;
                 model.CreateIP = Tools.GetClientIP;
@@ -151,7 +150,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ID > 0);
 
                 //文章
                 var ArticleID = ZNRequest.GetInt("ArticleID");
@@ -231,7 +230,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ID > 0);
 
                 //评论人
                 var CreateUserID = ZNRequest.GetInt("CreateUserID");
@@ -337,7 +336,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ID > 0);
 
                 //创建人
                 var CreateUserID = ZNRequest.GetInt("CreateUserID");

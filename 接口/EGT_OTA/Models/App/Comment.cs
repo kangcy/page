@@ -72,11 +72,6 @@ namespace EGT_OTA.Models
         public int ParentUserID { get; set; }
 
         /// <summary>
-        /// 状态
-        /// </summary>
-        public int Status { get; set; }
-
-        /// <summary>
         /// 点赞数
         /// </summary>
         public int Goods { get; set; }

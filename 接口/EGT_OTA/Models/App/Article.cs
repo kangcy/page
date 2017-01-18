@@ -232,4 +232,27 @@ namespace EGT_OTA.Models
 
         #endregion
     }
+
+    public class ArticleJson
+    {
+        public string NickName { get; set; }
+        public string Avatar { get; set; }
+        public string Signature { get; set; }
+        public int ArticleID { get; set; }
+        public string ArticleNumber { get; set; }
+        public string Title { get; set; }
+        public int Views { get; set; }
+        public int Goods { get; set; }
+        public int Comments { get; set; }
+        public int Keeps { get; set; }
+        public int Pays { get; set; }
+        public int UserID { get; set; }
+        public string Cover { get; set; }
+        public string CreateDate { get; set; }
+        public string TypeName { get; set; }
+        public List<ArticlePart> ArticlePart { get; set; }
+        public int ArticlePower { get; set; }
+        public int Tag { get; set; }
+        public string City { get; set; }
+    }
 }
