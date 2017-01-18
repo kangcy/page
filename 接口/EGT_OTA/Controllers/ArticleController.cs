@@ -54,7 +54,7 @@ namespace EGT_OTA.Controllers
                 model.Pays = 0;
                 model.Tag = Enum_ArticleTag.None;
                 model.ArticlePower = Enum_ArticlePower.Myself;
-                model.Number = ValidateCodeHelper.BuildCode(15);
+                model.Number = BuildNumber(5);
                 model.ID = Tools.SafeInt(db.Add<Article>(model));
                 result = model.ID > 0;
 
@@ -112,7 +112,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = db.Delete<Article>(id) > 0;
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Status").EqualTo(Enum_Status.DELETE).Where<Article>(x => x.ID == article.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -177,7 +177,7 @@ namespace EGT_OTA.Controllers
                     model.CreateUserID = user.ID;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
-                    model.Number = ValidateCodeHelper.BuildCode(15);
+                    model.Number = BuildNumber(5);
                     model.Background = 0;
                     model.Template = 0;
                     model.ID = Tools.SafeInt(db.Add<Article>(model));

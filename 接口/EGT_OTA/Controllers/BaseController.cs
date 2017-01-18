@@ -81,6 +81,15 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 生成随机编号
+        /// </summary>
+        /// <param name="length"></param>
+        protected string BuildNumber(int length = 5)
+        {
+            return UnixTimeHelper.FromDateTime(DateTime.Now).ToString() + ValidateCodeHelper.BuildCode(length);
+        }
+
+        /// <summary>
         /// 图片完整路径
         /// </summary>
         protected string GetFullUrl(string url)
