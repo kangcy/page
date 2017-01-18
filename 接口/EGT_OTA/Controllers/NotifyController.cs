@@ -214,11 +214,11 @@ namespace EGT_OTA.Controllers
                 //创建订单
                 Order order = new Order();
                 order.OrderNumber = Guid.NewGuid().ToString("N");
-                order.Price = 1;//单位：分
                 order.CreateDate = DateTime.Now;
                 order.PayType = 2;
                 order.Status = Enum_Status.Audit;
                 order.Summary = "我的GO-打赏";
+                order.Price = ZNRequest.GetInt("Money", 100);//单位：分
                 order.UserID = ZNRequest.GetInt("UserID");
                 db.Add<Order>(order);
 
@@ -254,11 +254,11 @@ namespace EGT_OTA.Controllers
                 strXML.Append("<sign>" + md5SignValue + "</sign>");
                 strXML.Append("</xml>");
 
-                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder1:" + strXML.ToString());
+                //LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder1:" + strXML.ToString());
 
                 string strSource = GetHttp(wx_prepay, strXML.ToString());
 
-                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder2:" + strSource);
+                //LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder2:" + strSource);
 
                 if (strSource.IndexOf("prepay_id") > 0)
                 {
@@ -277,21 +277,21 @@ namespace EGT_OTA.Controllers
                     paySignReqHandler.Add("timestamp", timeStamp.ToString());
                     var paySign = CreateMd5Sign(paySignReqHandler, partnerKey);
 
-                    LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder3:" + paySign);
+                    //LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder3:" + paySign);
 
                     var obj = new { appid = appid, noncestr = nonce_str, package = "Sign=WXPay", partnerid = partner, prepayid = prepayid, timestamp = timeStamp, sign = paySign };
 
-                    return Json(new { result = true, message = obj }, JsonRequestBehavior.AllowGet);
-                    //return Content(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
+                    return Content(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
                 }
                 else
                 {
-                    return Json(new { result = false, message = strSource }, JsonRequestBehavior.AllowGet);
+                    return Content(string.Empty);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return Json(new { result = false, message = e.Message }, JsonRequestBehavior.AllowGet);
+                LogHelper.ErrorLoger.Error("NotifyController_AddWxOrder_Error:" + ex.Message);
+                return Content(string.Empty);
             }
         }
 
