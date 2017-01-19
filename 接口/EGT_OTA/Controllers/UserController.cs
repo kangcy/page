@@ -23,8 +23,8 @@ namespace EGT_OTA.Controllers
             try
             {
                 var NickName = SqlFilter(ZNRequest.GetString("NickName").Trim());
-                var avatar = ZNRequest.GetString("Avatar").Trim();
-                var openID = ZNRequest.GetString("OpenID").Trim();
+                var avatar = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Avatar")));
+                var openID = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("OpenID")));
                 var source = ZNRequest.GetInt("Source");
 
                 User user = null;
@@ -47,7 +47,7 @@ namespace EGT_OTA.Controllers
                     user.Password = string.Empty;
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
-                    user.Cover = ZNRequest.GetString("Cover");
+                    user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
                     user.Email = string.Empty;
                     user.IsEmail = 0;
                     user.Signature = string.Empty;
@@ -109,7 +109,7 @@ namespace EGT_OTA.Controllers
             {
                 var username = ZNRequest.GetString("UserName").Trim();
                 var password = ZNRequest.GetString("Password").Trim();
-                if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
+                if (String.IsNullOrWhiteSpace(username) || String.IsNullOrWhiteSpace(password))
                 {
                     return Json(new { result = false, message = "用户名和密码不能为空" }, JsonRequestBehavior.AllowGet);
                 }
@@ -151,7 +151,7 @@ namespace EGT_OTA.Controllers
             {
                 var username = ZNRequest.GetString("UserName").Trim();
                 var password = ZNRequest.GetString("Password").Trim();
-                if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
+                if (String.IsNullOrWhiteSpace(username) || String.IsNullOrWhiteSpace(password))
                 {
                     return Json(new { result = false, message = "用户名和密码不能为空" }, JsonRequestBehavior.AllowGet);
                 }
@@ -164,9 +164,9 @@ namespace EGT_OTA.Controllers
                 user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
                 user.Password = DesEncryptHelper.Encrypt(password);
                 user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
-                user.Cover = ZNRequest.GetString("Cover");
-                user.ProvinceName = ZNRequest.GetString("Province");
-                user.CityName = ZNRequest.GetString("City");
+                user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
+                user.ProvinceName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Province")));
+                user.CityName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("City")));
                 user.Email = string.Empty;
                 user.IsEmail = 0;
                 user.Signature = string.Empty;
@@ -222,8 +222,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请上传头像" }, JsonRequestBehavior.AllowGet);
                 }
-                user.Avatar = avatar;
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Avatar").EqualTo(avatar).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -253,8 +252,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请上传背景图片" }, JsonRequestBehavior.AllowGet);
                 }
-                user.Cover = cover;
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Cover").EqualTo(cover).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -306,8 +304,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.Sex = ZNRequest.GetInt("Sex");
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Sex").EqualTo(ZNRequest.GetInt("Sex")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -332,8 +329,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.UseDraw = ZNRequest.GetInt("UseDraw");
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("UseDraw").EqualTo(ZNRequest.GetInt("UseDraw")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -358,8 +354,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.IsPay = ZNRequest.GetInt("IsPay");
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("IsPay").EqualTo(ZNRequest.GetInt("IsPay")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -384,8 +379,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.Birthday = ZNRequest.GetDateTime("Birthday");
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Birthday").EqualTo(ZNRequest.GetDateTime("Birthday")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -410,13 +404,12 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var NickName = SqlFilter(ZNRequest.GetString("NickName").Trim());
+                var NickName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("NickName").Trim()));
                 if (string.IsNullOrEmpty(NickName))
                 {
                     return Json(new { result = false, message = "请填写昵称信息" }, JsonRequestBehavior.AllowGet);
                 }
-                user.NickName = NickName;
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("NickName").EqualTo(NickName).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -451,8 +444,8 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "XSS攻击" }, JsonRequestBehavior.AllowGet);
                 }
-                user.Signature = CutString(Signature, 200);
-                var result = db.Update<User>(user) > 0;
+                Signature = CutString(Signature, 200);
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Signature").EqualTo(Signature).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -478,17 +471,16 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var newpassword = ZNRequest.GetString("NewPassword").Trim();
-                if (string.IsNullOrEmpty(newpassword))
+                if (string.IsNullOrWhiteSpace(newpassword))
                 {
-                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "请填写新密码" }, JsonRequestBehavior.AllowGet);
                 }
                 newpassword = DesEncryptHelper.Encrypt(newpassword);
                 if (user.Password == newpassword)
                 {
                     return Json(new { result = false, message = "新密码与原密码相同" }, JsonRequestBehavior.AllowGet);
                 }
-                user.Password = newpassword;
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Password").EqualTo(newpassword).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -513,8 +505,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.ShareNick = ZNRequest.GetInt("ShareNick");
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShareNick").EqualTo(ZNRequest.GetInt("ShareNick")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -539,8 +530,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.AutoMusic = ZNRequest.GetInt("AutoMusic");
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("AutoMusic").EqualTo(ZNRequest.GetInt("AutoMusic")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -671,10 +661,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用戶信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                else
-                {
-                    return Json(new { result = true, message = UserInfo(user) }, JsonRequestBehavior.AllowGet);
-                }
+                return Json(new { result = true, message = UserInfo(user) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -761,8 +748,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "该手机号码已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                user.Phone = phone;
-                var result = db.Update<User>(user) > 0;
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Phone").EqualTo(phone).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
