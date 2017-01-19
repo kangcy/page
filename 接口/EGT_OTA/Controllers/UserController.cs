@@ -944,7 +944,7 @@ namespace EGT_OTA.Controllers
             user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
 
             //我关注的用户
-            var fans = db.Find<Fan>(x => x.FromUserID == user.ID && x.Status == Enum_Status.Approved).Select(x => x.ToUserID).ToArray();
+            var fans = db.Find<Fan>(x => x.FromUserID == user.ID).Select(x => x.ToUserID).ToArray();
             user.FanText = "," + string.Join(",", fans) + ",";
 
             //我收藏的文章

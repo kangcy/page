@@ -44,11 +44,6 @@ namespace EGT_OTA.Models
         public int FromUserID { get; set; }
 
         /// <summary>
-        /// 状态
-        /// </summary>
-        public int Status { get; set; }
-
-        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreateDate { get; set; }

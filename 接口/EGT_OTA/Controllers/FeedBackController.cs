@@ -31,10 +31,14 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var summary = SqlFilter(ZNRequest.GetString("Summary"));
+                var summary = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Summary")));
                 if (string.IsNullOrWhiteSpace(summary))
                 {
                     return Json(new { result = false, message = "请填写反馈信息" }, JsonRequestBehavior.AllowGet);
+                }
+                if (HasDirtyWord(summary))
+                {
+                    return Json(new { result = false, message = "您输入的标题含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
                 var qq = ZNRequest.GetString("QQ");
                 if (string.IsNullOrWhiteSpace(qq))
