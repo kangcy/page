@@ -142,7 +142,7 @@ namespace EGT_OTA.Controllers
                 order.PayType = 2;
                 order.Status = Enum_Status.Audit;
                 order.Summary = "我的GO-打赏";
-                order.Price = ZNRequest.GetInt("Money", 100) * 100;//单位：分
+                order.Price = ZNRequest.GetInt("Money", 1);//单位：分
                 order.UserNumber = ZNRequest.GetString("UserNumber");
                 order.ToUserNumber = ZNRequest.GetString("ToUserNumber");
                 order.ToArticleNumber = ZNRequest.GetString("ToArticleNumber");

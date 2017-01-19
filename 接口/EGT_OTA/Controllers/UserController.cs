@@ -495,7 +495,7 @@ namespace EGT_OTA.Controllers
                 var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Password").EqualTo(newpassword).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = newpassword }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
