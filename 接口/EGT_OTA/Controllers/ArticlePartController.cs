@@ -141,6 +141,10 @@ namespace EGT_OTA.Controllers
                 var model = db.Single<ArticlePart>(x => x.ID == id);
                 if (model != null)
                 {
+                    if (model.CreateUserID != user.ID)
+                    {
+                        return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                    }
                     var result = db.Delete<ArticlePart>(id) > 0;
                     if (result)
                     {

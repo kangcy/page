@@ -150,6 +150,10 @@ namespace EGT_OTA.Controllers
                 }
                 model.Title = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Title")));
                 model.Title = CutString(model.Title, 60);
+                if (HasDirtyWord(model.Title))
+                {
+                    return Json(new { result = false, message = "您输入的标题含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
+                }
                 model.MusicID = ZNRequest.GetInt("MusicID", 0);
                 model.MusicName = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("MusicName"));
                 model.MusicUrl = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("MusicUrl"));

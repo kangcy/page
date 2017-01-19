@@ -162,6 +162,10 @@ namespace EGT_OTA.Controllers
                 User user = new User();
                 user.UserName = username;
                 user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
+                if (HasDirtyWord(username) || HasDirtyWord(user.NickName))
+                {
+                    return Json(new { result = false, message = "您输入的内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
+                }
                 user.Password = DesEncryptHelper.Encrypt(password);
                 user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                 user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
@@ -409,6 +413,10 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请填写昵称信息" }, JsonRequestBehavior.AllowGet);
                 }
+                if (HasDirtyWord(NickName))
+                {
+                    return Json(new { result = false, message = "您输入的昵称含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
+                }
                 var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("NickName").EqualTo(NickName).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
@@ -445,6 +453,10 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "XSS攻击" }, JsonRequestBehavior.AllowGet);
                 }
                 Signature = CutString(Signature, 200);
+                if (HasDirtyWord(Signature))
+                {
+                    return Json(new { result = false, message = "您输入的签名含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
+                }
                 var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Signature").EqualTo(Signature).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
