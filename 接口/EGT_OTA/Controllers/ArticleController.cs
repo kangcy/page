@@ -55,7 +55,7 @@ namespace EGT_OTA.Controllers
                 model.Pays = 0;
                 model.Tag = Enum_ArticleTag.None;
                 model.ArticlePower = Enum_ArticlePower.Myself;
-                model.Number = BuildNumber(5);
+                model.Number = BuildNumber();
                 model.ID = Tools.SafeInt(db.Add<Article>(model));
                 result = model.ID > 0;
 
@@ -182,7 +182,7 @@ namespace EGT_OTA.Controllers
                     model.CreateUserID = user.ID;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
-                    model.Number = BuildNumber(5);
+                    model.Number = BuildNumber();
                     model.Background = 0;
                     model.Template = 0;
                     model.ID = Tools.SafeInt(db.Add<Article>(model));

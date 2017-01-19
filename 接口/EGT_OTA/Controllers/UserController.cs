@@ -67,7 +67,7 @@ namespace EGT_OTA.Controllers
                     user.FanText = "";
                     user.KeepText = "";
                     user.Birthday = DateTime.Now;
-                    user.Number = Guid.NewGuid().ToString("N");
+                    user.Number = BuildNumber();
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                     if (user.ID > 0)
                     {
@@ -187,7 +187,7 @@ namespace EGT_OTA.Controllers
                 user.FanText = "";
                 user.KeepText = "";
                 user.Status = Enum_Status.Approved;
-                user.Number = Guid.NewGuid().ToString("N");
+                user.Number = BuildNumber();
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {

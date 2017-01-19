@@ -84,9 +84,9 @@ namespace EGT_OTA.Controllers
         /// 生成随机编号
         /// </summary>
         /// <param name="length"></param>
-        protected string BuildNumber(int length = 5)
+        protected string BuildNumber()
         {
-            return UnixTimeHelper.FromDateTime(DateTime.Now).ToString() + ValidateCodeHelper.BuildCode(length);
+            return UnixTimeHelper.FromDateTime(DateTime.Now).ToString() + new Random().Next(1001, 9999).ToString();
         }
 
         /// <summary>
