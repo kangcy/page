@@ -146,6 +146,7 @@
   <ItemGroup>
     <Compile Include="ConstKeys\ConstKeys.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
+    <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InitController.cs" />
     <Compile Include="Controllers\MusicController.cs" />

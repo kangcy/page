@@ -123,17 +123,6 @@ namespace EGT_OTA.Controllers
                 model.ParentCommentID = ZNRequest.GetInt("ParentCommentID");
                 model.ParentUserID = ZNRequest.GetInt("ParentUserID");
                 var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
-
-                //修改评论数
-                if (result)
-                {
-                    var comments = article.Comments + 1;
-                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Comments").EqualTo(comments).Where<Article>(x => x.ID == articleID).Execute() > 0;
-                    if (result)
-                    {
-                        return Json(new { result = true, message = comments }, JsonRequestBehavior.AllowGet);
-                    }
-                }
             }
             catch (Exception ex)
             {

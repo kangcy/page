@@ -83,7 +83,6 @@ namespace EGT_OTA.Models
         [SubSonicNullString]
         public string CreateIP { get; set; }
 
-
         #region 文本修饰
 
         /// <summary>

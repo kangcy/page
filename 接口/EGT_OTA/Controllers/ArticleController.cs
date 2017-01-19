@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CommonTools;
+using EGT_OTA.Controllers.Filter;
 using EGT_OTA.Helper;
 using EGT_OTA.Models;
 using Newtonsoft.Json;
@@ -208,6 +209,10 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
+                    if (model.CreateUserID != user.ID)
+                    {
+                        return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                    }
                     result = db.Update<Article>(model) > 0;
 
                     var parts = ZNRequest.GetString("PartIDs");
@@ -270,6 +275,9 @@ namespace EGT_OTA.Controllers
                 //收藏数
                 model.Keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.ArticleNumber == model.Number).GetRecordCount();
 
+                //评论数
+                model.Comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ArticleID == model.ID).GetRecordCount();
+
                 //创建人
                 User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
                 if (createUser != null)
@@ -287,7 +295,13 @@ namespace EGT_OTA.Controllers
                 //音乐
                 if (model.MusicID > 0)
                 {
-                    Music music = db.Single<Music>(x => x.ID == model.MusicID);
+                    List<Music> musics = new List<Music>();
+                    List<MusicJson> list = GetMusic();
+                    list.ForEach(x =>
+                    {
+                        musics.AddRange(x.Music);
+                    });
+                    Music music = musics.FirstOrDefault<Music>(x => x.ID == model.MusicID);
                     model.MusicUrl = music == null ? "" : music.FileUrl;
                     model.MusicName = music == null ? "" : music.Name;
                 }
@@ -323,22 +337,14 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑模板
         /// </summary>
+        [ArticlePower]
         public ActionResult EditArticleTemp()
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var id = ZNRequest.GetInt("ArticleID");
-                if (id == 0)
-                {
-                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-                }
+                var ArticleID = ZNRequest.GetInt("ArticleID");
                 var Template = ZNRequest.GetInt("Template");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Template").EqualTo(Template).Where<Article>(x => x.ID == id).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Template").EqualTo(Template).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -354,22 +360,14 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑封面
         /// </summary>
+        [ArticlePower]
         public ActionResult EditArticleCover()
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var id = ZNRequest.GetInt("ArticleID");
-                if (id == 0)
-                {
-                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-                }
-                var Cover = ZNRequest.GetString("Cover");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Cover").EqualTo(Cover).Where<Article>(x => x.ID == id).Execute() > 0;
+                var ArticleID = ZNRequest.GetInt("ArticleID");
+                var Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Cover").EqualTo(Cover).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -385,24 +383,16 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑音乐
         /// </summary>
+        [ArticlePower]
         public ActionResult EditArticleMusic()
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var id = ZNRequest.GetInt("ArticleID");
-                if (id == 0)
-                {
-                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-                }
+                var ArticleID = ZNRequest.GetInt("ArticleID");
                 var MusicID = ZNRequest.GetInt("MusicID");
-                var MusicName = ZNRequest.GetString("MusicName");
-                var MusicUrl = ZNRequest.GetString("MusicUrl");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Set("MusicName").EqualTo(MusicName).Where<Article>(x => x.ID == id).Execute() > 0;
+                var MusicName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("MusicName")));
+                var MusicUrl = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("MusicUrl")));
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Set("MusicName").EqualTo(MusicName).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -418,32 +408,20 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑权限
         /// </summary>
+        [ArticlePower]
         public ActionResult EditArticlePower()
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
-                if (string.IsNullOrWhiteSpace(ArticleNumber))
-                {
-                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
-                }
+                var ArticleID = ZNRequest.GetInt("ArticleID");
+                Article article = db.Single<Article>(x => x.ID == ArticleID);
                 var ArticlePower = ZNRequest.GetInt("ArticlePower", Enum_ArticlePower.Myself);
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("ArticlePower").EqualTo(ArticlePower).Where<Article>(x => x.Number == ArticleNumber).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("ArticlePower").EqualTo(ArticlePower).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
-                    var parts = db.Find<ArticlePart>(x => x.ArticleNumber == ArticleNumber).ToList();
+                    //用户相册是否展示
                     var status = ArticlePower == Enum_ArticlePower.Public ? Enum_Status.Approved : Enum_Status.Audit;
-                    parts.ForEach(x =>
-                    {
-                        x.Status = status;
-                    });
-                    db.UpdateMany<ArticlePart>(parts);
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider()).Set("Status").EqualTo(status).Where<ArticlePart>(x => x.ArticleNumber == article.Number).Execute();
                 }
             }
             catch (Exception ex)
@@ -456,27 +434,19 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑分类
         /// </summary>
+        [ArticlePower]
         public ActionResult EditArticleType()
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var id = ZNRequest.GetInt("ArticleID");
-                if (id == 0)
-                {
-                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
-                }
+                var ArticleID = ZNRequest.GetInt("ArticleID");
                 var TypeID = ZNRequest.GetInt("ArticleType");
                 var articleType = GetArticleType().FirstOrDefault<ArticleType>(x => x.ID == TypeID);
                 if (articleType == null)
                 {
                     return Json(new { result = false, message = "不存在当前类型" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("TypeID").EqualTo(TypeID).Set("TypeIDList").EqualTo(articleType.ParentIDList).Where<Article>(x => x.ID == id).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("TypeID").EqualTo(TypeID).Set("TypeIDList").EqualTo(articleType.ParentIDList).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -485,6 +455,29 @@ namespace EGT_OTA.Controllers
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("ArticleController_EditArticleType:" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 编辑背景
+        /// </summary>
+        [ArticlePower]
+        public ActionResult EditBackground()
+        {
+            try
+            {
+                var ArticleID = ZNRequest.GetInt("ArticleID");
+                var background = ZNRequest.GetInt("Background");
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Background").EqualTo(background).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("ArticleController_EditBackground:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -511,32 +504,6 @@ namespace EGT_OTA.Controllers
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("ArticleController_CheckPowerPwd:" + ex.Message);
-            }
-            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
-        /// 编辑背景
-        /// </summary>
-        public ActionResult EditBackground()
-        {
-            try
-            {
-                var id = ZNRequest.GetInt("ArticleID");
-                if (id == 0)
-                {
-                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
-                }
-                var background = ZNRequest.GetInt("Background");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Background").EqualTo(background).Where<Article>(x => x.ID == id).Execute() > 0;
-                if (result)
-                {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("ArticleController_EditBackground:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -719,34 +686,23 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 投稿
         /// </summary>
+        [ArticlePower]
         public ActionResult Recommend()
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var id = ZNRequest.GetInt("ArticleID");
-                if (id == 0)
-                {
-                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-                }
-                var article = db.Single<Article>(x => x.ID == id);
-                if (article == null)
-                {
-                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-                }
+                var UserID = ZNRequest.GetInt("ID");
+                var ArticleID = ZNRequest.GetInt("ArticleID");
+
                 var time = DateTime.Now.AddDays(-7);
-                var log = db.Single<ArticleRecommend>(x => x.CreateUserID == user.ID && x.CreateDate > time);
+                var log = db.Single<ArticleRecommend>(x => x.CreateUserID == UserID && x.CreateDate > time);
                 if (log != null)
                 {
                     return Json(new { result = false, message = "每7日只有一次投稿机会，上次投稿时间为：" + log.CreateDate.ToString("yyyy-MM-dd") }, JsonRequestBehavior.AllowGet);
                 }
                 ArticleRecommend model = new ArticleRecommend();
-                model.ArticleID = id;
-                model.CreateUserID = user.ID;
+                model.ArticleID = ArticleID;
+                model.CreateUserID = UserID;
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
                 var result = Tools.SafeInt(db.Add<ArticleRecommend>(model)) > 0;
