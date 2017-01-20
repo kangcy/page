@@ -184,62 +184,110 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult SendSMS()
         {
+            try
+            {
+                string mobile = ZNRequest.GetString("Mobile");
+                string sms = ZNRequest.GetString("SMS");
+                string num = new Random().Next(100000, 999999).ToString();
+                switch (sms)
+                {
+                    //找回密码验证码
+                    case "findpwdsms":
+                        var findpwdsms = System.Web.Configuration.WebConfigurationManager.AppSettings["findpwdsms"];
+                        sms = string.Format(findpwdsms, num);
+                        break;
+                    //用户注册验证码
+                    case "regsms":
+                        var regsms = System.Web.Configuration.WebConfigurationManager.AppSettings["regsms"];
+                        sms = string.Format(regsms, num);
+                        break;
+                    default:
+                        var defaultsms = System.Web.Configuration.WebConfigurationManager.AppSettings["defaultsms"];
+                        sms = string.Format(defaultsms, num);
+                        break;
+                }
+                string baseurl = System.Web.Configuration.WebConfigurationManager.AppSettings["messageurl"].ToString();
+                string user = System.Web.Configuration.WebConfigurationManager.AppSettings["messageuser"].ToString();
+                string pwd = System.Web.Configuration.WebConfigurationManager.AppSettings["messagepwd"].ToString();
+
+
+                Encoding myEcoding = Encoding.GetEncoding("GBK");
+                string param = HttpUtility.UrlEncode("usr", myEcoding) + "=" + HttpUtility.UrlEncode(user, myEcoding) + "&" +
+                    HttpUtility.UrlEncode("pwd", myEcoding) + "=" + HttpUtility.UrlEncode(pwd, myEcoding) + "&" +
+                    HttpUtility.UrlEncode("mobile", myEcoding) + "=" + HttpUtility.UrlEncode(mobile, myEcoding) + "&" +
+                    HttpUtility.UrlEncode("sms", myEcoding) + "=" + HttpUtility.UrlEncode(sms, myEcoding) + "&" +
+                    HttpUtility.UrlEncode("extdsrcid", myEcoding) + "=" + HttpUtility.UrlEncode("", myEcoding);
+                byte[] bs = Encoding.ASCII.GetBytes(param);
+                HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(baseurl);
+                req.Method = "POST";
+                req.ContentType = "application/x-www-form-urlencoded;charset=GBK";
+                req.ContentLength = bs.Length;
+                using (Stream reqstream = req.GetRequestStream())
+                {
+                    reqstream.Write(bs, 0, bs.Length);
+                    reqstream.Close();
+                }
+                using (WebResponse wr = req.GetResponse())
+                {
+                    StreamReader sr = new StreamReader(wr.GetResponseStream(), myEcoding);
+                    string srReturn = sr.ReadToEnd().Trim();
+                    wr.Close();
+                    sr.Close();
+
+                    //发送记录
+                    SendSMS log = new SendSMS();
+                    log.Mobile = mobile;
+                    log.Remark = sms;
+                    log.Result = srReturn;
+                    log.CreateDate = DateTime.Now;
+                    log.CreateIP = Tools.GetClientIP;
+                    db.Add<SendSMS>(log);
+
+                    CookieHelper.SetCookie("SMS", mobile + num, DateTime.Now.AddMinutes(15));
+
+                    if (srReturn.Substring(srReturn.IndexOf(",") - 1, 1) == "0")
+                    {
+                        CookieHelper.SetCookie("SMS", mobile + num, DateTime.Now.AddMinutes(15));
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("SystemController_SendSMS:" + ex.Message);
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 校验短信验证码
+        /// </summary>
+        public ActionResult CheckSMSCode()
+        {
             string mobile = ZNRequest.GetString("Mobile");
-            string sms = ZNRequest.GetString("SMS");
-            string num = new Random().Next(100000, 999999).ToString();
-            if (string.IsNullOrWhiteSpace(sms))
+            string code = ZNRequest.GetString("Code");
+            if (string.IsNullOrWhiteSpace(mobile) || string.IsNullOrWhiteSpace(code))
             {
-                var defaultsms = System.Web.Configuration.WebConfigurationManager.AppSettings["sms"];
-                sms = string.Format(defaultsms, num);
+                return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
             }
-
-            string baseurl = System.Web.Configuration.WebConfigurationManager.AppSettings["messageurl"].ToString();
-            string user = System.Web.Configuration.WebConfigurationManager.AppSettings["messageuser"].ToString();
-            string pwd = System.Web.Configuration.WebConfigurationManager.AppSettings["messagepwd"].ToString();
-
-
-            Encoding myEcoding = Encoding.GetEncoding("GBK");
-            string param = HttpUtility.UrlEncode("usr", myEcoding) + "=" + HttpUtility.UrlEncode(user, myEcoding) + "&" +
-                HttpUtility.UrlEncode("pwd", myEcoding) + "=" + HttpUtility.UrlEncode(pwd, myEcoding) + "&" +
-                HttpUtility.UrlEncode("mobile", myEcoding) + "=" + HttpUtility.UrlEncode(mobile, myEcoding) + "&" +
-                HttpUtility.UrlEncode("sms", myEcoding) + "=" + HttpUtility.UrlEncode(sms, myEcoding) + "&" +
-                HttpUtility.UrlEncode("extdsrcid", myEcoding) + "=" + HttpUtility.UrlEncode("", myEcoding);
-            byte[] bs = Encoding.ASCII.GetBytes(param);
-            HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(baseurl);
-            req.Method = "POST";
-            req.ContentType = "application/x-www-form-urlencoded;charset=GBK";
-            req.ContentLength = bs.Length;
-            using (Stream reqstream = req.GetRequestStream())
+            try
             {
-                reqstream.Write(bs, 0, bs.Length);
-                reqstream.Close();
-            }
-            using (WebResponse wr = req.GetResponse())
-            {
-                StreamReader sr = new StreamReader(wr.GetResponseStream(), myEcoding);
-                string srReturn = sr.ReadToEnd().Trim();
-                wr.Close();
-                sr.Close();
-
-                //发送记录
-                SendSMS log = new SendSMS();
-                log.Mobile = mobile;
-                log.Remark = sms;
-                log.Result = srReturn;
-                log.CreateDate = DateTime.Now;
-                log.CreateIP = Tools.GetClientIP;
-                db.Add<SendSMS>(log);
-
-                if (srReturn.Substring(srReturn.IndexOf(",") - 1, 1) == "0")
+                var value = CookieHelper.GetCookieValue("SMS");
+                if (value == mobile + code)
                 {
-                    CookieHelper.SetCookie("SMS", num, DateTime.Now.AddMinutes(15));
-                    return Json(true, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(false, JsonRequestBehavior.AllowGet);
+                    CookieHelper.ClearCookie("SMS");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("SystemController_CheckSMSCode:" + ex.Message);
+            }
+            return Json(new { result = false, message = "验证码错误" }, JsonRequestBehavior.AllowGet);
         }
     }
 }
