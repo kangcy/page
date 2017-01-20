@@ -39,6 +39,18 @@ namespace EGT_OTA.Controllers
                     query = query.And("ToUserNumber").IsEqualTo(ToUserID);
                 }
                 var recordCount = query.GetRecordCount();
+
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Order>();
 
@@ -46,19 +58,30 @@ namespace EGT_OTA.Controllers
                 var toarray = list.Select(x => x.ToUserNumber).Distinct().ToList();
                 fromarray.AddRange(toarray);
                 var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
-                var newlist = (from l in list
-                               select new
-                               {
-                                   ID = l.ID,
-                                   FromUserID = allusers.Exists(x => x.Number == l.UserNumber) ? allusers.FirstOrDefault(x => x.Number == l.UserNumber).ID : 0,
-                                   FromUserAvatar = GetFullUrl(allusers.Exists(x => x.Number == l.UserNumber) ? allusers.FirstOrDefault(x => x.Number == l.UserNumber).Avatar : ""),
-                                   FromUserName = allusers.Exists(x => x.Number == l.UserNumber) ? allusers.FirstOrDefault(x => x.Number == l.UserNumber).NickName : "",
-                                   ToUserAvatar = GetFullUrl(allusers.Exists(x => x.Number == l.ToUserNumber) ? allusers.FirstOrDefault(x => x.Number == l.ToUserNumber).Avatar : ""),
-                                   ToUserName = allusers.Exists(x => x.Number == l.ToUserNumber) ? allusers.FirstOrDefault(x => x.Number == l.ToUserNumber).NickName : "",
-                                   ToUserID = allusers.Exists(x => x.Number == l.ToUserNumber) ? allusers.FirstOrDefault(x => x.Number == l.ToUserNumber).ID : 0,
-                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
-                                   Money = l.Price
-                               }).ToList();
+
+                List<OrderJson> newlist = new List<OrderJson>();
+                list.ForEach(x =>
+                {
+                    var fromUser = allusers.FirstOrDefault(y => y.Number == x.UserNumber);
+                    var toUser = allusers.FirstOrDefault(y => y.Number == x.ToUserNumber);
+                    OrderJson model = new OrderJson();
+                    model.ID = x.ID;
+                    model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd");
+                    model.Price = x.Price;
+                    if (fromUser != null)
+                    {
+                        model.FromUserID = fromUser.ID;
+                        model.FromUserAvatar = fromUser.Avatar;
+                        model.FromUserName = fromUser.UserName;
+                    }
+                    if (toUser != null)
+                    {
+                        model.ToUserID = toUser.ID;
+                        model.ToUserAvatar = toUser.Avatar;
+                        model.ToUserName = toUser.UserName;
+                    }
+                    newlist.Add(model);
+                });
                 var result = new
                 {
                     currpage = pager.Index,
@@ -70,7 +93,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("PayController_All:" + ex.Message);
+                LogHelper.ErrorLoger.Error("OrderController_All:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

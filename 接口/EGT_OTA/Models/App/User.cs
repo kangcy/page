@@ -47,7 +47,6 @@ namespace EGT_OTA.Models
             this.FanText = "";
             this.KeepText = "";
             this.Status = Enum_Status.Approved;
-            this.Number = Guid.NewGuid().ToString("N");
         }
 
         /// <summary>

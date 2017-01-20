@@ -66,4 +66,17 @@ namespace EGT_OTA.Models
         /// </summary>
         public string Summary { get; set; }
     }
+
+    public class OrderJson
+    {
+        public int ID { get; set; }
+        public int FromUserID { get; set; }
+        public string FromUserAvatar { get; set; }
+        public string FromUserName { get; set; }
+        public int ToUserID { get; set; }
+        public string ToUserAvatar { get; set; }
+        public string ToUserName { get; set; }
+        public string CreateDate { get; set; }
+        public int Price { get; set; }
+    }
 }

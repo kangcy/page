@@ -47,7 +47,8 @@ namespace EGT_OTA.Controllers
                 ProvinceName = "江苏",
                 CityName = "南京",
                 Birthday = new DateTime(1991, 2, 15),
-                Signature = "幸福就是每天和家人分享快乐甜蜜和喜悦，就是这么简单"
+                Signature = "幸福就是每天和家人分享快乐甜蜜和喜悦，就是这么简单",
+                Number = BuildNumber()
             });
 
             users.Add(new User
@@ -61,7 +62,8 @@ namespace EGT_OTA.Controllers
                 ProvinceName = "江苏",
                 CityName = "南京",
                 Birthday = new DateTime(1991, 2, 15),
-                Signature = "幸福就是每天和家人分享快乐甜蜜和喜悦，就是这么简单"
+                Signature = "幸福就是每天和家人分享快乐甜蜜和喜悦，就是这么简单",
+                Number = BuildNumber()
             });
 
             users.ForEach(x =>
@@ -125,7 +127,7 @@ namespace EGT_OTA.Controllers
 
             articles.ForEach(x =>
             {
-                x.Number = ValidateCodeHelper.BuildCode(15);
+                x.Number = BuildNumber();
                 x.Cover = Thumb(x.Cover, baseUrl, "Article", 0);
                 Thread.Sleep(2000);
 
