@@ -950,9 +950,9 @@ namespace EGT_OTA.Controllers
             user.FanText = "," + string.Join(",", fans) + ",";
 
             //我收藏的文章
-            var keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).ExecuteTypedList<Keep>();
-            user.KeepText = "," + string.Join(",", keeps.Select(x => x.ArticleNumber).ToArray()) + ",";
-            user.Keeps = keeps.Count();
+            var keeps = db.Find<Keep>(x => x.CreateUserID == user.ID).Select(x => x.ArticleNumber).ToArray();
+            user.KeepText = "," + string.Join(",", keeps) + ",";
+            user.Keeps = keeps.Length;
 
             //登录方式
             user.UserLogin = db.Find<UserLogin>(x => x.UserNumber == user.Number).ToList();

@@ -84,8 +84,8 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("KeepID");
-                var model = db.Single<Keep>(x => x.ID == id);
+                var id = ZNRequest.GetString("ArticleNumber");
+                var model = db.Single<Keep>(x => x.ArticleNumber == id && x.CreateUserID == user.ID);
                 if (model == null)
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
@@ -97,7 +97,11 @@ namespace EGT_OTA.Controllers
                 var result = db.Delete<Keep>(id) > 0;
                 if (result)
                 {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    //更新关注用户
+                    var keeps = db.Find<Keep>(x => x.CreateUserID == user.ID).Select(x => x.ArticleNumber).ToArray();
+                    user.KeepText = "," + string.Join(",", keeps) + ",";
+
+                    return Json(new { result = true, message = user.KeepText }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
