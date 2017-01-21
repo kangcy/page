@@ -22,10 +22,10 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 打赏
+    /// 黑名单
     /// </summary>
     [Serializable]
-    public class Pay
+    public class Black
     {
         /// <summary>
         /// ID
@@ -34,39 +34,33 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         /// <summary>
-        /// 文章ID
-        /// </summary>
-        public int ArticleID { get; set; }
-
-        /// <summary>
-        /// 打赏人
-        /// </summary>
-        public int FromUserID { get; set; }
-
-        /// <summary>
-        /// 被打赏人
+        /// 拉黑用户
         /// </summary>
         public int ToUserID { get; set; }
 
         /// <summary>
-        /// 金额
+        /// 创建人ID
         /// </summary>
-        public decimal Money { get; set; }
+        public int CreateUserID { get; set; }
 
         /// <summary>
-        /// 状态
-        /// </summary>
-        public int Status { get; set; }
-
-        /// <summary>
-        /// 创建时间
+        /// 创建日期
         /// </summary>
         public DateTime CreateDate { get; set; }
 
         /// <summary>
         /// 创建IP
         /// </summary>
-        [SubSonicNullString]
+        [SubSonicStringLength(100), SubSonicNullString]
         public string CreateIP { get; set; }
+    }
+
+    public class BlackJson
+    {
+        public int ID { get; set; }
+        public string NickName { get; set; }
+        public string Avatar { get; set; }
+        public string Signature { get; set; }
+        public string CreateDate { get; set; }
     }
 }

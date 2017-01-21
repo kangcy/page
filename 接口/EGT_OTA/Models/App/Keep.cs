@@ -46,13 +46,11 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 创建人ID
         /// </summary>
-        [SubSonicNullString]
         public int CreateUserID { get; set; }
 
         /// <summary>
         /// 创建日期
         /// </summary>
-        [SubSonicNullString]
         public DateTime CreateDate { get; set; }
 
         /// <summary>

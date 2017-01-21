@@ -159,7 +159,6 @@
     <Compile Include="Controllers\FanController.cs" />
     <Compile Include="Controllers\KeepController.cs" />
     <Compile Include="Controllers\FeedBackController.cs" />
-    <Compile Include="Controllers\PayController.cs" />
     <Compile Include="Controllers\ZanController.cs" />
     <Compile Include="Controllers\VideoController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
@@ -171,6 +170,7 @@
     <Compile Include="Controllers\ShareLogController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\BlackController.cs" />
     <Compile Include="Enum\EnumAttribute.cs" />
     <Compile Include="Enum\EnumBase.cs" />
     <Compile Include="Enum\Enum_Price.cs" />
@@ -221,7 +221,6 @@
     <Compile Include="Models\App\Fan.cs" />
     <Compile Include="Models\App\Music.cs" />
     <Compile Include="Models\App\Video.cs" />
-    <Compile Include="Models\App\Pay.cs" />
     <Compile Include="Models\App\FeedBack.cs" />
     <Compile Include="Models\App\Zan.cs" />
     <Compile Include="Models\App\Help.cs" />
@@ -233,6 +232,7 @@
     <Compile Include="Models\App\Report.cs" />
     <Compile Include="Models\App\ArticleRecommend.cs" />
     <Compile Include="Models\App\DirtyWord.cs" />
+    <Compile Include="Models\App\Black.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\Repository.cs" />
     <Compile Include="Models\Base\WebApplication.cs" />

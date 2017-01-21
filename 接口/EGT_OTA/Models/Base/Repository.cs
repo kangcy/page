@@ -58,7 +58,6 @@ namespace EGT_OTA.Models
             repo.Single<Fan>(x => x.ID == 0);//关注
             repo.Single<Keep>(x => x.ID == 0);//收藏
             repo.Single<Zan>(x => x.ID == 0);//点赞
-            repo.Single<Pay>(x => x.ID == 0);//打赏
             repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
             repo.Single<UserLogin>(x => x.ID == 0);//登录方式
             repo.Single<ShareLog>(x => x.ID == 0);//分享记录
@@ -66,6 +65,7 @@ namespace EGT_OTA.Models
             repo.Single<ApplyMoney>(x => x.ID == 0);//提现申请记录
             repo.Single<Report>(x => x.ID == 0);//举报记录
             repo.Single<ArticleRecommend>(x => x.ID == 0);//举报记录
+            repo.Single<Black>(x => x.ID == 0);//黑名单
 
             repo.Single<Order>(x => x.ID == 0);//订单
         }
