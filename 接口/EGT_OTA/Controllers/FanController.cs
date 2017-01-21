@@ -101,25 +101,38 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Delete()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            var id = ZNRequest.GetInt("ids");
             try
             {
-                result = db.Delete<Fan>(id) > 0;
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var id = ZNRequest.GetInt("FanID");
+                var model = db.Single<Fan>(x => x.ID == id);
+                if (model == null)
+                {
+                    return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
+                }
+                if (model.FromUserID != user.ID)
+                {
+                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                }
+                var result = db.Delete<Fan>(id) > 0;
+                if (result)
+                {
+                    //更新关注用户
+                    var fans = db.Find<Fan>(x => x.FromUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    user.FanText = "," + string.Join(",", fans) + ",";
+
+                    return Json(new { result = true, message = user.FanText }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("FanController_Delete:" + ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error("FanController_Delete:" + ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -165,6 +178,7 @@ namespace EGT_OTA.Controllers
                                join u in users on l.ToUserID equals u.ID
                                select new
                                {
+                                   ID = l.ID,
                                    CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                    UserID = u.ID,
                                    NickName = u.NickName,
@@ -231,6 +245,7 @@ namespace EGT_OTA.Controllers
                                join u in users on l.FromUserID equals u.ID
                                select new
                                {
+                                   ID = l.ID,
                                    CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                    UserID = u.ID,
                                    NickName = u.NickName,

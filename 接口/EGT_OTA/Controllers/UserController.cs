@@ -159,7 +159,11 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "当前账号已注册" }, JsonRequestBehavior.AllowGet);
                 }
                 User user = new User();
-                user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
+                user.NickName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("NickName")));
+                if (String.IsNullOrWhiteSpace(user.NickName))
+                {
+                    return Json(new { result = false, message = "昵称不能为空" }, JsonRequestBehavior.AllowGet);
+                }
                 if (HasDirtyWord(user.NickName))
                 {
                     return Json(new { result = false, message = "您输入的内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);

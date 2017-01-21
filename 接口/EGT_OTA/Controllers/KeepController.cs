@@ -84,7 +84,16 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("ID");
+                var id = ZNRequest.GetInt("KeepID");
+                var model = db.Single<Keep>(x => x.ID == id);
+                if (model == null)
+                {
+                    return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
+                }
+                if (model.CreateUserID != user.ID)
+                {
+                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                }
                 var result = db.Delete<Keep>(id) > 0;
                 if (result)
                 {
