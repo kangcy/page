@@ -38,7 +38,6 @@ namespace EGT_OTA.Controllers
 
             users.Add(new User
             {
-                UserName = "18652913873",
                 NickName = "Kangcy",
                 Password = DesEncryptHelper.Encrypt("123456"),
                 Sex = 1,
@@ -53,7 +52,6 @@ namespace EGT_OTA.Controllers
 
             users.Add(new User
             {
-                UserName = "Kaynne",
                 NickName = "Kaynne",
                 Password = DesEncryptHelper.Encrypt("123456"),
                 Sex = 1,

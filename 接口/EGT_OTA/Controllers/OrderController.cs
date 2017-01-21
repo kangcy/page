@@ -27,7 +27,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Pay>().Where<Order>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved);
                 var FromUserID = ZNRequest.GetString("UserNumber");
                 var ToUserID = ZNRequest.GetString("ToUserNumber");
                 if (!string.IsNullOrWhiteSpace(FromUserID))
@@ -57,7 +57,7 @@ namespace EGT_OTA.Controllers
                 var fromarray = list.Select(x => x.UserNumber).Distinct().ToList();
                 var toarray = list.Select(x => x.ToUserNumber).Distinct().ToList();
                 fromarray.AddRange(toarray);
-                var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
+                var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar","Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
 
                 List<OrderJson> newlist = new List<OrderJson>();
                 list.ForEach(x =>
@@ -72,13 +72,13 @@ namespace EGT_OTA.Controllers
                     {
                         model.FromUserID = fromUser.ID;
                         model.FromUserAvatar = fromUser.Avatar;
-                        model.FromUserName = fromUser.UserName;
+                        model.FromUserName = fromUser.NickName;
                     }
                     if (toUser != null)
                     {
                         model.ToUserID = toUser.ID;
                         model.ToUserAvatar = toUser.Avatar;
-                        model.ToUserName = toUser.UserName;
+                        model.ToUserName = toUser.NickName;
                     }
                     newlist.Add(model);
                 });

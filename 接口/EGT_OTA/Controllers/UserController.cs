@@ -43,7 +43,6 @@ namespace EGT_OTA.Controllers
                 if (user == null)
                 {
                     user = new User();
-                    user.UserName = string.Empty;
                     user.Password = string.Empty;
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
@@ -107,21 +106,21 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var username = ZNRequest.GetString("UserName").Trim();
+                var phone = ZNRequest.GetString("Phone").Trim();
                 var password = ZNRequest.GetString("Password").Trim();
-                if (String.IsNullOrWhiteSpace(username) || String.IsNullOrWhiteSpace(password))
+                if (String.IsNullOrWhiteSpace(phone) || String.IsNullOrWhiteSpace(password))
                 {
-                    return Json(new { result = false, message = "用户名和密码不能为空" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "手机号码和密码不能为空" }, JsonRequestBehavior.AllowGet);
                 }
                 password = DesEncryptHelper.Encrypt(password);
-                User user = db.Single<User>(x => x.UserName == username && x.Password == password);
+                User user = db.Single<User>(x => x.Phone == phone && x.Password == password);
                 if (user == null)
                 {
                     return Json(new { result = false, message = "用户名或密码错误" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    string info = "\r\n" + username + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
+                    string info = "\r\n" + user.Phone + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
                     LogHelper.UserLoger.Info(info);
 
                     user.LoginTimes += 1;
@@ -149,20 +148,19 @@ namespace EGT_OTA.Controllers
             var result = string.Empty;
             try
             {
-                var username = ZNRequest.GetString("UserName").Trim();
+                var phone = ZNRequest.GetString("Phone").Trim();
                 var password = ZNRequest.GetString("Password").Trim();
-                if (String.IsNullOrWhiteSpace(username) || String.IsNullOrWhiteSpace(password))
+                if (String.IsNullOrWhiteSpace(phone) || String.IsNullOrWhiteSpace(password))
                 {
-                    return Json(new { result = false, message = "用户名和密码不能为空" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "手机号码和密码不能为空" }, JsonRequestBehavior.AllowGet);
                 }
-                if (db.Exists<User>(x => x.UserName == username))
+                if (db.Exists<User>(x => x.Phone == phone))
                 {
                     return Json(new { result = false, message = "当前账号已注册" }, JsonRequestBehavior.AllowGet);
                 }
                 User user = new User();
-                user.UserName = username;
                 user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
-                if (HasDirtyWord(username) || HasDirtyWord(user.NickName))
+                if (HasDirtyWord(user.NickName))
                 {
                     return Json(new { result = false, message = "您输入的内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
@@ -597,7 +595,7 @@ namespace EGT_OTA.Controllers
                     UserID = "kangcy@axon.com.cn",
                     UserPwd = "YXhvbjEyMzQ=",
                     UserName = "少侠网",
-                    ToUserArray = new ToUserModel[] { new ToUserModel { UserID = email, UserName = user.UserName } }
+                    ToUserArray = new ToUserModel[] { new ToUserModel { UserID = email, UserName = user.NickName } }
                 };
                 MailHelper.SendMail("少侠网", body, fromUserModel);
                 user.Email = email;
