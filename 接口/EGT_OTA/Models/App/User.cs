@@ -192,6 +192,25 @@ namespace EGT_OTA.Models
         /// </summary>
         public int UseDraw { get; set; }
 
+        #region  隐私管理
+
+        /// <summary>
+        /// 显示我喜欢的文章
+        /// </summary>
+        public int ShowArticle { get; set; }
+
+        /// <summary>
+        /// 显示我的关注
+        /// </summary>
+        public int ShowFollow { get; set; }
+
+        /// <summary>
+        /// 显示我的粉丝
+        /// </summary>
+        public int ShowFan { get; set; }
+
+        #endregion
+
         #region  扩展字段
 
         /// <summary>

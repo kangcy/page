@@ -65,6 +65,9 @@ namespace EGT_OTA.Controllers
                     user.Zans = 0;
                     user.FanText = "";
                     user.KeepText = "";
+                    user.ShowArticle = 1;
+                    user.ShowFollow = 1;
+                    user.ShowFan = 1;
                     user.Birthday = DateTime.Now;
                     user.Number = BuildNumber();
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
@@ -188,6 +191,9 @@ namespace EGT_OTA.Controllers
                 user.Fans = 0;
                 user.FanText = "";
                 user.KeepText = "";
+                user.ShowArticle = 1;
+                user.ShowFollow = 1;
+                user.ShowFan = 1;
                 user.Status = Enum_Status.Approved;
                 user.Number = BuildNumber();
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
@@ -907,6 +913,50 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error("UserController_Pic" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        /// <summary>
+        /// 隐私管理
+        /// </summary>
+        public ActionResult EditSecret()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var target = ZNRequest.GetString("Name");
+                var show = ZNRequest.GetInt("Show");
+                var result = false;
+                switch (target)
+                {
+                    //显示我喜欢的文章
+                    case "ShowArticle":
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowArticle").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
+                    //显示我的关注
+                    case "ShowFollow":
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowFollow").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
+                    //显示我的粉丝
+                    case "ShowFan":
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowFan").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
+                    default:
+                        break;
+                }
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("UserController_EditAutoMusic" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
