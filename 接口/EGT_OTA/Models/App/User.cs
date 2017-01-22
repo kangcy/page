@@ -261,6 +261,12 @@ namespace EGT_OTA.Models
         public string KeepText { get; set; }
 
         /// <summary>
+        /// 黑名单
+        /// </summary>
+        [SubSonicIgnore]
+        public string BlackText { get; set; }
+
+        /// <summary>
         /// 登录方式
         /// </summary>
         [SubSonicIgnore]

@@ -954,6 +954,10 @@ namespace EGT_OTA.Controllers
             user.KeepText = "," + string.Join(",", keeps) + ",";
             user.Keeps = keeps.Length;
 
+            //我拉黑的用户
+            var blacks = db.Find<Black>(x => x.CreateUserID == user.ID).Select(x => x.ToUserID).ToArray();
+            user.BlackText = "," + string.Join(",", blacks) + ",";
+
             //登录方式
             user.UserLogin = db.Find<UserLogin>(x => x.UserNumber == user.Number).ToList();
 

@@ -49,7 +49,16 @@ namespace EGT_OTA.Controllers
                 var result = Tools.SafeInt(db.Add<Black>(model)) > 0;
                 if (result)
                 {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    //我拉黑的用户
+                    var blacks = db.Find<Black>(x => x.CreateUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    user.BlackText = "," + string.Join(",", blacks) + ",";
+
+                    //我关注的用户
+                    var fans = db.Find<Fan>(x => x.FromUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    user.FanText = "," + string.Join(",", fans) + ",";
+                    user.Fans = fans.Length;
+
+                    return Json(new { result = true, message = new { BlackText = user.BlackText, FanText = user.FanText, Fans = user.Fans } }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -71,20 +80,20 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("BlackID");
-                var model = db.Single<Black>(x => x.ID == id);
+                var ToUserID = ZNRequest.GetInt("ToUserID");
+                var model = db.Single<Black>(x => x.CreateUserID == user.ID && x.ToUserID == ToUserID);
                 if (model == null)
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
                 }
-                if (model.CreateUserID != user.ID)
-                {
-                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
-                }
-                var result = db.Delete<Black>(id) > 0;
+                var result = db.Delete<Black>(model.ID) > 0;
                 if (result)
                 {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    //我拉黑的用户
+                    var blacks = db.Find<Black>(x => x.CreateUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    user.BlackText = "," + string.Join(",", blacks) + ",";
+
+                    return Json(new { result = true, message = user.BlackText }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -108,6 +117,16 @@ namespace EGT_OTA.Controllers
                 {
                     query = query.And("CreateUserID").IsEqualTo(CreateUserID);
                 }
+                else
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = 0,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
                 var recordCount = query.GetRecordCount();
 
                 if (recordCount == 0)
@@ -115,14 +134,12 @@ namespace EGT_OTA.Controllers
                     return Json(new
                     {
                         currpage = pager.Index,
-                        records = recordCount,
-                        totalpage = 1,
+                        records = 0,
                         list = string.Empty
                     }, JsonRequestBehavior.AllowGet);
                 }
 
-                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Black>();
+                var list = query.OrderDesc("ID").ExecuteTypedList<Black>();
                 var array = list.Select(x => x.ToUserID).ToArray();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(array).ExecuteTypedList<User>();
 
@@ -132,6 +149,7 @@ namespace EGT_OTA.Controllers
                     var user = users.FirstOrDefault(y => y.ID == x.ToUserID);
                     BlackJson model = new BlackJson();
                     model.ID = x.ID;
+                    model.UserID = user == null ? 0 : user.ID;
                     model.NickName = user == null ? "" : user.NickName;
                     model.Avatar = user == null ? "" : user.Avatar;
                     model.Signature = user == null ? "" : user.Signature;
@@ -143,14 +161,13 @@ namespace EGT_OTA.Controllers
                 {
                     currpage = pager.Index,
                     records = recordCount,
-                    totalpage = totalPage,
                     list = newlist
                 };
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("KeepController_All:" + ex.Message);
+                LogHelper.ErrorLoger.Error("BlackController_All:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
