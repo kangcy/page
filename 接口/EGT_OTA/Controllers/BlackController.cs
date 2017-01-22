@@ -53,12 +53,19 @@ namespace EGT_OTA.Controllers
                     var blacks = db.Find<Black>(x => x.CreateUserID == user.ID).Select(x => x.ToUserID).ToArray();
                     user.BlackText = "," + string.Join(",", blacks) + ",";
 
+                    //取消拉黑用戶关注
+                    var fan = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == ToUserID);
+                    if (fan != null)
+                    {
+                        db.Delete<Fan>(fan.ID);
+                    }
+
                     //我关注的用户
                     var fans = db.Find<Fan>(x => x.FromUserID == user.ID).Select(x => x.ToUserID).ToArray();
                     user.FanText = "," + string.Join(",", fans) + ",";
-                    user.Fans = fans.Length;
+                    user.Follows = fans.Length;
 
-                    return Json(new { result = true, message = new { BlackText = user.BlackText, FanText = user.FanText, Fans = user.Fans } }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = new { BlackText = user.BlackText, FanText = user.FanText, Follows = user.Follows } }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
