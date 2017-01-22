@@ -564,7 +564,7 @@ namespace EGT_OTA.Controllers
                     if (black.Count > 0)
                     {
                         var userids = black.Select(x => x.ToUserID).ToArray();
-                        query = query.And("CreateUserID").In(userids);
+                        query = query.And("CreateUserID").NotIn(userids);
                     }
                 }
 
