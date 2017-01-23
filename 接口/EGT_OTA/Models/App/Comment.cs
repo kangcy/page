@@ -108,4 +108,13 @@ namespace EGT_OTA.Models
 
         #endregion
     }
+
+    public class CommentJson
+    {
+        public int ID { get; set; }
+        public string Summary { get; set; }
+        public int UserID { get; set; }
+        public string UserName { get; set; }
+        public string UserAvatar { get; set; }
+    }
 }

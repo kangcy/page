@@ -548,7 +548,25 @@ namespace EGT_OTA.Controllers
             var orders = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved).And("ToArticleNumber").In(array).ExecuteTypedList<Order>();
             var keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where("ArticleNumber").In(array).ExecuteTypedList<Keep>();
             var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ArticleID").In(list.Select(x => x.ID).ToArray()).ExecuteTypedList<Comment>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+
+            List<int> userids = new List<int>();
+            list.ForEach(x =>
+            {
+                userids.Add(x.CreateUserID);
+            });
+
+            list.ForEach(x =>
+            {
+                x.CommentList = comments.Where(y => y.ArticleID == x.ID).OrderBy(y => y.ID).Take(3).ToList();
+                x.CommentList.ForEach(y =>
+                {
+                    userids.Add(y.CreateUserID);
+                });
+            });
+
+
+
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(userids.ToArray()).ExecuteTypedList<User>();
 
             List<ArticleJson> newlist = new List<ArticleJson>();
             list.ForEach(x =>
@@ -565,6 +583,23 @@ namespace EGT_OTA.Controllers
                 model.Views = x.Views;
                 model.Goods = x.Goods;
                 model.Comments = comments.Count(y => y.ArticleID == x.ID);
+
+                model.CommentList = new List<CommentJson>();
+                x.CommentList.ForEach(y =>
+                {
+                    CommentJson comment = new CommentJson();
+                    comment.ID = y.ID;
+                    comment.Summary = y.Summary;
+                    var commentUser = users.FirstOrDefault(z => z.ID == y.CreateUserID);
+                    if (commentUser != null)
+                    {
+                        comment.UserID = commentUser.ID;
+                        comment.UserName = commentUser.NickName;
+                        comment.UserAvatar = commentUser.Avatar;
+                    }
+                    model.CommentList.Add(comment);
+                });
+
                 model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
                 model.UserID = x.CreateUserID;

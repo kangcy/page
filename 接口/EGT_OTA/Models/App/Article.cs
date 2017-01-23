@@ -230,6 +230,12 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public List<ArticlePart> ArticlePart { get; set; }
 
+        /// <summary>
+        /// 文章评论
+        /// </summary>
+        [SubSonicIgnore]
+        public List<Comment> CommentList { get; set; }
+
         #endregion
     }
 
@@ -254,5 +260,6 @@ namespace EGT_OTA.Models
         public int ArticlePower { get; set; }
         public int Tag { get; set; }
         public string City { get; set; }
+        public List<CommentJson> CommentList { get; set; }
     }
 }
