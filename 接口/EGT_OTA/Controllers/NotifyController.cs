@@ -143,9 +143,10 @@ namespace EGT_OTA.Controllers
                 order.Status = Enum_Status.Audit;
                 order.Summary = "我的GO-打赏";
                 order.Price = ZNRequest.GetInt("Money", 1);//单位：分
+                order.Anony = ZNRequest.GetInt("Anony", 0);
                 order.UserNumber = ZNRequest.GetString("UserNumber");
-                order.ToUserNumber = ZNRequest.GetString("ToUserNumber");
-                order.ToArticleNumber = ZNRequest.GetString("ToArticleNumber");
+                order.ToArticleNumber = ZNRequest.GetString("ArticleNumber");
+                order.ToUserNumber = ZNRequest.GetString("ArticleUserNumber");
                 db.Add<Order>(order);
 
                 string wx_prepay = "https://api.mch.weixin.qq.com/pay/unifiedorder";

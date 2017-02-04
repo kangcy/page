@@ -195,6 +195,12 @@ namespace EGT_OTA.Models
         public string NickName { get; set; }
 
         /// <summary>
+        /// 创建人编号
+        /// </summary>
+        [SubSonicIgnore]
+        public string UserNumber { get; set; }
+
+        /// <summary>
         /// 文章类型
         /// </summary>
         [SubSonicIgnore]

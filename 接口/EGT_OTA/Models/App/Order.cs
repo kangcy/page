@@ -65,6 +65,11 @@ namespace EGT_OTA.Models
         /// 描述
         /// </summary>
         public string Summary { get; set; }
+
+        /// <summary>
+        /// 是否匿名
+        /// </summary>
+        public int Anony { get; set; }
     }
 
     public class OrderJson
