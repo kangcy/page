@@ -711,6 +711,19 @@ namespace EGT_OTA.Controllers
                 {
                     query = query.And("NickName").IsNotNull().And("Signature").IsNotNull().And("Avatar").IsNotNull();
                 }
+
+                //过滤黑名单
+                var UserID = ZNRequest.GetInt("ID");
+                if (UserID > 0)
+                {
+                    var black = db.Find<Black>(x => x.CreateUserID == UserID);
+                    if (black.Count > 0)
+                    {
+                        var userids = black.Select(x => x.ToUserID).ToArray();
+                        query = query.And("ID").NotIn(userids);
+                    }
+                }
+
                 var list = new List<User>();
                 if (string.IsNullOrWhiteSpace(Source))
                 {

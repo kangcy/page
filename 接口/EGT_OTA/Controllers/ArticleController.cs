@@ -642,6 +642,18 @@ namespace EGT_OTA.Controllers
                     query = query.And("Tag").IsEqualTo(Enum_ArticleTag.Recommend);
                 }
 
+                //过滤黑名单
+                var UserID = ZNRequest.GetInt("ID");
+                if (UserID > 0)
+                {
+                    var black = db.Find<Black>(x => x.CreateUserID == UserID);
+                    if (black.Count > 0)
+                    {
+                        var userids = black.Select(x => x.ToUserID).ToArray();
+                        query = query.And("CreateUserID").NotIn(userids);
+                    }
+                }
+
                 var recordCount = query.GetRecordCount();
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Tag", "ID" }).ExecuteTypedList<Article>();
 
