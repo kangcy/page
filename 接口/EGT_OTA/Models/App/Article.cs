@@ -201,10 +201,10 @@ namespace EGT_OTA.Models
         public string NickName { get; set; }
 
         /// <summary>
-        /// 创建人编号
+        /// 创建人
         /// </summary>
         [SubSonicIgnore]
-        public string UserNumber { get; set; }
+        public int UserID { get; set; }
 
         /// <summary>
         /// 文章类型
@@ -259,6 +259,8 @@ namespace EGT_OTA.Models
 
     public class ArticleJson
     {
+        public int UserID { get; set; }
+        public string UserNumber { get; set; }
         public string NickName { get; set; }
         public string Avatar { get; set; }
         public string Signature { get; set; }
@@ -270,7 +272,6 @@ namespace EGT_OTA.Models
         public int Comments { get; set; }
         public int Keeps { get; set; }
         public int Pays { get; set; }
-        public string UserNumber { get; set; }
         public string Cover { get; set; }
         public string CreateDate { get; set; }
         public string TypeName { get; set; }

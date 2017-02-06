@@ -180,12 +180,14 @@ namespace EGT_OTA.Controllers
                                    Summary = l.Summary,
                                    City = l.City,
                                    Goods = l.Goods,
+                                   Number = l.Number,
                                    CreateDate = FormatTime(l.CreateDate),
                                    UserID = u.ID,
+                                   UserNumber = u.Number,
                                    NickName = u.NickName,
                                    Avatar = GetFullUrl(u.Avatar),
                                    ParentCommentID = l.ParentCommentNumber,
-                                   ParentUserID = l.ParentUserNumber,
+                                   ParentUserNumber = l.ParentUserNumber,
                                    ParentNickName = string.IsNullOrWhiteSpace(l.ParentUserNumber) ? "" : (parentUser.Exists(x => x.Number == l.ParentUserNumber) ? parentUser.FirstOrDefault(x => x.Number == l.ParentUserNumber).NickName : ""),
                                    ParentSummary = string.IsNullOrWhiteSpace(l.ParentCommentNumber) ? "" : (parentComment.Exists(x => x.Number == l.ParentCommentNumber) ? parentComment.FirstOrDefault(x => x.Number == l.ParentCommentNumber).Summary : "")
                                }).ToList();

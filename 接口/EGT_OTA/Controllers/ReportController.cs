@@ -32,7 +32,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var articleID = ZNRequest.GetInt("ArticleID");
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Shares").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Shares", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
 
                 if (article == null)
                 {

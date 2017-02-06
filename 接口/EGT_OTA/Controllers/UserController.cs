@@ -671,12 +671,12 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var id = ZNRequest.GetInt("ID");
-                if (id == 0)
+                var number = ZNRequest.GetString("Number");
+                if (string.IsNullOrWhiteSpace(number))
                 {
                     return Json(new { result = false, message = "参数信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                User user = db.Single<User>(x => x.ID == id);
+                User user = db.Single<User>(x => x.Number == number);
                 if (user == null)
                 {
                     return Json(new { result = false, message = "用戶信息异常" }, JsonRequestBehavior.AllowGet);
@@ -742,7 +742,8 @@ namespace EGT_OTA.Controllers
                                    ID = l.ID,
                                    NickName = l.NickName,
                                    Signature = l.Signature,
-                                   Avatar = GetFullUrl(l.Avatar)
+                                   Avatar = GetFullUrl(l.Avatar),
+                                   Number = l.Number
                                }).ToList();
                 var result = new
                 {
