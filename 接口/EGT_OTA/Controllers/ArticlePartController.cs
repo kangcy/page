@@ -62,12 +62,6 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "段落信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                //model.Introduction = AntiXssChineseString.ChineseStringSanitize(model.Introduction);
-                //if (string.IsNullOrWhiteSpace(model.Introduction))
-                //{
-                //    return Json(new { result = false, message = "XSS攻击" }, JsonRequestBehavior.AllowGet);
-                //}
-
                 if (HasDirtyWord(model.Introduction) && model.Types == Enum_ArticlePart.Text)
                 {
                     return Json(new { result = false, message = "您的输入内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
