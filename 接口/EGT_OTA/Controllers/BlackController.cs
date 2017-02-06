@@ -119,10 +119,10 @@ namespace EGT_OTA.Controllers
             {
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Black>().Where<Black>(x => x.ID > 0);
-                var CreateUserID = ZNRequest.GetInt("CreateUserID");
-                if (CreateUserID > 0)
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
+                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
-                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
                 }
                 else
                 {
@@ -157,9 +157,10 @@ namespace EGT_OTA.Controllers
                     BlackJson model = new BlackJson();
                     model.ID = x.ID;
                     model.UserID = user == null ? 0 : user.ID;
-                    model.NickName = user == null ? "" : user.NickName;
-                    model.Avatar = user == null ? "" : user.Avatar;
-                    model.Signature = user == null ? "" : user.Signature;
+                    model.Number = user == null ? string.Empty : user.Number;
+                    model.NickName = user == null ? string.Empty : user.NickName;
+                    model.Avatar = user == null ? string.Empty : user.Avatar;
+                    model.Signature = user == null ? string.Empty : user.Signature;
                     model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd");
                     newlist.Add(model);
                 });

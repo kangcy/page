@@ -92,17 +92,11 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请填写评论内容" }, JsonRequestBehavior.AllowGet);
                 }
-                //summary = AntiXssChineseString.ChineseStringSanitize(summary);
-
-                //if (string.IsNullOrWhiteSpace(summary))
-                //{
-                //    return Json(new { result = false, message = "XSS攻击" }, JsonRequestBehavior.AllowGet);
-                //}
                 if (HasDirtyWord(summary))
                 {
                     return Json(new { result = false, message = "您的输入内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Comments").From<Article>().Where<Article>(x => x.ID == ArticleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "Number").From<Article>().Where<Article>(x => x.ID == ArticleID).ExecuteSingle<Article>();
                 if (article == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
@@ -120,8 +114,8 @@ namespace EGT_OTA.Controllers
                 model.CreateDate = DateTime.Now;
                 model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
-                model.ParentCommentNumber = ZNRequest.GetString("ParentCommentID");
-                model.ParentUserNumber = ZNRequest.GetString("ParentUserID");
+                model.ParentCommentNumber = ZNRequest.GetString("ParentCommentNumber");
+                model.ParentUserNumber = ZNRequest.GetString("ParentUserNumber");
                 var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
             }
             catch (Exception ex)
@@ -222,35 +216,18 @@ namespace EGT_OTA.Controllers
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ID > 0);
 
                 //评论人
-                var CreateUserID = ZNRequest.GetInt("CreateUserID");
-                if (CreateUserID > 0)
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
+                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
-                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
                 }
 
                 //文章作者
-                var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
-                if (ArticleUserID > 0)
+                var ArticleUserNumber = ZNRequest.GetString("ArticleUserNumber");
+                if (!string.IsNullOrWhiteSpace(ArticleUserNumber))
                 {
-                    query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
+                    query = query.And("ArticleUserNumber").IsEqualTo(ArticleUserNumber);
                 }
-
-                //父评论人
-                //var ParentUserID = ZNRequest.GetInt("ParentUserID");
-                //if (ParentUserID > 0)
-                //{
-                //    query = query.And("ParentUserID").IsEqualTo(ParentUserID);
-                //}
-
-                //var IsReply = ZNRequest.GetInt("IsReply", 0);
-                //if (IsReply == 0)
-                //{
-                //    query = query.And("ParentCommentID").IsEqualTo(0);
-                //}
-                //else if (IsReply == 1)
-                //{
-                //    query = query.And("ParentCommentID").IsGreaterThan(0);
-                //}
 
                 var recordCount = query.GetRecordCount();
 
@@ -328,17 +305,17 @@ namespace EGT_OTA.Controllers
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ID > 0);
 
                 //创建人
-                var CreateUserID = ZNRequest.GetInt("CreateUserID");
-                if (CreateUserID > 0)
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
+                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
-                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
                 }
 
                 //父评论人
-                var ParentUserID = ZNRequest.GetInt("ParentUserID");
-                if (ParentUserID > 0)
+                var ParentUserNumber = ZNRequest.GetString("ParentUserNumber");
+                if (!string.IsNullOrWhiteSpace(ParentUserNumber))
                 {
-                    query = query.And("ParentUserID").IsEqualTo(ParentUserID);
+                    query = query.And("ParentUserNumber").IsEqualTo(ParentUserNumber);
                 }
 
                 var IsReply = ZNRequest.GetInt("IsReply", 0);

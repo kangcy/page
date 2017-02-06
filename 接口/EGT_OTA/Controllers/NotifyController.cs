@@ -144,7 +144,7 @@ namespace EGT_OTA.Controllers
                 order.Summary = "我的GO-打赏";
                 order.Price = ZNRequest.GetInt("Money", 1);//单位：分
                 order.Anony = ZNRequest.GetInt("Anony", 0);
-                order.UserNumber = ZNRequest.GetString("UserNumber");
+                order.FromUserNumber = ZNRequest.GetString("UserNumber");
                 order.ToArticleNumber = ZNRequest.GetString("ArticleNumber");
                 order.ToUserNumber = ZNRequest.GetString("ArticleUserNumber");
                 db.Add<Order>(order);

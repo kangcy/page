@@ -537,8 +537,8 @@ namespace EGT_OTA.Controllers
                 }
 
                 //其他用户的文章
-                var CurrUserID = ZNRequest.GetString("CurrUserNumber");
-                if (CreateUserNumber != CurrUserID || string.IsNullOrWhiteSpace(CreateUserNumber))
+                var CurrUserNumber = ZNRequest.GetString("CurrUserNumber");
+                if (CreateUserNumber != CurrUserNumber || string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
                     query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
                 }
@@ -558,10 +558,10 @@ namespace EGT_OTA.Controllers
                 }
 
                 //过滤黑名单
-                var UserID = ZNRequest.GetString("Number");
-                if (!string.IsNullOrWhiteSpace(UserID))
+                var Number = ZNRequest.GetString("Number");
+                if (!string.IsNullOrWhiteSpace(Number))
                 {
-                    var black = db.Find<Black>(x => x.FromUserNumber == UserID);
+                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
                     if (black.Count > 0)
                     {
                         var userids = black.Select(x => x.ToUserNumber).ToArray();
@@ -616,14 +616,14 @@ namespace EGT_OTA.Controllers
                 {
                     query.And("Title").Like("%" + title + "%");
                 }
-                var CreateUserID = ZNRequest.GetInt("CreateUserID");
-                if (CreateUserID > 0)
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
+                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
-                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
                 }
 
-                var CurrUserID = ZNRequest.GetInt("CurrUserID", 0);
-                if (CreateUserID != CurrUserID || CreateUserID == 0)
+                var CurrUserNumber = ZNRequest.GetString("CurrUserNumber");
+                if (CreateUserNumber != CurrUserNumber || string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
                     query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
                 }
@@ -667,7 +667,7 @@ namespace EGT_OTA.Controllers
                                    Comments = a.Comments,
                                    Keeps = a.Keeps,
                                    Pays = a.Pays,
-                                   UserID = a.CreateUserNumber,
+                                   UserNumber = a.CreateUserNumber,
                                    Cover = a.Cover,
                                    CreateDate = FormatTime(a.CreateDate),
                                    ArticlePower = a.ArticlePower,

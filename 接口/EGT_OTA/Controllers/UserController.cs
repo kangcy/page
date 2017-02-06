@@ -896,8 +896,8 @@ namespace EGT_OTA.Controllers
             {
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic && x.Status == Enum_Status.Approved);
-                var UserID = ZNRequest.GetInt("UserID");
-                if (UserID == 0)
+                var UserNumber = ZNRequest.GetString("UserNumber");
+                if (string.IsNullOrWhiteSpace(UserNumber))
                 {
                     return Json(new
                     {
@@ -908,7 +908,7 @@ namespace EGT_OTA.Controllers
                     }, JsonRequestBehavior.AllowGet);
                 }
 
-                query = query.And("CreateUserID").IsEqualTo(UserID);
+                query = query.And("CreateUserNumber").IsEqualTo(UserNumber);
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<ArticlePart>();

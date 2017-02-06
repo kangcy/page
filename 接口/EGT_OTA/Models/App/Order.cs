@@ -27,7 +27,7 @@ namespace EGT_OTA.Models
         /// 用户编号
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
-        public string UserNumber { get; set; }
+        public string FromUserNumber { get; set; }
 
         /// <summary>
         /// 打赏对象
@@ -76,9 +76,11 @@ namespace EGT_OTA.Models
     {
         public int ID { get; set; }
         public int FromUserID { get; set; }
+        public string FromUserNumber { get; set; }
         public string FromUserAvatar { get; set; }
         public string FromUserName { get; set; }
         public int ToUserID { get; set; }
+        public string ToUserNumber { get; set; }
         public string ToUserAvatar { get; set; }
         public string ToUserName { get; set; }
         public string CreateDate { get; set; }

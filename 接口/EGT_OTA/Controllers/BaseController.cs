@@ -612,6 +612,7 @@ namespace EGT_OTA.Controllers
                     if (commentUser != null)
                     {
                         comment.UserID = commentUser.ID;
+                        comment.UserNumber = commentUser.Number;
                         comment.UserName = commentUser.NickName;
                         comment.UserAvatar = commentUser.Avatar;
                     }

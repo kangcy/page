@@ -28,15 +28,15 @@ namespace EGT_OTA.Controllers
             {
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved);
-                var FromUserID = ZNRequest.GetString("UserNumber");
-                var ToUserID = ZNRequest.GetString("ToUserNumber");
-                if (!string.IsNullOrWhiteSpace(FromUserID))
+                var FromUserNumber = ZNRequest.GetString("FromUserNumber");
+                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+                if (!string.IsNullOrWhiteSpace(FromUserNumber))
                 {
-                    query = query.And("UserNumber").IsEqualTo(FromUserID);
+                    query = query.And("FromUserNumber").IsEqualTo(FromUserNumber);
                 }
-                if (!string.IsNullOrWhiteSpace(ToUserID))
+                if (!string.IsNullOrWhiteSpace(ToUserNumber))
                 {
-                    query = query.And("ToUserNumber").IsEqualTo(ToUserID);
+                    query = query.And("ToUserNumber").IsEqualTo(ToUserNumber);
                 }
                 var recordCount = query.GetRecordCount();
 
@@ -54,15 +54,15 @@ namespace EGT_OTA.Controllers
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Order>();
 
-                var fromarray = list.Select(x => x.UserNumber).Distinct().ToList();
+                var fromarray = list.Select(x => x.FromUserNumber).Distinct().ToList();
                 var toarray = list.Select(x => x.ToUserNumber).Distinct().ToList();
                 fromarray.AddRange(toarray);
-                var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar","Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
+                var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
 
                 List<OrderJson> newlist = new List<OrderJson>();
                 list.ForEach(x =>
                 {
-                    var fromUser = allusers.FirstOrDefault(y => y.Number == x.UserNumber);
+                    var fromUser = allusers.FirstOrDefault(y => y.Number == x.FromUserNumber);
                     var toUser = allusers.FirstOrDefault(y => y.Number == x.ToUserNumber);
                     OrderJson model = new OrderJson();
                     model.ID = x.ID;
@@ -71,12 +71,14 @@ namespace EGT_OTA.Controllers
                     if (fromUser != null)
                     {
                         model.FromUserID = fromUser.ID;
+                        model.FromUserNumber = fromUser.Number;
                         model.FromUserAvatar = fromUser.Avatar;
                         model.FromUserName = fromUser.NickName;
                     }
                     if (toUser != null)
                     {
                         model.ToUserID = toUser.ID;
+                        model.ToUserNumber = toUser.Number;
                         model.ToUserAvatar = toUser.Avatar;
                         model.ToUserName = toUser.NickName;
                     }

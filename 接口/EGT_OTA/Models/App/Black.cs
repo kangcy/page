@@ -61,6 +61,7 @@ namespace EGT_OTA.Models
     {
         public int ID { get; set; }
         public int UserID { get; set; }
+        public string Number { get; set; }
         public string NickName { get; set; }
         public string Avatar { get; set; }
         public string Signature { get; set; }
