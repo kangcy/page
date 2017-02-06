@@ -99,7 +99,7 @@ namespace EGT_OTA.Controllers
                 var result = false;
                 if (model.ID == 0)
                 {
-                    model.CreateUserID = user.ID;
+                    model.CreateUserNumber = user.Number;
                     model.CreateIP = Tools.GetClientIP;
                     model.Status = Enum_Status.Audit;
                     newId = Tools.SafeInt(db.Add<ArticlePart>(model));
@@ -141,7 +141,7 @@ namespace EGT_OTA.Controllers
                 var model = db.Single<ArticlePart>(x => x.ID == id);
                 if (model != null)
                 {
-                    if (model.CreateUserID != user.ID)
+                    if (!model.CreateUserNumber.Equals(user.Number))
                     {
                         return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                     }

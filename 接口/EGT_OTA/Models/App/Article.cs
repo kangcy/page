@@ -270,7 +270,7 @@ namespace EGT_OTA.Models
         public int Comments { get; set; }
         public int Keeps { get; set; }
         public int Pays { get; set; }
-        public int UserID { get; set; }
+        public string UserNumber { get; set; }
         public string Cover { get; set; }
         public string CreateDate { get; set; }
         public string TypeName { get; set; }

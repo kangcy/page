@@ -36,12 +36,14 @@ namespace EGT_OTA.Models
         /// <summary>
         // 被关注人
         /// </summary>
-        public int ToUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ToUserNumber { get; set; }
 
         /// <summary>
         /// 关注人
         /// </summary>
-        public int FromUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string FromUserNumber { get; set; }
 
         /// <summary>
         /// 创建时间

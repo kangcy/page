@@ -31,17 +31,17 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var userID = ZNRequest.GetInt("ToUserID");
-                if (userID == 0)
+                var number = ZNRequest.GetString("ToUserNumber");
+                if (string.IsNullOrWhiteSpace(number))
                 {
                     return Json(new { result = false, message = "信息异常,请刷新重试" }, JsonRequestBehavior.AllowGet);
                 }
-                Fan model = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == userID);
+                Fan model = db.Single<Fan>(x => x.FromUserNumber == user.Number && x.ToUserNumber == number);
                 if (model == null)
                 {
                     model = new Fan();
-                    model.FromUserID = user.ID;
-                    model.ToUserID = userID;
+                    model.FromUserNumber = user.Number;
+                    model.ToUserNumber = number;
                 }
                 else
                 {
@@ -81,11 +81,15 @@ namespace EGT_OTA.Controllers
                 return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
             }
             var message = string.Empty;
-            var FromUserID = ZNRequest.GetInt("FromUserID");
-            var ToUserID = ZNRequest.GetInt("ToUserID");
+            var FromUserNumber = ZNRequest.GetString("FromUserNumber");
+            var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+            if (string.IsNullOrWhiteSpace(FromUserNumber) || string.IsNullOrWhiteSpace(ToUserNumber))
+            {
+                return Json(new { result = false, message = "信息异常,请刷新重试" }, JsonRequestBehavior.AllowGet);
+            }
             try
             {
-                var result = db.Exists<Fan>(x => x.FromUserID == FromUserID && x.ToUserID == ToUserID);
+                var result = db.Exists<Fan>(x => x.FromUserNumber == FromUserNumber && x.ToUserNumber == ToUserNumber);
                 return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -114,7 +118,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
                 }
-                if (model.FromUserID != user.ID)
+                if (model.FromUserNumber != user.Number)
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
@@ -122,7 +126,7 @@ namespace EGT_OTA.Controllers
                 if (result)
                 {
                     //更新关注用户
-                    var fans = db.Find<Fan>(x => x.FromUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    var fans = db.Find<Fan>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.FanText = "," + string.Join(",", fans) + ",";
 
                     return Json(new { result = true, message = user.FanText }, JsonRequestBehavior.AllowGet);
@@ -145,8 +149,8 @@ namespace EGT_OTA.Controllers
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().Where<Fan>(x => x.ID > 0);
 
-                var FromUserID = ZNRequest.GetInt("FromUserID");
-                if (FromUserID <= 0)
+                var FromUserNumber = ZNRequest.GetString("FromUserNumber");
+                if (string.IsNullOrWhiteSpace(FromUserNumber))
                 {
                     return Json(new
                     {
@@ -156,7 +160,7 @@ namespace EGT_OTA.Controllers
                         list = string.Empty
                     }, JsonRequestBehavior.AllowGet);
                 }
-                query = query.And("FromUserID").IsEqualTo(FromUserID);
+                query = query.And("FromUserNumber").IsEqualTo(FromUserNumber);
                 var recordCount = query.GetRecordCount();
 
                 if (recordCount == 0)
@@ -171,11 +175,11 @@ namespace EGT_OTA.Controllers
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
-                var array = list.Select(x => x.ToUserID).Distinct().ToList();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
+                var array = list.Select(x => x.ToUserNumber).Distinct().ToList();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
 
                 var newlist = (from l in list
-                               join u in users on l.ToUserID equals u.ID
+                               join u in users on l.ToUserNumber equals u.Number
                                select new
                                {
                                    ID = l.ID,
@@ -183,7 +187,8 @@ namespace EGT_OTA.Controllers
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Signature = u.Signature,
-                                   Avatar = GetFullUrl(u.Avatar)
+                                   Avatar = GetFullUrl(u.Avatar),
+                                   Number = u.Number
                                }).ToList();
                 var result = new
                 {
@@ -211,8 +216,8 @@ namespace EGT_OTA.Controllers
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().Where<Fan>(x => x.ID > 0);
 
-                var ToUserID = ZNRequest.GetInt("ToUserID");
-                if (ToUserID <= 0)
+                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+                if (string.IsNullOrWhiteSpace(ToUserNumber))
                 {
                     return Json(new
                     {
@@ -222,7 +227,7 @@ namespace EGT_OTA.Controllers
                         list = string.Empty
                     }, JsonRequestBehavior.AllowGet);
                 }
-                query = query.And("ToUserID").IsEqualTo(ToUserID);
+                query = query.And("ToUserNumber").IsEqualTo(ToUserNumber);
                 var recordCount = query.GetRecordCount();
 
                 if (recordCount == 0)
@@ -238,11 +243,11 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
-                var array = list.Select(x => x.FromUserID).Distinct().ToList();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
+                var array = list.Select(x => x.FromUserNumber).Distinct().ToList();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
 
                 var newlist = (from l in list
-                               join u in users on l.FromUserID equals u.ID
+                               join u in users on l.FromUserNumber equals u.Number
                                select new
                                {
                                    ID = l.ID,
@@ -250,7 +255,8 @@ namespace EGT_OTA.Controllers
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Signature = u.Signature,
-                                   Avatar = GetFullUrl(u.Avatar)
+                                   Avatar = GetFullUrl(u.Avatar),
+                                   Number = u.Number
                                }).ToList();
                 var result = new
                 {
@@ -264,6 +270,76 @@ namespace EGT_OTA.Controllers
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("FanController_FansAll:" + ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 关注用户文章
+        /// </summary>
+        public ActionResult All()
+        {
+            try
+            {
+                var userID = ZNRequest.GetString("Number");
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+
+                var fans = db.Find<Fan>(x => x.FromUserNumber == userID);
+
+
+                query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+
+                //昵称
+                var title = ZNRequest.GetString("Title");
+                if (!string.IsNullOrWhiteSpace(title))
+                {
+                    query.And("Title").Like("%" + title + "%");
+                }
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
+                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
+                {
+                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
+                }
+
+                //过滤黑名单
+                var Number = ZNRequest.GetString("Number");
+                if (!string.IsNullOrWhiteSpace(Number))
+                {
+                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
+                    if (black.Count > 0)
+                    {
+                        var userids = black.Select(x => x.ToUserNumber).ToArray();
+                        query = query.And("CreateUserNumber").NotIn(userids);
+                    }
+                }
+
+                var recordCount = query.GetRecordCount();
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+                List<ArticleJson> newlist = ArticleListInfo(list);
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("ArticleController_All:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

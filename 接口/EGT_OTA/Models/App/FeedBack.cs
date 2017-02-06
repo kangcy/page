@@ -48,7 +48,8 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 创建人
         /// </summary>
-        public int CreateUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string CreateUserNumber { get; set; }
 
         /// <summary>
         /// 创建时间

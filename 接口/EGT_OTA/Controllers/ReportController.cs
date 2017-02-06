@@ -33,11 +33,17 @@ namespace EGT_OTA.Controllers
                 }
                 var articleID = ZNRequest.GetInt("ArticleID");
                 Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Shares").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+
+                if (article == null)
+                {
+                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+
                 ShareLog model = new ShareLog();
                 model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
+                model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
-                model.ArticleID = articleID;
+                model.ArticleNumber = article.Number;
                 model.Source = ZNRequest.GetString("Source");
                 var result = false;
 

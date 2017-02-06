@@ -23,7 +23,8 @@ namespace EGT_OTA.Models
         ///<summary>
         ///用户ID
         ///</summary>
-        public int UserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string UserNumber { get; set; }
 
         ///<summary>
         ///提款账号

@@ -36,17 +36,20 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 文章编号
         /// </summary>
+        [SubSonicStringLength(30), SubSonicNullString]
         public string ArticleNumber { get; set; }
 
         /// <summary>
         /// 文章作者
         /// </summary>
-        public int ArticleUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ArticleUserNumber { get; set; }
 
         /// <summary>
         /// 创建人ID
         /// </summary>
-        public int CreateUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string CreateUserNumber { get; set; }
 
         /// <summary>
         /// 创建日期

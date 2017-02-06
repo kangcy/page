@@ -36,18 +36,26 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 文章ID
         /// </summary>
-        public int ArticleID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ArticleNumber { get; set; }
 
         /// <summary>
         /// 文章作者
         /// </summary>
-        public int ArticleUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ArticleUserNumber { get; set; }
 
         /// <summary>
         /// 评论内容
         /// </summary>
         [SubSonicStringLength(5000), SubSonicNullString]
         public string Summary { get; set; }
+
+        /// <summary>
+        /// 编号
+        /// </summary>
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string Number { get; set; }
 
         /// <summary>
         /// 评论省份
@@ -64,12 +72,14 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 回复评论ID
         /// </summary>
-        public int ParentCommentID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ParentCommentNumber { get; set; }
 
         /// <summary>
         /// 回复用戶ID
         /// </summary>
-        public int ParentUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ParentUserNumber { get; set; }
 
         /// <summary>
         /// 点赞数
@@ -79,7 +89,8 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 创建人
         /// </summary>
-        public int CreateUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string CreateUserNumber { get; set; }
 
         /// <summary>
         /// 创建时间

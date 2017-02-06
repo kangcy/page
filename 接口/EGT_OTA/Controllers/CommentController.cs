@@ -37,12 +37,12 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
                 }
 
-                Zan model = db.Single<Zan>(x => x.CreateUserID == user.ID && x.CommentID == commentID && x.CommentID > 0);
+                Zan model = db.Single<Zan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == comment.Number && !string.IsNullOrWhiteSpace(x.CommentNumber));
                 if (model == null)
                 {
                     model = new Zan();
                     model.CreateDate = DateTime.Now;
-                    model.CreateUserID = user.ID;
+                    model.CreateUserNumber = user.Number;
                     model.CreateIP = Tools.GetClientIP;
                 }
                 else
@@ -50,8 +50,8 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "已赞" }, JsonRequestBehavior.AllowGet);
                 }
                 model.ArticleNumber = string.Empty;
-                model.CommentID = commentID;
-                model.ArticleUserID = comment.ArticleUserID;
+                model.CommentNumber = comment.Number;
+                model.ArticleUserNumber = comment.ArticleUserNumber;
                 var result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
                 if (result)
                 {
@@ -82,8 +82,8 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var articleID = ZNRequest.GetInt("ArticleID");
-                if (articleID == 0)
+                var ArticleID = ZNRequest.GetInt("ArticleID");
+                if (ArticleID == 0)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
@@ -102,7 +102,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "您的输入内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Comments").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Comments").From<Article>().Where<Article>(x => x.ID == ArticleID).ExecuteSingle<Article>();
                 if (article == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
@@ -111,17 +111,17 @@ namespace EGT_OTA.Controllers
                 summary = CutString(summary, 2000);
 
                 Comment model = new Comment();
-                model.ArticleID = articleID;
-                model.ArticleUserID = article.CreateUserID;
+                model.ArticleNumber = article.Number;
+                model.ArticleUserNumber = article.CreateUserNumber;
                 model.Summary = summary;
-
+                model.Number = BuildNumber();
                 model.Province = ZNRequest.GetString("Province");
                 model.City = ZNRequest.GetString("City");
                 model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
+                model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
-                model.ParentCommentID = ZNRequest.GetInt("ParentCommentID");
-                model.ParentUserID = ZNRequest.GetInt("ParentUserID");
+                model.ParentCommentNumber = ZNRequest.GetString("ParentCommentID");
+                model.ParentUserNumber = ZNRequest.GetString("ParentUserID");
                 var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
             }
             catch (Exception ex)
@@ -168,18 +168,18 @@ namespace EGT_OTA.Controllers
                 var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
 
                 //所有用户
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
 
                 //父评论
                 var parentComment = new List<Comment>();
                 var parentUser = new List<User>();
-                if (list.Exists(x => x.ParentUserID > 0))
+                if (list.Exists(x => !string.IsNullOrWhiteSpace(x.ParentUserNumber)))
                 {
-                    parentComment = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Summary").From<Comment>().Where("ID").In(list.Select(x => x.ParentCommentID).Distinct().ToArray()).ExecuteTypedList<Comment>();
-                    parentUser = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.ParentUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+                    parentComment = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Summary", "Number").From<Comment>().Where("Number").In(list.Select(x => x.ParentCommentNumber).Distinct().ToArray()).ExecuteTypedList<Comment>();
+                    parentUser = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.ParentUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
                 }
                 var newlist = (from l in list
-                               join u in users on l.CreateUserID equals u.ID
+                               join u in users on l.CreateUserNumber equals u.Number
                                select new
                                {
                                    ID = l.ID,
@@ -190,10 +190,10 @@ namespace EGT_OTA.Controllers
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Avatar = GetFullUrl(u.Avatar),
-                                   ParentCommentID = l.ParentCommentID,
-                                   ParentUserID = l.ParentUserID,
-                                   ParentNickName = l.ParentUserID == 0 ? "" : (parentUser.Exists(x => x.ID == l.ParentUserID) ? parentUser.FirstOrDefault(x => x.ID == l.ParentUserID).NickName : ""),
-                                   ParentSummary = l.ParentCommentID == 0 ? "" : (parentComment.Exists(x => x.ID == l.ParentCommentID) ? parentComment.FirstOrDefault(x => x.ID == l.ParentCommentID).Summary : "")
+                                   ParentCommentID = l.ParentCommentNumber,
+                                   ParentUserID = l.ParentUserNumber,
+                                   ParentNickName = string.IsNullOrWhiteSpace(l.ParentUserNumber) ? "" : (parentUser.Exists(x => x.Number == l.ParentUserNumber) ? parentUser.FirstOrDefault(x => x.Number == l.ParentUserNumber).NickName : ""),
+                                   ParentSummary = string.IsNullOrWhiteSpace(l.ParentCommentNumber) ? "" : (parentComment.Exists(x => x.Number == l.ParentCommentNumber) ? parentComment.FirstOrDefault(x => x.Number == l.ParentCommentNumber).Summary : "")
                                }).ToList();
                 var result = new
                 {
@@ -267,21 +267,21 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower", "Number").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).ToArray()).ExecuteTypedList<User>();
 
                 //父评论
                 var parentComment = new List<Comment>();
                 var parentUser = new List<User>();
-                if (list.Exists(x => x.ParentUserID > 0))
+                if (list.Exists(x => !string.IsNullOrWhiteSpace(x.ParentUserNumber)))
                 {
-                    parentComment = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Summary").From<Comment>().Where("ID").In(list.Select(x => x.ParentCommentID).Distinct().ToArray()).ExecuteTypedList<Comment>();
-                    parentUser = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.ParentUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+                    parentComment = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Summary", "Number").From<Comment>().Where("Number").In(list.Select(x => x.ParentCommentNumber).Distinct().ToArray()).ExecuteTypedList<Comment>();
+                    parentUser = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.ParentUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
                 }
 
                 var newlist = (from l in list
-                               join a in articles on l.ArticleID equals a.ID
-                               join u in users on l.CreateUserID equals u.ID
+                               join a in articles on l.ArticleNumber equals a.Number
+                               join u in users on l.CreateUserNumber equals u.Number
                                select new
                                {
                                    ID = l.ID,
@@ -292,14 +292,14 @@ namespace EGT_OTA.Controllers
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Avatar = GetFullUrl(u.Avatar),
-                                   ArticleID = l.ArticleID,
+                                   ArticleID = l.ArticleNumber,
                                    Title = a.Title,
-                                   ArticleUserID = a.CreateUserID,
+                                   ArticleUserID = a.CreateUserNumber,
                                    ArticlePower = a.ArticlePower,
-                                   ParentCommentID = l.ParentCommentID,
-                                   ParentUserID = l.ParentUserID,
-                                   ParentNickName = l.ParentUserID == 0 ? "" : (parentUser.Exists(x => x.ID == l.ParentUserID) ? parentUser.FirstOrDefault(x => x.ID == l.ParentUserID).NickName : ""),
-                                   ParentSummary = l.ParentCommentID == 0 ? "" : (parentComment.Exists(x => x.ID == l.ParentCommentID) ? parentComment.FirstOrDefault(x => x.ID == l.ParentCommentID).Summary : "")
+                                   ParentCommentID = l.ParentCommentNumber,
+                                   ParentUserID = l.ParentUserNumber,
+                                   ParentNickName = string.IsNullOrWhiteSpace(l.ParentUserNumber) ? "" : (parentUser.Exists(x => x.Number == l.ParentUserNumber) ? parentUser.FirstOrDefault(x => x.Number == l.ParentUserNumber).NickName : ""),
+                                   ParentSummary = string.IsNullOrWhiteSpace(l.ParentCommentNumber) ? "" : (parentComment.Exists(x => x.Number == l.ParentCommentNumber) ? parentComment.FirstOrDefault(x => x.Number == l.ParentCommentNumber).Summary : "")
                                }).ToList();
                 var result = new
                 {
@@ -353,7 +353,7 @@ namespace EGT_OTA.Controllers
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
-                var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ID").In(list.Select(x => x.ParentCommentID).Distinct().ToArray()).ExecuteTypedList<Comment>();
+                var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("Number").In(list.Select(x => x.ParentCommentNumber).Distinct().ToArray()).ExecuteTypedList<Comment>();
 
                 var today = DateTime.Now.ToString("yyyyMMdd");
                 var yesterday = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
@@ -368,8 +368,8 @@ namespace EGT_OTA.Controllers
                                    CreateDate = FormatTime(l.CreateDate),
                                    Month = l.CreateDate.ToString("yyyyMMdd") == today ? "今天" : l.CreateDate.ToString("yyyyMMdd") == yesterday ? "昨天" : l.CreateDate.Month.ToString(),
                                    Day = l.CreateDate.ToString("yyyyMMdd") == today ? "今天" : l.CreateDate.ToString("yyyyMMdd") == yesterday ? "昨天" : l.CreateDate.Day.ToString(),
-                                   ArticleID = l.ArticleID,
-                                   ParentSummary = comments.Exists(x => x.ID == l.ParentCommentID) ? comments.FirstOrDefault(x => x.ID == l.ParentCommentID).Summary : ""
+                                   ArticleID = l.ArticleNumber,
+                                   ParentSummary = comments.Exists(x => x.Number == l.ParentCommentNumber) ? comments.FirstOrDefault(x => x.Number == l.ParentCommentNumber).Summary : ""
                                }).ToList();
                 var result = new
                 {

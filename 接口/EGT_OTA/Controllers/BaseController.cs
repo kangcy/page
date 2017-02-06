@@ -86,7 +86,7 @@ namespace EGT_OTA.Controllers
         /// <param name="length"></param>
         protected string BuildNumber()
         {
-            return UnixTimeHelper.FromDateTime(DateTime.Now).ToString() + new Random().Next(1001, 9999).ToString();
+            return UnixTimeHelper.FromDateTime(DateTime.Now).ToString() + new Random().Next(10001, 99999).ToString();
         }
 
         /// <summary>
@@ -567,22 +567,22 @@ namespace EGT_OTA.Controllers
             var keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where("ArticleNumber").In(array).ExecuteTypedList<Keep>();
             var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ArticleID").In(list.Select(x => x.ID).ToArray()).ExecuteTypedList<Comment>();
 
-            List<int> userids = new List<int>();
+            List<string> userids = new List<string>();
             list.ForEach(x =>
             {
-                userids.Add(x.CreateUserID);
+                userids.Add(x.CreateUserNumber);
             });
 
             list.ForEach(x =>
             {
-                x.CommentList = comments.Where(y => y.ArticleID == x.ID).OrderBy(y => y.ID).Take(3).ToList();
+                x.CommentList = comments.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(3).ToList();
                 x.CommentList.ForEach(y =>
                 {
-                    userids.Add(y.CreateUserID);
+                    userids.Add(y.CreateUserNumber);
                 });
             });
 
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(userids.ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
 
             var tags = GetTag();
 
@@ -590,7 +590,7 @@ namespace EGT_OTA.Controllers
             list.ForEach(x =>
             {
                 ArticleJson model = new ArticleJson();
-                var user = users.FirstOrDefault(y => y.ID == x.CreateUserID);
+                var user = users.FirstOrDefault(y => y.Number == x.CreateUserNumber);
                 var articletype = articletypes.FirstOrDefault(y => y.ID == x.TypeID);
                 model.NickName = user == null ? "" : user.NickName;
                 model.Avatar = user == null ? "" : user.Avatar;
@@ -600,7 +600,7 @@ namespace EGT_OTA.Controllers
                 model.Title = x.Title;
                 model.Views = x.Views;
                 model.Goods = x.Goods;
-                model.Comments = comments.Count(y => y.ArticleID == x.ID);
+                model.Comments = comments.Count(y => y.ArticleNumber == x.Number);
 
                 model.CommentList = new List<CommentJson>();
                 x.CommentList.ForEach(y =>
@@ -608,7 +608,7 @@ namespace EGT_OTA.Controllers
                     CommentJson comment = new CommentJson();
                     comment.ID = y.ID;
                     comment.Summary = y.Summary;
-                    var commentUser = users.FirstOrDefault(z => z.ID == y.CreateUserID);
+                    var commentUser = users.FirstOrDefault(z => z.Number == y.CreateUserNumber);
                     if (commentUser != null)
                     {
                         comment.UserID = commentUser.ID;
@@ -636,7 +636,7 @@ namespace EGT_OTA.Controllers
 
                 model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
-                model.UserID = x.CreateUserID;
+                model.UserNumber = x.CreateUserNumber;
                 model.Cover = x.Cover;
                 model.CreateDate = FormatTime(x.CreateDate);
                 model.TypeName = articletype == null ? "" : articletype.Name;

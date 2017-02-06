@@ -36,12 +36,14 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 拉黑用户
         /// </summary>
-        public int ToUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ToUserNumber { get; set; }
 
         /// <summary>
         /// 创建人ID
         /// </summary>
-        public int CreateUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string FromUserNumber { get; set; }
 
         /// <summary>
         /// 创建日期

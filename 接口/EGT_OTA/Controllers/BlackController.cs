@@ -31,37 +31,37 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var ToUserID = ZNRequest.GetInt("ToUserID");
-                if (ToUserID <= 0)
+                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+                if (string.IsNullOrWhiteSpace(ToUserNumber))
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
-                var exist = db.Exists<Black>(x => x.CreateUserID == user.ID && x.ToUserID == ToUserID);
+                var exist = db.Exists<Black>(x => x.FromUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                 if (exist)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
                 Black model = new Black();
-                model.ToUserID = ToUserID;
+                model.ToUserNumber = ToUserNumber;
                 model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
+                model.FromUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
                 var result = Tools.SafeInt(db.Add<Black>(model)) > 0;
                 if (result)
                 {
                     //我拉黑的用户
-                    var blacks = db.Find<Black>(x => x.CreateUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    var blacks = db.Find<Black>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.BlackText = "," + string.Join(",", blacks) + ",";
 
                     //取消拉黑用戶关注
-                    var fan = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == ToUserID);
+                    var fan = db.Single<Fan>(x => x.FromUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                     if (fan != null)
                     {
                         db.Delete<Fan>(fan.ID);
                     }
 
                     //我关注的用户
-                    var fans = db.Find<Fan>(x => x.FromUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    var fans = db.Find<Fan>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.FanText = "," + string.Join(",", fans) + ",";
                     user.Follows = fans.Length;
 
@@ -87,8 +87,8 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var ToUserID = ZNRequest.GetInt("ToUserID");
-                var model = db.Single<Black>(x => x.CreateUserID == user.ID && x.ToUserID == ToUserID);
+                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+                var model = db.Single<Black>(x => x.FromUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                 if (model == null)
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
@@ -97,7 +97,7 @@ namespace EGT_OTA.Controllers
                 if (result)
                 {
                     //我拉黑的用户
-                    var blacks = db.Find<Black>(x => x.CreateUserID == user.ID).Select(x => x.ToUserID).ToArray();
+                    var blacks = db.Find<Black>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.BlackText = "," + string.Join(",", blacks) + ",";
 
                     return Json(new { result = true, message = user.BlackText }, JsonRequestBehavior.AllowGet);
@@ -147,13 +147,13 @@ namespace EGT_OTA.Controllers
                 }
 
                 var list = query.OrderDesc("ID").ExecuteTypedList<Black>();
-                var array = list.Select(x => x.ToUserID).ToArray();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(array).ExecuteTypedList<User>();
+                var array = list.Select(x => x.ToUserNumber).ToArray();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where("Number").In(array).ExecuteTypedList<User>();
 
                 List<BlackJson> newlist = new List<BlackJson>();
                 list.ForEach(x =>
                 {
-                    var user = users.FirstOrDefault(y => y.ID == x.ToUserID);
+                    var user = users.FirstOrDefault(y => y.Number == x.ToUserNumber);
                     BlackJson model = new BlackJson();
                     model.ID = x.ID;
                     model.UserID = user == null ? 0 : user.ID;

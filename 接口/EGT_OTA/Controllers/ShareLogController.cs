@@ -31,17 +31,17 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var articleID = ZNRequest.GetInt("ArticleID");
+                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
                 var summary = ZNRequest.GetString("Summary");
-                if (articleID == 0 || string.IsNullOrEmpty(summary))
+                if (string.IsNullOrWhiteSpace(ArticleNumber) || string.IsNullOrEmpty(summary))
                 {
                     return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);
                 }
                 Report model = new Report();
                 model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
+                model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
-                model.ArticleID = articleID;
+                model.ArticleNumber = ArticleNumber;
                 model.Summary = summary;
                 var result = false;
 

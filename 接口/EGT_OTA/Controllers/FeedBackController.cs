@@ -49,7 +49,7 @@ namespace EGT_OTA.Controllers
                 model.Summary = summary;
                 model.QQ = qq;
                 model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
+                model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
                 var result = Tools.SafeInt(db.Add<FeedBack>(model)) > 0;
                 if (result)

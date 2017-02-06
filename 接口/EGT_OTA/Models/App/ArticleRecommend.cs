@@ -36,12 +36,14 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 文章
         /// </summary>
-        public int ArticleID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string ArticleNumber { get; set; }
 
         /// <summary>
         /// 投稿人
         /// </summary>
-        public int CreateUserID { get; set; }
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string CreateUserNumber { get; set; }
 
         /// <summary>
         /// 投稿时间

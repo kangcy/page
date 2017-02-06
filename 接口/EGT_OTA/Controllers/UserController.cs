@@ -713,14 +713,14 @@ namespace EGT_OTA.Controllers
                 }
 
                 //过滤黑名单
-                var UserID = ZNRequest.GetInt("ID");
-                if (UserID > 0)
+                var Number = ZNRequest.GetString("Number");
+                if (!string.IsNullOrWhiteSpace(Number))
                 {
-                    var black = db.Find<Black>(x => x.CreateUserID == UserID);
+                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
                     if (black.Count > 0)
                     {
-                        var userids = black.Select(x => x.ToUserID).ToArray();
-                        query = query.And("ID").NotIn(userids);
+                        var userids = black.Select(x => x.ToUserNumber).ToArray();
+                        query = query.And("CreateUserNumber").NotIn(userids);
                     }
                 }
 
@@ -994,31 +994,31 @@ namespace EGT_OTA.Controllers
             }
 
             //关注
-            user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserID == user.ID).GetRecordCount();
+            user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserNumber == user.Number).GetRecordCount();
 
             //粉丝
-            user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserID == user.ID).GetRecordCount();
+            user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserNumber == user.Number).GetRecordCount();
 
             //我的
-            user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == user.ID && x.Status != Enum_Status.DELETE).GetRecordCount();
+            user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserNumber == user.Number && x.Status != Enum_Status.DELETE).GetRecordCount();
 
             //评论
-            user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == user.ID).GetRecordCount();
+            user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             //点赞
-            user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
+            user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             //我关注的用户
-            var fans = db.Find<Fan>(x => x.FromUserID == user.ID).Select(x => x.ToUserID).ToArray();
+            var fans = db.Find<Fan>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
             user.FanText = "," + string.Join(",", fans) + ",";
 
             //我收藏的文章
-            var keeps = db.Find<Keep>(x => x.CreateUserID == user.ID).Select(x => x.ArticleNumber).ToArray();
+            var keeps = db.Find<Keep>(x => x.CreateUserNumber == user.Number).Select(x => x.ArticleNumber).ToArray();
             user.KeepText = "," + string.Join(",", keeps) + ",";
             user.Keeps = keeps.Length;
 
             //我拉黑的用户
-            var blacks = db.Find<Black>(x => x.CreateUserID == user.ID).Select(x => x.ToUserID).ToArray();
+            var blacks = db.Find<Black>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
             user.BlackText = "," + string.Join(",", blacks) + ",";
 
             //登录方式

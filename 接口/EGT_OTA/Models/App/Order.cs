@@ -26,19 +26,19 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 用户编号
         /// </summary>
-        [SubSonicStringLength(32), SubSonicNullString]
+        [SubSonicStringLength(30), SubSonicNullString]
         public string UserNumber { get; set; }
 
         /// <summary>
         /// 打赏对象
         /// </summary>
-        [SubSonicStringLength(32), SubSonicNullString]
+        [SubSonicStringLength(30), SubSonicNullString]
         public string ToUserNumber { get; set; }
 
         /// <summary>
         /// 打赏文章
         /// </summary>
-        [SubSonicStringLength(32), SubSonicNullString]
+        [SubSonicStringLength(30), SubSonicNullString]
         public string ToArticleNumber { get; set; }
 
         /// <summary>

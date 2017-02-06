@@ -41,10 +41,10 @@ namespace EGT_OTA.Controllers
                 model.Title = article.Title + "(副本)";
                 model.Province = ZNRequest.GetString("Province");
                 model.City = ZNRequest.GetString("City");
-                model.CreateUserID = user.ID;
+                model.CreateUserNumber = user.Number;
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
-                model.UpdateUserID = user.ID;
+                model.UpdateUserNumber = user.Number;
                 model.UpdateDate = DateTime.Now;
                 model.UpdateIP = Tools.GetClientIP;
                 model.Status = Enum_Status.Approved;
@@ -72,7 +72,7 @@ namespace EGT_OTA.Controllers
                         part.SortID = x.SortID;
                         part.Status = Enum_Status.Audit;
                         part.CreateDate = DateTime.Now;
-                        part.CreateUserID = user.ID;
+                        part.CreateUserNumber = user.Number;
                         part.CreateIP = Tools.GetClientIP;
                         list.Add(part);
                     });
@@ -109,7 +109,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "当前文章不存在" }, JsonRequestBehavior.AllowGet);
                 }
-                if (article.CreateUserID != user.ID)
+                if (article.CreateUserNumber != user.Number)
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
@@ -159,7 +159,7 @@ namespace EGT_OTA.Controllers
                 model.MusicUrl = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("MusicUrl"));
                 model.Province = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("Province"));
                 model.City = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("City"));
-                model.UpdateUserID = user.ID;
+                model.UpdateUserNumber = user.Number;
                 model.UpdateDate = DateTime.Now;
                 model.UpdateIP = Tools.GetClientIP;
                 model.Status = Enum_Status.Approved;
@@ -179,7 +179,7 @@ namespace EGT_OTA.Controllers
                     model.TypeID = 10000;
                     model.TypeIDList = "-10000-";
                     model.ArticlePower = Enum_ArticlePower.Myself;
-                    model.CreateUserID = user.ID;
+                    model.CreateUserNumber = user.Number;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
                     model.Number = BuildNumber();
@@ -200,7 +200,7 @@ namespace EGT_OTA.Controllers
                             part.SortID = i;
                             part.Status = Enum_Status.Audit;
                             part.CreateDate = DateTime.Now;
-                            part.CreateUserID = user.ID;
+                            part.CreateUserNumber = user.Number;
                             part.CreateIP = Tools.GetClientIP;
                             part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
                             result = part.ID > 0;
@@ -213,7 +213,7 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-                    if (model.CreateUserID != user.ID)
+                    if (model.CreateUserNumber != user.Number)
                     {
                         return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                     }
@@ -280,10 +280,10 @@ namespace EGT_OTA.Controllers
                 model.Keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.ArticleNumber == model.Number).GetRecordCount();
 
                 //评论数
-                model.Comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ArticleID == model.ID).GetRecordCount();
+                model.Comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ArticleNumber == model.Number).GetRecordCount();
 
                 //创建人
-                User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
+                User createUser = db.Single<User>(x => x.Number == model.CreateUserNumber);
                 if (createUser != null)
                 {
                     model.NickName = createUser == null ? "" : createUser.NickName;
@@ -530,15 +530,15 @@ namespace EGT_OTA.Controllers
                 {
                     query.And("Title").Like("%" + title + "%");
                 }
-                var CreateUserID = ZNRequest.GetInt("CreateUserID");
-                if (CreateUserID > 0)
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
+                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
-                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
                 }
 
                 //其他用户的文章
-                var CurrUserID = ZNRequest.GetInt("CurrUserID", 0);
-                if (CreateUserID != CurrUserID || CreateUserID == 0)
+                var CurrUserID = ZNRequest.GetString("CurrUserNumber");
+                if (CreateUserNumber != CurrUserID || string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
                     query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
                 }
@@ -558,14 +558,14 @@ namespace EGT_OTA.Controllers
                 }
 
                 //过滤黑名单
-                var UserID = ZNRequest.GetInt("ID");
-                if (UserID > 0)
+                var UserID = ZNRequest.GetString("Number");
+                if (!string.IsNullOrWhiteSpace(UserID))
                 {
-                    var black = db.Find<Black>(x => x.CreateUserID == UserID);
+                    var black = db.Find<Black>(x => x.FromUserNumber == UserID);
                     if (black.Count > 0)
                     {
-                        var userids = black.Select(x => x.ToUserID).ToArray();
-                        query = query.And("CreateUserID").NotIn(userids);
+                        var userids = black.Select(x => x.ToUserNumber).ToArray();
+                        query = query.And("CreateUserNumber").NotIn(userids);
                     }
                 }
 
@@ -643,14 +643,14 @@ namespace EGT_OTA.Controllers
                 }
 
                 //过滤黑名单
-                var UserID = ZNRequest.GetInt("ID");
-                if (UserID > 0)
+                var Number = ZNRequest.GetString("Number");
+                if (!string.IsNullOrWhiteSpace(Number))
                 {
-                    var black = db.Find<Black>(x => x.CreateUserID == UserID);
+                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
                     if (black.Count > 0)
                     {
-                        var userids = black.Select(x => x.ToUserID).ToArray();
-                        query = query.And("CreateUserID").NotIn(userids);
+                        var userids = black.Select(x => x.ToUserNumber).ToArray();
+                        query = query.And("CreateUserNumber").NotIn(userids);
                     }
                 }
 
@@ -667,7 +667,7 @@ namespace EGT_OTA.Controllers
                                    Comments = a.Comments,
                                    Keeps = a.Keeps,
                                    Pays = a.Pays,
-                                   UserID = a.CreateUserID,
+                                   UserID = a.CreateUserNumber,
                                    Cover = a.Cover,
                                    CreateDate = FormatTime(a.CreateDate),
                                    ArticlePower = a.ArticlePower,
@@ -720,18 +720,21 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var UserID = ZNRequest.GetInt("ID");
-                var ArticleID = ZNRequest.GetInt("ArticleID");
-
+                var Number = ZNRequest.GetString("Number");
+                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
+                if (string.IsNullOrWhiteSpace(Number) || string.IsNullOrWhiteSpace(ArticleNumber))
+                {
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                }
                 var time = DateTime.Now.AddDays(-7);
-                var log = db.Single<ArticleRecommend>(x => x.CreateUserID == UserID && x.CreateDate > time);
+                var log = db.Single<ArticleRecommend>(x => x.CreateUserNumber == Number && x.CreateDate > time);
                 if (log != null)
                 {
                     return Json(new { result = false, message = "每7日只有一次投稿机会，上次投稿时间为：" + log.CreateDate.ToString("yyyy-MM-dd") }, JsonRequestBehavior.AllowGet);
                 }
                 ArticleRecommend model = new ArticleRecommend();
-                model.ArticleID = ArticleID;
-                model.CreateUserID = UserID;
+                model.ArticleNumber = ArticleNumber;
+                model.CreateUserNumber = Number;
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
                 var result = Tools.SafeInt(db.Add<ArticleRecommend>(model)) > 0;

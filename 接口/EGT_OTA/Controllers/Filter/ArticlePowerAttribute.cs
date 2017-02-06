@@ -46,7 +46,7 @@ namespace EGT_OTA.Controllers.Filter
                 filterContext.Result = new JsonResult() { Data = new { result = false, message = "文章信息异常" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
                 return;
             }
-            if (article.CreateUserID != user.ID)
+            if (article.CreateUserNumber != user.Number)
             {
                 filterContext.HttpContext.Response.Cache.SetCacheability(HttpCacheability.NoCache);
                 filterContext.Result = new JsonResult() { Data = new { result = false, message = "没有权限" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };

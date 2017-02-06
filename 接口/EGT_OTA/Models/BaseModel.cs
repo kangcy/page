@@ -21,7 +21,7 @@ namespace EGT_OTA.Models
         /// 创建人ID
         /// </summary>
         [SubSonicNullString]
-        public int CreateUserID { get; set; }
+        public string CreateUserNumber { get; set; }
 
         /// <summary>
         /// 创建日期
@@ -39,7 +39,7 @@ namespace EGT_OTA.Models
         /// 修改人ID
         /// </summary>
         [SubSonicNullString]
-        public int UpdateUserID { get; set; }
+        public string UpdateUserNumber { get; set; }
 
         /// <summary>
         /// 修改日期

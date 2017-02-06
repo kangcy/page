@@ -45,7 +45,7 @@ namespace EGT_OTA.Controllers
             new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();
 
             //创建人
-            User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
+            User createUser = db.Single<User>(x => x.Number == model.CreateUserNumber);
             if (createUser != null)
             {
                 model.NickName = createUser == null ? "" : createUser.NickName;

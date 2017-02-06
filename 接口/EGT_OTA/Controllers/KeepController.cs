@@ -41,16 +41,16 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Keep model = db.Single<Keep>(x => x.CreateUserID == user.ID && x.ArticleNumber == article.Number);
+                Keep model = db.Single<Keep>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number);
                 if (model == null)
                 {
                     model = new Keep();
                     model.CreateDate = DateTime.Now;
-                    model.CreateUserID = user.ID;
+                    model.CreateUserNumber = user.Number;
                     model.CreateIP = Tools.GetClientIP;
                 }
                 model.ArticleNumber = article.Number;
-                model.ArticleUserID = article.CreateUserID;
+                model.ArticleUserNumber = article.CreateUserNumber;
                 var result = false;
                 if (model.ID == 0)
                 {
@@ -84,21 +84,17 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetString("ArticleNumber");
-                var model = db.Single<Keep>(x => x.ArticleNumber == id && x.CreateUserID == user.ID);
+                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
+                var model = db.Single<Keep>(x => x.ArticleNumber == ArticleNumber && x.CreateUserNumber == user.Number);
                 if (model == null)
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
                 }
-                if (model.CreateUserID != user.ID)
-                {
-                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
-                }
-                var result = db.Delete<Keep>(id) > 0;
+                var result = db.Delete<Keep>(model.ID) > 0;
                 if (result)
                 {
                     //更新关注用户
-                    var keeps = db.Find<Keep>(x => x.CreateUserID == user.ID).Select(x => x.ArticleNumber).ToArray();
+                    var keeps = db.Find<Keep>(x => x.CreateUserNumber == user.Number).Select(x => x.ArticleNumber).ToArray();
                     user.KeepText = "," + string.Join(",", keeps) + ",";
 
                     return Json(new { result = true, message = user.KeepText }, JsonRequestBehavior.AllowGet);
@@ -140,7 +136,7 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsEqualTo(Enum_Status.Approved).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
 
                 List<ArticleJson> newlist = ArticleListInfo(articles);
 
