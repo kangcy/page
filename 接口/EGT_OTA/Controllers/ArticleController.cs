@@ -53,7 +53,7 @@ namespace EGT_OTA.Controllers
                 model.Keeps = 0;
                 model.Comments = 0;
                 model.Pays = 0;
-                model.Tag = Enum_ArticleTag.None;
+                model.Recommend = Enum_ArticleRecommend.None;
                 model.ArticlePower = Enum_ArticlePower.Myself;
                 model.Number = BuildNumber();
                 model.ID = Tools.SafeInt(db.Add<Article>(model));
@@ -175,7 +175,7 @@ namespace EGT_OTA.Controllers
                     model.Keeps = 0;
                     model.Comments = 0;
                     model.Pays = 0;
-                    model.Tag = Enum_ArticleTag.None;
+                    model.Recommend = Enum_ArticleRecommend.None;
                     model.TypeID = 10000;
                     model.TypeIDList = "-10000-";
                     model.ArticlePower = Enum_ArticlePower.Myself;
@@ -554,7 +554,7 @@ namespace EGT_OTA.Controllers
                 var Source = ZNRequest.GetString("Source");
                 if (!string.IsNullOrWhiteSpace(Source))
                 {
-                    query = query.And("Tag").IsEqualTo(Enum_ArticleTag.Recommend);
+                    query = query.And("Recommend").IsEqualTo(Enum_ArticleRecommend.Recommend);
                 }
 
                 //过滤黑名单
@@ -581,7 +581,7 @@ namespace EGT_OTA.Controllers
                     }, JsonRequestBehavior.AllowGet);
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Tag", "ID" }).ExecuteTypedList<Article>();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
                 List<ArticleJson> newlist = ArticleListInfo(list);
                 var result = new
                 {
@@ -639,7 +639,7 @@ namespace EGT_OTA.Controllers
                 var Source = ZNRequest.GetString("Source");
                 if (!string.IsNullOrWhiteSpace(Source))
                 {
-                    query = query.And("Tag").IsEqualTo(Enum_ArticleTag.Recommend);
+                    query = query.And("Recommend").IsEqualTo(Enum_ArticleRecommend.Recommend);
                 }
 
                 //过滤黑名单
@@ -655,7 +655,7 @@ namespace EGT_OTA.Controllers
                 }
 
                 var recordCount = query.GetRecordCount();
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Tag", "ID" }).ExecuteTypedList<Article>();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
 
                 var newlist = (from a in list
                                select new
@@ -671,7 +671,7 @@ namespace EGT_OTA.Controllers
                                    Cover = a.Cover,
                                    CreateDate = FormatTime(a.CreateDate),
                                    ArticlePower = a.ArticlePower,
-                                   Tag = a.Tag,
+                                   Recommend = a.Recommend,
                                    City = a.City
                                }).ToList();
                 var result = new

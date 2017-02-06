@@ -169,6 +169,24 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 标签
+        /// </summary>
+        protected List<Tag> GetTag()
+        {
+            List<Tag> list = new List<Tag>();
+            if (CacheHelper.Exists("Tag"))
+            {
+                list = (List<Tag>)CacheHelper.GetCache("Tag");
+            }
+            else
+            {
+                list = db.All<Tag>().ToList();
+                CacheHelper.Insert("Tag", list);
+            }
+            return list;
+        }
+
+        /// <summary>
         /// 音乐
         /// </summary>
         protected List<MusicJson> GetMusic()
@@ -564,9 +582,9 @@ namespace EGT_OTA.Controllers
                 });
             });
 
-
-
             var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(userids.ToArray()).ExecuteTypedList<User>();
+
+            var tags = GetTag();
 
             List<ArticleJson> newlist = new List<ArticleJson>();
             list.ForEach(x =>
@@ -600,6 +618,7 @@ namespace EGT_OTA.Controllers
                     model.CommentList.Add(comment);
                 });
 
+
                 model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
                 model.UserID = x.CreateUserID;
@@ -608,7 +627,7 @@ namespace EGT_OTA.Controllers
                 model.TypeName = articletype == null ? "" : articletype.Name;
                 model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();
                 model.ArticlePower = x.ArticlePower;
-                model.Tag = x.Tag;
+                model.Recommend = x.Recommend;
                 model.City = x.City;
                 newlist.Add(model);
             });

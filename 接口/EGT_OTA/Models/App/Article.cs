@@ -49,7 +49,7 @@ namespace EGT_OTA.Models
             this.Template = 0;
             this.ArticlePower = Enum_ArticlePower.Public;
             this.Status = Enum_Status.Approved;
-            this.Tag = Enum_ArticleTag.None;
+            this.Recommend = Enum_ArticleRecommend.None;
             this.CreateIP = Tools.GetClientIP;
             this.UpdateIP = Tools.GetClientIP;
         }
@@ -131,9 +131,9 @@ namespace EGT_OTA.Models
         public int Shares { get; set; }
 
         /// <summary>
-        /// 标签
+        /// 加精
         /// </summary>
-        public int Tag { get; set; }
+        public int Recommend { get; set; }
 
         /// <summary>
         /// 文章权限
@@ -242,6 +242,12 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public List<Comment> CommentList { get; set; }
 
+        /// <summary>
+        /// 标签
+        /// </summary>
+        [SubSonicIgnore]
+        public List<Tag> TagList { get; set; }
+
         #endregion
     }
 
@@ -264,8 +270,9 @@ namespace EGT_OTA.Models
         public string TypeName { get; set; }
         public List<ArticlePart> ArticlePart { get; set; }
         public int ArticlePower { get; set; }
-        public int Tag { get; set; }
+        public int Recommend { get; set; }
         public string City { get; set; }
         public List<CommentJson> CommentList { get; set; }
+        public List<Tag> TagList { get; set; }
     }
 }

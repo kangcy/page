@@ -179,7 +179,7 @@
     <Compile Include="Enum\Enum_Used.cs" />
     <Compile Include="Enum\Enum_ArticlePower.cs" />
     <Compile Include="Enum\Enum_UserLogin.cs" />
-    <Compile Include="Enum\Enum_ArticleTag.cs" />
+    <Compile Include="Enum\Enum_ArticleRecommend.cs" />
     <Compile Include="Enum\Enum_Zan.cs" />
     <Compile Include="Enum\Enum_ArticlePart.cs" />
     <Compile Include="Global.asax.cs">
@@ -233,6 +233,7 @@
     <Compile Include="Models\App\ArticleRecommend.cs" />
     <Compile Include="Models\App\DirtyWord.cs" />
     <Compile Include="Models\App\Black.cs" />
+    <Compile Include="Models\App\Tag.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\Repository.cs" />
     <Compile Include="Models\Base\WebApplication.cs" />

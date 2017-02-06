@@ -6,9 +6,9 @@ using System.Text;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 文章标签枚举
+    /// 文章推荐枚举
     /// </summary>
-    public class Enum_ArticleTag : EnumBase
+    public class Enum_ArticleRecommend : EnumBase
     {
         /// <summary>
         /// 无
