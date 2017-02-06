@@ -618,6 +618,21 @@ namespace EGT_OTA.Controllers
                     model.CommentList.Add(comment);
                 });
 
+                //标签
+                model.TagList = new List<Tag>();
+                if (!string.IsNullOrWhiteSpace(x.Tag))
+                {
+                    var tag = x.Tag.Split(',').ToList();
+                    tag.ForEach(y =>
+                    {
+                        var id = Tools.SafeInt(y);
+                        var item = tags.FirstOrDefault(z => z.ID == id);
+                        if (item != null)
+                        {
+                            model.TagList.Add(item);
+                        }
+                    });
+                }
 
                 model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);

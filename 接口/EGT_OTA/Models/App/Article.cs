@@ -174,6 +174,12 @@ namespace EGT_OTA.Models
         /// </summary>
         public int Template { get; set; }
 
+        /// <summary>
+        /// 标签
+        /// </summary>
+        [SubSonicNullString]
+        public string Tag { get; set; }
+
         #region 扩展
 
         /// <summary>
