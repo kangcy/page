@@ -569,7 +569,7 @@ namespace EGT_OTA.Controllers
 
             var orders = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved).And("ToArticleNumber").In(array).ExecuteTypedList<Order>();
             var keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where("ArticleNumber").In(array).ExecuteTypedList<Keep>();
-            var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ArticleID").In(list.Select(x => x.ID).ToArray()).ExecuteTypedList<Comment>();
+            var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ArticleNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
 
             List<string> userids = new List<string>();
             list.ForEach(x =>

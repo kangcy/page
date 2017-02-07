@@ -423,6 +423,8 @@ namespace EGT_OTA.Controllers
                     //用户相册是否展示
                     var status = ArticlePower == Enum_ArticlePower.Public ? Enum_Status.Approved : Enum_Status.Audit;
                     new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider()).Set("Status").EqualTo(status).Where<ArticlePart>(x => x.ArticleNumber == article.Number).Execute();
+
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
