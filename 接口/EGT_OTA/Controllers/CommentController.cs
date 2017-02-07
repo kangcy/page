@@ -321,11 +321,11 @@ namespace EGT_OTA.Controllers
                 var IsReply = ZNRequest.GetInt("IsReply", 0);
                 if (IsReply == 0)
                 {
-                    query = query.And("ParentCommentID").IsEqualTo(0);
+                    query = query.And("ParentCommentNumber").IsNull();
                 }
                 else if (IsReply == 1)
                 {
-                    query = query.And("ParentCommentID").IsGreaterThan(0);
+                    query = query.And("ParentCommentNumber").IsNotNull();
                 }
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;

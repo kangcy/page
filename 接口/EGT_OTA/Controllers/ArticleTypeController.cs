@@ -62,33 +62,24 @@ namespace EGT_OTA.Controllers
             {
                 var articleType = GetArticleType();
                 var firstType = articleType.FindAll(x => x.ParentID == 0).OrderBy(x => x.ID).ToList();
-                articleType.FindAll(x => x.ParentID > 0).ForEach(x => { });
 
                 firstType.ForEach(x =>
                 {
-
-                });
-
-                musicType.ForEach(x =>
-                {
-                    x.Music.ForEach(l =>
-                    {
-                        l.Cover = GetFullUrl(l.Cover);
-                        l.FileUrl = GetFullUrl(l.FileUrl);
-                    });
+                    x.List = new List<ArticleType>();
+                    x.List.AddRange(articleType.FindAll(y => y.ParentID == x.ID).OrderBy(y => y.ID).ToList());
                 });
                 var result = new
                 {
                     currpage = 1,
-                    records = musicType.Count,
+                    records = firstType.Count,
                     totalpage = 1,
-                    list = musicType
+                    list = firstType
                 };
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("MusicController_All:" + ex.Message);
+                LogHelper.ErrorLoger.Error("ArticleTypeController_All2:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
