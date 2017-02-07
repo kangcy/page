@@ -52,5 +52,45 @@ namespace EGT_OTA.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public ActionResult All2()
+        {
+            try
+            {
+                var articleType = GetArticleType();
+                var firstType = articleType.FindAll(x => x.ParentID == 0).OrderBy(x => x.ID).ToList();
+                articleType.FindAll(x => x.ParentID > 0).ForEach(x => { });
+
+                firstType.ForEach(x =>
+                {
+
+                });
+
+                musicType.ForEach(x =>
+                {
+                    x.Music.ForEach(l =>
+                    {
+                        l.Cover = GetFullUrl(l.Cover);
+                        l.FileUrl = GetFullUrl(l.FileUrl);
+                    });
+                });
+                var result = new
+                {
+                    currpage = 1,
+                    records = musicType.Count,
+                    totalpage = 1,
+                    list = musicType
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("MusicController_All:" + ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

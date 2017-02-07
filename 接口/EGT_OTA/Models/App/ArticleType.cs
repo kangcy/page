@@ -83,5 +83,11 @@ namespace EGT_OTA.Models
         /// 排序值
         /// </summary>
         public int SortID { get; set; }
+
+        /// <summary>
+        /// 扩展
+        /// </summary>
+        [SubSonicIgnore]
+        public List<ArticleType> List { get; set; }
     }
 }
