@@ -163,7 +163,7 @@ namespace EGT_OTA.Controllers
                 }
                 User user = new User();
                 user.NickName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("NickName")));
-                if (String.IsNullOrWhiteSpace(user.NickName))
+                if (string.IsNullOrWhiteSpace(user.NickName))
                 {
                     return Json(new { result = false, message = "昵称不能为空" }, JsonRequestBehavior.AllowGet);
                 }
@@ -180,7 +180,7 @@ namespace EGT_OTA.Controllers
                 user.IsEmail = 0;
                 user.Signature = string.Empty;
                 user.Avatar = string.Empty;
-                user.Phone = string.Empty;
+                user.Phone = phone;
                 user.WeiXin = string.Empty;
                 user.LoginTimes = 1;
                 user.CreateDate = DateTime.Now;

@@ -158,6 +158,10 @@ namespace EGT_OTA.Controllers
         /// <param name="content">原始字符串</param>
         protected string CutString(string content, int length)
         {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return content;
+            }
             var nameByte = System.Text.Encoding.Default.GetBytes(content);
             if (nameByte.Length > length)
             {
