@@ -111,21 +111,6 @@ namespace EGT_OTA.Models
         public int Goods { get; set; }
 
         /// <summary>
-        /// 收藏数
-        /// </summary>
-        public int Keeps { get; set; }
-
-        /// <summary>
-        /// 评论数
-        /// </summary>
-        public int Comments { get; set; }
-
-        /// <summary>
-        /// 打赏数
-        /// </summary>
-        public int Pays { get; set; }
-
-        /// <summary>
         /// 分享数
         /// </summary>
         public int Shares { get; set; }
@@ -181,6 +166,24 @@ namespace EGT_OTA.Models
         public string Tag { get; set; }
 
         #region 扩展
+
+        /// <summary>
+        /// 收藏数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Keeps { get; set; }
+
+        /// <summary>
+        /// 评论数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Comments { get; set; }
+
+        /// <summary>
+        /// 打赏数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Pays { get; set; }
 
         /// <summary>
         /// 模板配置

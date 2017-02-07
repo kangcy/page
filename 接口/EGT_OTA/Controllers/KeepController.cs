@@ -32,11 +32,11 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var articleID = ZNRequest.GetInt("ArticleID");
-                if (articleID == 0)
+                if (articleID <= 0)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserNumber", "Keeps", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserNumber", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
                 if (article == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
@@ -49,17 +49,13 @@ namespace EGT_OTA.Controllers
                     model.CreateUserNumber = user.Number;
                     model.CreateIP = Tools.GetClientIP;
                 }
-                model.ArticleNumber = article.Number;
-                model.ArticleUserNumber = article.CreateUserNumber;
-                var result = false;
-                if (model.ID == 0)
-                {
-                    result = Tools.SafeInt(db.Add<Keep>(model)) > 0;
-                }
                 else
                 {
-                    result = db.Update<Keep>(model) > 0;
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
+                model.ArticleNumber = article.Number;
+                model.ArticleUserNumber = article.CreateUserNumber;
+                var result = Tools.SafeInt(db.Add<Keep>(model)) > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -85,6 +81,10 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var ArticleNumber = ZNRequest.GetString("ArticleNumber");
+                if (string.IsNullOrWhiteSpace(ArticleNumber))
+                {
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                }
                 var model = db.Single<Keep>(x => x.ArticleNumber == ArticleNumber && x.CreateUserNumber == user.Number);
                 if (model == null)
                 {
@@ -93,7 +93,7 @@ namespace EGT_OTA.Controllers
                 var result = db.Delete<Keep>(model.ID) > 0;
                 if (result)
                 {
-                    //更新关注用户
+                    //更新收藏
                     var keeps = db.Find<Keep>(x => x.CreateUserNumber == user.Number).Select(x => x.ArticleNumber).ToArray();
                     user.KeepText = "," + string.Join(",", keeps) + ",";
 
@@ -136,7 +136,7 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsEqualTo(Enum_Status.Approved).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsEqualTo(Enum_Status.Approved).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
 
                 List<ArticleJson> newlist = ArticleListInfo(articles);
 
