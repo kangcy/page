@@ -52,6 +52,7 @@ namespace EGT_OTA.Models
             this.Recommend = Enum_ArticleRecommend.None;
             this.CreateIP = Tools.GetClientIP;
             this.UpdateIP = Tools.GetClientIP;
+            this.Tag = string.Empty;
         }
 
         /// <summary>

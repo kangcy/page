@@ -40,7 +40,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Zan model = db.Single<Zan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number && !string.IsNullOrWhiteSpace(x.CommentNumber));
+                Zan model = db.Single<Zan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number);
                 if (model == null)
                 {
                     model = new Zan();

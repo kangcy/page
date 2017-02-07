@@ -37,7 +37,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
                 }
 
-                Zan model = db.Single<Zan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == comment.Number && !string.IsNullOrWhiteSpace(x.CommentNumber));
+                Zan model = db.Single<Zan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == comment.Number);
                 if (model == null)
                 {
                     model = new Zan();
