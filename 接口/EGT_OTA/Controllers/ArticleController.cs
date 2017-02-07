@@ -280,7 +280,7 @@ namespace EGT_OTA.Controllers
                 {
                     model.UserID = createUser.ID;
                     model.NickName = createUser.NickName;
-                    model.Avatar = GetFullUrl(createUser.Avatar);
+                    model.Avatar = createUser.Avatar;
                     model.AutoMusic = createUser.AutoMusic;
                     model.ShareNick = createUser.ShareNick;
                 }

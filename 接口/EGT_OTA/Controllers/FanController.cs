@@ -187,7 +187,7 @@ namespace EGT_OTA.Controllers
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Signature = u.Signature,
-                                   Avatar = GetFullUrl(u.Avatar),
+                                   Avatar = u.Avatar,
                                    Number = u.Number
                                }).ToList();
                 var result = new
@@ -255,7 +255,7 @@ namespace EGT_OTA.Controllers
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Signature = u.Signature,
-                                   Avatar = GetFullUrl(u.Avatar),
+                                   Avatar = u.Avatar,
                                    Number = u.Number
                                }).ToList();
                 var result = new
@@ -277,42 +277,17 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 关注用户文章
         /// </summary>
-        public ActionResult All()
+        public ActionResult Article()
         {
             try
             {
-                var userID = ZNRequest.GetString("Number");
+                var userID = ZNRequest.GetString("UserNumber");
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 var fans = db.Find<Fan>(x => x.CreateUserNumber == userID);
 
-
                 query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
-
-                //昵称
-                var title = ZNRequest.GetString("Title");
-                if (!string.IsNullOrWhiteSpace(title))
-                {
-                    query.And("Title").Like("%" + title + "%");
-                }
-                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
-                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
-                {
-                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
-                }
-
-                //过滤黑名单
-                var Number = ZNRequest.GetString("Number");
-                if (!string.IsNullOrWhiteSpace(Number))
-                {
-                    var black = db.Find<Black>(x => x.CreateUserNumber == Number);
-                    if (black.Count > 0)
-                    {
-                        var userids = black.Select(x => x.ToUserNumber).ToArray();
-                        query = query.And("CreateUserNumber").NotIn(userids);
-                    }
-                }
 
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
@@ -339,7 +314,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("ArticleController_All:" + ex.Message);
+                LogHelper.ErrorLoger.Error("FanController_Article:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

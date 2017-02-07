@@ -742,7 +742,7 @@ namespace EGT_OTA.Controllers
                                    ID = l.ID,
                                    NickName = l.NickName,
                                    Signature = l.Signature,
-                                   Avatar = GetFullUrl(l.Avatar),
+                                   Avatar = l.Avatar,
                                    Number = l.Number
                                }).ToList();
                 var result = new

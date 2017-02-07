@@ -49,7 +49,7 @@ namespace EGT_OTA.Controllers
             if (createUser != null)
             {
                 model.NickName = createUser == null ? "" : createUser.NickName;
-                model.Avatar = createUser == null ? GetFullUrl(null) : GetFullUrl(createUser.Avatar);
+                model.Avatar = createUser == null ? "" : createUser.Avatar;
                 model.AutoMusic = createUser.AutoMusic;
                 model.ShareNick = createUser.ShareNick;
             }
