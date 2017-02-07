@@ -36,11 +36,11 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "信息异常,请刷新重试" }, JsonRequestBehavior.AllowGet);
                 }
-                Fan model = db.Single<Fan>(x => x.FromUserNumber == user.Number && x.ToUserNumber == number);
+                Fan model = db.Single<Fan>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == number);
                 if (model == null)
                 {
                     model = new Fan();
-                    model.FromUserNumber = user.Number;
+                    model.CreateUserNumber = user.Number;
                     model.ToUserNumber = number;
                 }
                 else
@@ -81,15 +81,15 @@ namespace EGT_OTA.Controllers
                 return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
             }
             var message = string.Empty;
-            var FromUserNumber = ZNRequest.GetString("FromUserNumber");
+            var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
             var ToUserNumber = ZNRequest.GetString("ToUserNumber");
-            if (string.IsNullOrWhiteSpace(FromUserNumber) || string.IsNullOrWhiteSpace(ToUserNumber))
+            if (string.IsNullOrWhiteSpace(CreateUserNumber) || string.IsNullOrWhiteSpace(ToUserNumber))
             {
                 return Json(new { result = false, message = "信息异常,请刷新重试" }, JsonRequestBehavior.AllowGet);
             }
             try
             {
-                var result = db.Exists<Fan>(x => x.FromUserNumber == FromUserNumber && x.ToUserNumber == ToUserNumber);
+                var result = db.Exists<Fan>(x => x.CreateUserNumber == CreateUserNumber && x.ToUserNumber == ToUserNumber);
                 return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -118,7 +118,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
                 }
-                if (model.FromUserNumber != user.Number)
+                if (model.CreateUserNumber != user.Number)
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
@@ -126,7 +126,7 @@ namespace EGT_OTA.Controllers
                 if (result)
                 {
                     //更新关注用户
-                    var fans = db.Find<Fan>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
+                    var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.FanText = "," + string.Join(",", fans) + ",";
 
                     return Json(new { result = true, message = user.FanText }, JsonRequestBehavior.AllowGet);
@@ -149,8 +149,8 @@ namespace EGT_OTA.Controllers
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().Where<Fan>(x => x.ID > 0);
 
-                var FromUserNumber = ZNRequest.GetString("FromUserNumber");
-                if (string.IsNullOrWhiteSpace(FromUserNumber))
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
+                if (string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
                     return Json(new
                     {
@@ -160,7 +160,7 @@ namespace EGT_OTA.Controllers
                         list = string.Empty
                     }, JsonRequestBehavior.AllowGet);
                 }
-                query = query.And("FromUserNumber").IsEqualTo(FromUserNumber);
+                query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
                 var recordCount = query.GetRecordCount();
 
                 if (recordCount == 0)
@@ -243,11 +243,11 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
-                var array = list.Select(x => x.FromUserNumber).Distinct().ToList();
+                var array = list.Select(x => x.CreateUserNumber).Distinct().ToList();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
 
                 var newlist = (from l in list
-                               join u in users on l.FromUserNumber equals u.Number
+                               join u in users on l.CreateUserNumber equals u.Number
                                select new
                                {
                                    ID = l.ID,
@@ -285,7 +285,7 @@ namespace EGT_OTA.Controllers
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
-                var fans = db.Find<Fan>(x => x.FromUserNumber == userID);
+                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID);
 
 
                 query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
@@ -306,7 +306,7 @@ namespace EGT_OTA.Controllers
                 var Number = ZNRequest.GetString("Number");
                 if (!string.IsNullOrWhiteSpace(Number))
                 {
-                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
+                    var black = db.Find<Black>(x => x.CreateUserNumber == Number);
                     if (black.Count > 0)
                     {
                         var userids = black.Select(x => x.ToUserNumber).ToArray();

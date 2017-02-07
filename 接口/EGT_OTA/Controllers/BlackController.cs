@@ -36,7 +36,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
-                var exist = db.Exists<Black>(x => x.FromUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
+                var exist = db.Exists<Black>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                 if (exist)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -44,24 +44,24 @@ namespace EGT_OTA.Controllers
                 Black model = new Black();
                 model.ToUserNumber = ToUserNumber;
                 model.CreateDate = DateTime.Now;
-                model.FromUserNumber = user.Number;
+                model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
                 var result = Tools.SafeInt(db.Add<Black>(model)) > 0;
                 if (result)
                 {
                     //我拉黑的用户
-                    var blacks = db.Find<Black>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
+                    var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.BlackText = "," + string.Join(",", blacks) + ",";
 
                     //取消拉黑用戶关注
-                    var fan = db.Single<Fan>(x => x.FromUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
+                    var fan = db.Single<Fan>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                     if (fan != null)
                     {
                         db.Delete<Fan>(fan.ID);
                     }
 
                     //我关注的用户
-                    var fans = db.Find<Fan>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
+                    var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.FanText = "," + string.Join(",", fans) + ",";
                     user.Follows = fans.Length;
 
@@ -88,7 +88,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var ToUserNumber = ZNRequest.GetString("ToUserNumber");
-                var model = db.Single<Black>(x => x.FromUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
+                var model = db.Single<Black>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                 if (model == null)
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
@@ -97,7 +97,7 @@ namespace EGT_OTA.Controllers
                 if (result)
                 {
                     //我拉黑的用户
-                    var blacks = db.Find<Black>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
+                    var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.BlackText = "," + string.Join(",", blacks) + ",";
 
                     return Json(new { result = true, message = user.BlackText }, JsonRequestBehavior.AllowGet);

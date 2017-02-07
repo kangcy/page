@@ -25,36 +25,13 @@ namespace EGT_OTA.Models
     /// 分享记录
     /// </summary>
     [Serializable]
-    public class ShareLog
+    public class ShareLog : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 文章
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string ArticleNumber { get; set; }
-
-        /// <summary>
-        /// 分享人
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CreateUserNumber { get; set; }
-
-        /// <summary>
-        /// 分享时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// IP
-        /// </summary>
-        [SubSonicNullString]
-        public string CreateIP { get; set; }
 
         /// <summary>
         /// 分享方式

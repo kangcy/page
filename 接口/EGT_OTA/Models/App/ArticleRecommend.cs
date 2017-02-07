@@ -25,35 +25,12 @@ namespace EGT_OTA.Models
     /// 投稿记录
     /// </summary>
     [Serializable]
-    public class ArticleRecommend
+    public class ArticleRecommend : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 文章
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string ArticleNumber { get; set; }
-
-        /// <summary>
-        /// 投稿人
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CreateUserNumber { get; set; }
-
-        /// <summary>
-        /// 投稿时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// IP
-        /// </summary>
-        [SubSonicNullString]
-        public string CreateIP { get; set; }
     }
 }

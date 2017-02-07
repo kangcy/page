@@ -561,7 +561,7 @@ namespace EGT_OTA.Controllers
                 var Number = ZNRequest.GetString("Number");
                 if (!string.IsNullOrWhiteSpace(Number))
                 {
-                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
+                    var black = db.Find<Black>(x => x.CreateUserNumber == Number);
                     if (black.Count > 0)
                     {
                         var userids = black.Select(x => x.ToUserNumber).ToArray();
@@ -646,7 +646,7 @@ namespace EGT_OTA.Controllers
                 var Number = ZNRequest.GetString("Number");
                 if (!string.IsNullOrWhiteSpace(Number))
                 {
-                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
+                    var black = db.Find<Black>(x => x.CreateUserNumber == Number);
                     if (black.Count > 0)
                     {
                         var userids = black.Select(x => x.ToUserNumber).ToArray();

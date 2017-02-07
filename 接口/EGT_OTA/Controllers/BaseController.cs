@@ -592,6 +592,7 @@ namespace EGT_OTA.Controllers
                 ArticleJson model = new ArticleJson();
                 var user = users.FirstOrDefault(y => y.Number == x.CreateUserNumber);
                 var articletype = articletypes.FirstOrDefault(y => y.ID == x.TypeID);
+                model.UserID = user == null ? 0 : user.ID;
                 model.NickName = user == null ? "" : user.NickName;
                 model.Avatar = user == null ? "" : user.Avatar;
                 model.Signature = user == null ? "" : user.Signature;

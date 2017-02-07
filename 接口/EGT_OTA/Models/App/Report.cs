@@ -25,14 +25,8 @@ namespace EGT_OTA.Models
     /// 举报
     /// </summary>
     [Serializable]
-    public class Report
+    public class Report : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 文章
         /// </summary>
@@ -44,23 +38,5 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(1000), SubSonicNullString]
         public string Summary { get; set; }
-
-        /// <summary>
-        /// 创建人ID
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CreateUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建日期
-        /// </summary>
-        [SubSonicNullString]
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [SubSonicStringLength(100), SubSonicNullString]
-        public string CreateIP { get; set; }
     }
 }

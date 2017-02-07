@@ -10,22 +10,8 @@ namespace EGT_OTA.Models
     /// 申请提现记录
     /// </summary>
     [Serializable]
-    public class ApplyMoney
+    public class ApplyMoney : BaseModelShort
     {
-        public ApplyMoney() { }
-
-        ///<summary>
-        ///ID
-        ///</summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
-        ///<summary>
-        ///用户ID
-        ///</summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string UserNumber { get; set; }
-
         ///<summary>
         ///提款账号
         ///</summary>
@@ -42,13 +28,5 @@ namespace EGT_OTA.Models
         ///提现状态
         ///</summary>
         public int Status { get; set; }
-
-        /// <summary>
-        /// 发送时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        [SubSonicNullString]
-        public string CreateIP { get; set; }
     }
 }

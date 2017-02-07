@@ -25,35 +25,12 @@ namespace EGT_OTA.Models
     /// 关注
     /// </summary>
     [Serializable]
-    public class Fan
+    public class Fan : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         // 被关注人
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string ToUserNumber { get; set; }
-
-        /// <summary>
-        /// 关注人
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string FromUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [SubSonicNullString]
-        public string CreateIP { get; set; }
     }
 }

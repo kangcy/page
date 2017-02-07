@@ -25,14 +25,8 @@ namespace EGT_OTA.Models
     /// 意见反馈
     /// </summary>
     [Serializable]
-    public class FeedBack
+    public class FeedBack : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 内容
         /// </summary>
@@ -44,22 +38,5 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(20), SubSonicNullString]
         public string QQ { get; set; }
-
-        /// <summary>
-        /// 创建人
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CreateUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [SubSonicNullString]
-        public string CreateIP { get; set; }
     }
 }

@@ -77,7 +77,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "账户余额不足100元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
                 }
-                if (db.Exists<ApplyMoney>(x => x.UserNumber == user.Number && x.Status == Enum_Status.Audit))
+                if (db.Exists<ApplyMoney>(x => x.CreateUserNumber == user.Number && x.Status == Enum_Status.Audit))
                 {
                     return Json(new { result = false, message = "已申请，申请后5个工作日内发放完毕" }, JsonRequestBehavior.AllowGet);
                 }
@@ -106,7 +106,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "账户余额不足100元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
                 }
-                if (db.Exists<ApplyMoney>(x => x.UserNumber == user.Number && x.Status == Enum_Status.Audit))
+                if (db.Exists<ApplyMoney>(x => x.CreateUserNumber == user.Number && x.Status == Enum_Status.Audit))
                 {
                     return Json(new { result = false, message = "已申请，申请后5个工作日内发放完毕" }, JsonRequestBehavior.AllowGet);
                 }
@@ -116,7 +116,7 @@ namespace EGT_OTA.Controllers
                 ApplyMoney model = new ApplyMoney();
                 model.Account = account;
                 model.AccountName = name;
-                model.UserNumber = user.Number;
+                model.CreateUserNumber = user.Number;
                 model.Status = Enum_Status.Audit;
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
@@ -148,7 +148,7 @@ namespace EGT_OTA.Controllers
                     var result = db.Update<ApplyMoney>(model);
                     if (result > 0)
                     {
-                        var user = db.Single<User>(x => x.Number == model.UserNumber);
+                        var user = db.Single<User>(x => x.Number == model.CreateUserNumber);
                         if (user != null)
                         {
                             if (user.Money >= 100)

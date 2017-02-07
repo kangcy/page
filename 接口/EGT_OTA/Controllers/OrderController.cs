@@ -28,11 +28,11 @@ namespace EGT_OTA.Controllers
             {
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved);
-                var FromUserNumber = ZNRequest.GetString("FromUserNumber");
+                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
                 var ToUserNumber = ZNRequest.GetString("ToUserNumber");
-                if (!string.IsNullOrWhiteSpace(FromUserNumber))
+                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
-                    query = query.And("FromUserNumber").IsEqualTo(FromUserNumber);
+                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
                 }
                 if (!string.IsNullOrWhiteSpace(ToUserNumber))
                 {
@@ -54,7 +54,7 @@ namespace EGT_OTA.Controllers
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Order>();
 
-                var fromarray = list.Select(x => x.FromUserNumber).Distinct().ToList();
+                var fromarray = list.Select(x => x.CreateUserNumber).Distinct().ToList();
                 var toarray = list.Select(x => x.ToUserNumber).Distinct().ToList();
                 fromarray.AddRange(toarray);
                 var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
@@ -62,7 +62,7 @@ namespace EGT_OTA.Controllers
                 List<OrderJson> newlist = new List<OrderJson>();
                 list.ForEach(x =>
                 {
-                    var fromUser = allusers.FirstOrDefault(y => y.Number == x.FromUserNumber);
+                    var fromUser = allusers.FirstOrDefault(y => y.Number == x.CreateUserNumber);
                     var toUser = allusers.FirstOrDefault(y => y.Number == x.ToUserNumber);
                     OrderJson model = new OrderJson();
                     model.ID = x.ID;

@@ -25,14 +25,8 @@ namespace EGT_OTA.Models
     /// 收藏
     /// </summary>
     [Serializable]
-    public class Keep
+    public class Keep : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 文章编号
         /// </summary>
@@ -44,22 +38,5 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string ArticleUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建人ID
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CreateUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建日期
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [SubSonicStringLength(100), SubSonicNullString]
-        public string CreateIP { get; set; }
     }
 }

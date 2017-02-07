@@ -9,25 +9,13 @@ namespace EGT_OTA.Models
     /// <summary>
     /// 订单
     /// </summary>
-    public class Order
+    public class Order : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 订单编号
         /// </summary>
         [SubSonicStringLength(100), SubSonicNullString]
         public string OrderNumber { get; set; }
-
-        /// <summary>
-        /// 用户编号
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string FromUserNumber { get; set; }
 
         /// <summary>
         /// 打赏对象
@@ -55,11 +43,6 @@ namespace EGT_OTA.Models
         /// 支付方式（1：支付宝、2：微信）
         /// </summary>
         public int PayType { get; set; }
-
-        /// <summary>
-        /// 下单时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
 
         /// <summary>
         /// 描述

@@ -25,36 +25,13 @@ namespace EGT_OTA.Models
     /// 黑名单
     /// </summary>
     [Serializable]
-    public class Black
+    public class Black : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 拉黑用户
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string ToUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建人ID
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string FromUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建日期
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [SubSonicStringLength(100), SubSonicNullString]
-        public string CreateIP { get; set; }
     }
 
     public class BlackJson

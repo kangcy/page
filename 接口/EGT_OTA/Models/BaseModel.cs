@@ -20,13 +20,12 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 创建人ID
         /// </summary>
-        [SubSonicNullString]
+        [SubSonicStringLength(30), SubSonicNullString]
         public string CreateUserNumber { get; set; }
 
         /// <summary>
         /// 创建日期
         /// </summary>
-        [SubSonicNullString]
         public DateTime CreateDate { get; set; }
 
         /// <summary>
@@ -38,13 +37,12 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 修改人ID
         /// </summary>
-        [SubSonicNullString]
+        [SubSonicStringLength(30), SubSonicNullString]
         public string UpdateUserNumber { get; set; }
 
         /// <summary>
         /// 修改日期
         /// </summary>
-        [SubSonicNullString]
         public DateTime UpdateDate { get; set; }
 
         /// <summary>
@@ -52,6 +50,44 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(100), SubSonicNullString]
         public string UpdateIP { get; set; }
+
+        /// <summary>
+        /// 获取实体类对象的Json格式对象
+        /// </summary>
+        /// <returns></returns>
+        public virtual string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+    }
+
+    /// <summary>
+    /// 实体类基类
+    /// </summary>
+    public abstract class BaseModelShort
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [SubSonicPrimaryKey]
+        public int ID { get; set; }
+
+        /// <summary>
+        /// 创建人ID
+        /// </summary>
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string CreateUserNumber { get; set; }
+
+        /// <summary>
+        /// 创建日期
+        /// </summary>
+        public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 创建IP
+        /// </summary>
+        [SubSonicStringLength(100), SubSonicNullString]
+        public string CreateIP { get; set; }
 
         /// <summary>
         /// 获取实体类对象的Json格式对象

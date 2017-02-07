@@ -25,14 +25,8 @@ namespace EGT_OTA.Models
     /// 文章评论
     /// </summary>
     [Serializable]
-    public class Comment
+    public class Comment : BaseModelShort
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
         /// <summary>
         /// 文章ID
         /// </summary>
@@ -85,23 +79,6 @@ namespace EGT_OTA.Models
         /// 点赞数
         /// </summary>
         public int Goods { get; set; }
-
-        /// <summary>
-        /// 创建人
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CreateUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// 创建IP
-        /// </summary>
-        [SubSonicNullString]
-        public string CreateIP { get; set; }
 
         #region 扩展
 

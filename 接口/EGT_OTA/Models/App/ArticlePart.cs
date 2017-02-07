@@ -26,7 +26,7 @@ namespace EGT_OTA.Models
     /// 文章部分
     /// </summary>
     [Serializable]
-    public class ArticlePart
+    public class ArticlePart : BaseModelShort
     {
         public ArticlePart() { }
 
@@ -40,12 +40,6 @@ namespace EGT_OTA.Models
             this.CreateIP = Tools.GetClientIP;
             this.Status = Enum_Status.Approved;
         }
-
-        /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
 
         /// <summary>
         /// 文章编号
@@ -67,23 +61,9 @@ namespace EGT_OTA.Models
         public int SortID { get; set; }
 
         /// <summary>
-        /// 创建人
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CreateUserNumber { get; set; }
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
         /// 状态
         /// </summary>
         public int Status { get; set; }
-
-        [SubSonicNullString]
-        public string CreateIP { get; set; }
 
         #region 文本修饰
 

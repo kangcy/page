@@ -716,7 +716,7 @@ namespace EGT_OTA.Controllers
                 var Number = ZNRequest.GetString("Number");
                 if (!string.IsNullOrWhiteSpace(Number))
                 {
-                    var black = db.Find<Black>(x => x.FromUserNumber == Number);
+                    var black = db.Find<Black>(x => x.CreateUserNumber == Number);
                     if (black.Count > 0)
                     {
                         var userids = black.Select(x => x.ToUserNumber).ToArray();
@@ -995,7 +995,7 @@ namespace EGT_OTA.Controllers
             }
 
             //关注
-            user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserNumber == user.Number).GetRecordCount();
+            user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             //粉丝
             user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserNumber == user.Number).GetRecordCount();
@@ -1010,7 +1010,7 @@ namespace EGT_OTA.Controllers
             user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             //我关注的用户
-            var fans = db.Find<Fan>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
+            var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
             user.FanText = "," + string.Join(",", fans) + ",";
 
             //我收藏的文章
@@ -1019,7 +1019,7 @@ namespace EGT_OTA.Controllers
             user.Keeps = keeps.Length;
 
             //我拉黑的用户
-            var blacks = db.Find<Black>(x => x.FromUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
+            var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
             user.BlackText = "," + string.Join(",", blacks) + ",";
 
             //登录方式
