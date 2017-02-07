@@ -720,21 +720,21 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var Number = ZNRequest.GetString("Number");
+                var UserNumber = ZNRequest.GetString("UserNumber");
                 var ArticleNumber = ZNRequest.GetString("ArticleNumber");
-                if (string.IsNullOrWhiteSpace(Number) || string.IsNullOrWhiteSpace(ArticleNumber))
+                if (string.IsNullOrWhiteSpace(UserNumber) || string.IsNullOrWhiteSpace(ArticleNumber))
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
                 var time = DateTime.Now.AddDays(-7);
-                var log = db.Single<ArticleRecommend>(x => x.CreateUserNumber == Number && x.CreateDate > time);
+                var log = db.Single<ArticleRecommend>(x => x.CreateUserNumber == UserNumber && x.CreateDate > time);
                 if (log != null)
                 {
                     return Json(new { result = false, message = "每7日只有一次投稿机会，上次投稿时间为：" + log.CreateDate.ToString("yyyy-MM-dd") }, JsonRequestBehavior.AllowGet);
                 }
                 ArticleRecommend model = new ArticleRecommend();
                 model.ArticleNumber = ArticleNumber;
-                model.CreateUserNumber = Number;
+                model.CreateUserNumber = UserNumber;
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
                 var result = Tools.SafeInt(db.Add<ArticleRecommend>(model)) > 0;

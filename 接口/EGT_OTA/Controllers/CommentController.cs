@@ -27,7 +27,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var commentID = ZNRequest.GetInt("CommentID");
-                if (commentID == 0)
+                if (commentID <= 0)
                 {
                     return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
                 }
@@ -83,7 +83,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var ArticleID = ZNRequest.GetInt("ArticleID");
-                if (ArticleID == 0)
+                if (ArticleID <= 0)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
@@ -92,25 +92,23 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请填写评论内容" }, JsonRequestBehavior.AllowGet);
                 }
+                summary = CutString(summary, 2000);
                 if (HasDirtyWord(summary))
                 {
                     return Json(new { result = false, message = "您的输入内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "Number").From<Article>().Where<Article>(x => x.ID == ArticleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "Number", "CreateUserNumber").From<Article>().Where<Article>(x => x.ID == ArticleID).ExecuteSingle<Article>();
                 if (article == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-
-                summary = CutString(summary, 2000);
-
                 Comment model = new Comment();
                 model.ArticleNumber = article.Number;
                 model.ArticleUserNumber = article.CreateUserNumber;
                 model.Summary = summary;
                 model.Number = BuildNumber();
-                model.Province = ZNRequest.GetString("Province");
-                model.City = ZNRequest.GetString("City");
+                model.Province = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("Province"));
+                model.City = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("City"));
                 model.CreateDate = DateTime.Now;
                 model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
@@ -137,7 +135,7 @@ namespace EGT_OTA.Controllers
 
                 //文章
                 var ArticleID = ZNRequest.GetInt("ArticleID");
-                if (ArticleID == 0)
+                if (ArticleID <= 0)
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
                 }

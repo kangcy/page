@@ -49,7 +49,7 @@ namespace EGT_OTA.Controllers
                     {
                         return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                     }
-                    if (model.Types == 0)
+                    if (model.Types <= 0)
                     {
                         return Json(new { result = false, message = "段落类型异常" }, JsonRequestBehavior.AllowGet);
                     }
@@ -151,40 +151,6 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error("ArticlePartController_Delete:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
-        /// 列表
-        /// </summary>
-        public ActionResult All()
-        {
-            try
-            {
-                var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>();
-                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
-                if (string.IsNullOrWhiteSpace(ArticleNumber))
-                {
-                    return Json(null, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    query = query.Where<ArticlePart>(x => x.ArticleNumber == ArticleNumber);
-                }
-                var recordCount = query.GetRecordCount();
-                var list = query.OrderDesc("ID").ExecuteTypedList<ArticlePart>();
-                var result = new
-                {
-                    records = recordCount,
-                    list = list
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("ArticlePartController_All:" + ex.Message);
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
         }
     }
 }

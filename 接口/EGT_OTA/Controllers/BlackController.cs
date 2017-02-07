@@ -49,18 +49,18 @@ namespace EGT_OTA.Controllers
                 var result = Tools.SafeInt(db.Add<Black>(model)) > 0;
                 if (result)
                 {
-                    //我拉黑的用户
+                    //更新黑名单
                     var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.BlackText = "," + string.Join(",", blacks) + ",";
 
-                    //取消拉黑用戶关注
+                    //取消关注
                     var fan = db.Single<Fan>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                     if (fan != null)
                     {
                         db.Delete<Fan>(fan.ID);
                     }
 
-                    //我关注的用户
+                    //更新关注
                     var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.FanText = "," + string.Join(",", fans) + ",";
                     user.Follows = fans.Length;
@@ -96,7 +96,7 @@ namespace EGT_OTA.Controllers
                 var result = db.Delete<Black>(model.ID) > 0;
                 if (result)
                 {
-                    //我拉黑的用户
+                    //更新黑名单
                     var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
                     user.BlackText = "," + string.Join(",", blacks) + ",";
 
