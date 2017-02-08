@@ -44,5 +44,26 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string ArticleUserNumber { get; set; }
+
+        /// <summary>
+        /// 点赞类型
+        /// </summary>
+        public int ZanType { get; set; }
+    }
+
+    public class ZanJson
+    {
+        public int ID { get; set; }
+        public string CreateDate { get; set; }
+
+        //文章信息
+        public string Number { get; set; }
+        public string Cover { get; set; }
+        public int ArticlePower { get; set; }
+
+        //用户信息
+        public string NickName { get; set; }
+        public string Avatar { get; set; }
+        public string UserNumber { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace EGT_OTA.Models
     /// <summary>
     /// 点赞类型枚举
     /// </summary>
-    public class Enum_Zan : EnumBase
+    public class Enum_ZanType : EnumBase
     {
         /// <summary>
         /// 文章
