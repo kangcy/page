@@ -67,11 +67,11 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "您的输入内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
 
-                model.Color = ZNRequest.GetString("Color");
-                model.Align = ZNRequest.GetString("Align");
-                model.FontSize = ZNRequest.GetString("FontSize");
-                model.FontWeight = ZNRequest.GetString("FontWeight");
-                model.Link = ZNRequest.GetString("Link");
+                //model.Color = ZNRequest.GetString("Color");
+                //model.Align = ZNRequest.GetString("Align");
+                //model.FontSize = ZNRequest.GetString("FontSize");
+                //model.FontWeight = ZNRequest.GetString("FontWeight");
+                //model.Link = ZNRequest.GetString("Link");
 
                 if (model.Types == Enum_ArticlePart.Video)
                 {
