@@ -47,10 +47,18 @@ namespace EGT_OTA.Controllers
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                     user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
+                    if (string.IsNullOrWhiteSpace(user.Cover))
+                    {
+                        user.Cover = "http://139.224.51.196/Images/User/cover01.png";
+                    }
                     user.Email = string.Empty;
                     user.IsEmail = 0;
                     user.Signature = string.Empty;
                     user.Avatar = avatar;
+                    if (string.IsNullOrWhiteSpace(user.Avatar))
+                    {
+                        user.Avatar = "http://139.224.51.196/Images/User/avatar01.png";
+                    }
                     user.Phone = string.Empty;
                     user.WeiXin = string.Empty;
                     user.LoginTimes = 1;
@@ -174,12 +182,16 @@ namespace EGT_OTA.Controllers
                 user.Password = DesEncryptHelper.Encrypt(password);
                 user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                 user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
+                if (string.IsNullOrWhiteSpace(user.Cover))
+                {
+                    user.Cover = "http://139.224.51.196/Images/User/cover01.png";
+                }
                 user.ProvinceName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Province")));
                 user.CityName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("City")));
                 user.Email = string.Empty;
                 user.IsEmail = 0;
                 user.Signature = string.Empty;
-                user.Avatar = string.Empty;
+                user.Avatar = "http://139.224.51.196/Images/User/avatar01.png";
                 user.Phone = phone;
                 user.WeiXin = string.Empty;
                 user.LoginTimes = 1;
