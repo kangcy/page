@@ -124,7 +124,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => string.IsNullOrWhiteSpace(x.CommentNumber));
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.ZanType == Enum_ZanType.Article);
                 var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
                 if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
@@ -173,7 +173,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => string.IsNullOrWhiteSpace(x.CommentNumber));
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.ZanType == Enum_ZanType.Article);
                 var ArticleUserNumber = ZNRequest.GetString("ArticleUserNumber");
                 if (string.IsNullOrWhiteSpace(ArticleUserNumber))
                 {
@@ -248,7 +248,7 @@ namespace EGT_OTA.Controllers
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
 
                 var articleArray = list.Select(x => x.ArticleNumber).ToArray();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Cover", "ArticlePower", "CreateUserNumber", "Status").From<Article>().Where("Number").In(articleArray).And("Status").IsEqualTo(Enum_Status.Approved).And("CreateUserNumber").IsEqualTo(UserNumber).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Cover", "ArticlePower", "CreateUserNumber", "Status", "Title").From<Article>().Where("Number").In(articleArray).And("Status").IsEqualTo(Enum_Status.Approved).And("CreateUserNumber").IsEqualTo(UserNumber).ExecuteTypedList<Article>();
 
                 var userArray = list.Select(x => x.CreateUserNumber).ToArray();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(userArray).ExecuteTypedList<User>();
@@ -261,13 +261,17 @@ namespace EGT_OTA.Controllers
                     if (article != null && user != null)
                     {
                         ZanJson model = new ZanJson();
+                        model.ID = x.ID;
                         model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd");
+                        model.ArticleID = article.ID;
+                        model.Title = article.Title;
                         model.Number = article.Number;
                         model.Cover = article.Cover;
                         model.ArticlePower = article.ArticlePower;
+                        model.CreateUserNumber = article.CreateUserNumber;
                         model.NickName = user.NickName;
                         model.Avatar = user.Avatar;
-                        model.Number = user.Number;
+                        model.UserNumber = user.Number;
                         zans.Add(model);
                     }
                 });

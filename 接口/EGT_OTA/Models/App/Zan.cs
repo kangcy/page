@@ -57,8 +57,11 @@ namespace EGT_OTA.Models
         public string CreateDate { get; set; }
 
         //文章信息
+        public int ArticleID { get; set; }
+        public string Title { get; set; }
         public string Number { get; set; }
         public string Cover { get; set; }
+        public string CreateUserNumber { get; set; }
         public int ArticlePower { get; set; }
 
         //用户信息
