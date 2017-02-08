@@ -286,4 +286,20 @@ namespace EGT_OTA.Models
         public List<CommentJson> CommentList { get; set; }
         public List<Tag> TagList { get; set; }
     }
+
+    public class UserArticleJson
+    {
+        public string CreateDate { get; set; }
+        public int Count { get; set; }
+        public List<UserArticleSubJson> List { get; set; }
+    }
+
+    public class UserArticleSubJson
+    {
+        public int ID { get; set; }
+        public string Number { get; set; }
+        public string CreateUserNumber { get; set; }
+        public string Cover { get; set; }
+        public int ArticlePower { get; set; }
+    }
 }

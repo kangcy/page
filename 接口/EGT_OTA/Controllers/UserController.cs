@@ -973,6 +973,61 @@ namespace EGT_OTA.Controllers
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
+
+        /// <summary>
+        /// 用户文章
+        /// </summary>
+        public ActionResult Article()
+        {
+            try
+            {
+                var UserNumber = ZNRequest.GetString("UserNumber");
+                var pager = new Pager();
+                var list = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "CreateUserNumber", "Cover", "ArticlePower", "Status", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved && x.CreateUserNumber == UserNumber).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+
+                var recordCount = list.Count();
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        records = 0,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                List<UserArticleJson> newlist = new List<UserArticleJson>();
+                list.GroupBy(x => x.CreateDate.ToString("yyyyMM")).ToList().ForEach(x =>
+                {
+                    UserArticleJson model = new UserArticleJson();
+                    model.List = new List<UserArticleSubJson>();
+                    var items = list.FindAll(y => y.CreateDate.ToString("yyyyMM") == x.Key);
+                    items.ForEach(y =>
+                    {
+                        UserArticleSubJson item = new UserArticleSubJson();
+                        item.ID = y.ID;
+                        item.Number = y.Number;
+                        item.CreateUserNumber = y.CreateUserNumber;
+                        item.Cover = y.Cover;
+                        item.ArticlePower = y.ArticlePower;
+                        model.List.Add(item);
+                    });
+                    model.CreateDate = items[0].CreateDate.Year + "年" + items[0].CreateDate.Month + "月";
+                    model.Count = items.Count;
+                    newlist.Add(model);
+                });
+                return Json(new
+                {
+                    records = newlist.Sum(x => x.Count),
+                    list = newlist
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("UserController_Article:" + ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         /// <summary>
         /// 用户详情
         /// </summary>
