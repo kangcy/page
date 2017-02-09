@@ -164,7 +164,6 @@
     <Compile Include="Controllers\ArticlePartController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
-    <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Controllers\ShareLogController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -223,7 +222,6 @@
     <Compile Include="Models\App\Zan.cs" />
     <Compile Include="Models\App\Help.cs" />
     <Compile Include="Models\App\ArticlePart.cs" />
-    <Compile Include="Models\App\UserLogin.cs" />
     <Compile Include="Models\App\ShareLog.cs" />
     <Compile Include="Models\App\ApplyMoney.cs" />
     <Compile Include="Models\App\Template.cs" />

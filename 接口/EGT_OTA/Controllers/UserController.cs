@@ -111,12 +111,8 @@ namespace EGT_OTA.Controllers
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                     if (user.ID > 0)
                     {
-                        UserLogin userlogin = new UserLogin(user.Number, openID, source);
-                        db.Add<UserLogin>(userlogin);
-
                         user.Address = user.ProvinceName + " " + user.CityName;
                         user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
-                        user.UserLogin = new List<UserLogin>() { userlogin };
 
                         return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                     }
@@ -245,12 +241,8 @@ namespace EGT_OTA.Controllers
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
-                    UserLogin userlogin = new UserLogin(user.Number, BuildNumber(), Enum_UserLogin.Common);
-                    db.Add<UserLogin>(userlogin);
-
                     user.Address = user.ProvinceName + " " + user.CityName;
                     user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
-                    user.UserLogin = new List<UserLogin>() { userlogin };
 
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
@@ -932,6 +924,65 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 解除绑定
+        /// </summary>
+        public ActionResult UnBind()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var source = ZNRequest.GetInt("Source");
+                if (string.IsNullOrWhiteSpace(user.Phone))
+                {
+                    var name = string.Empty;
+                    switch (source)
+                    {
+                        case 1:
+                            name = "微信";
+                            break;
+                        case 2:
+                            name = "QQ";
+                            break;
+                        case 3:
+                            name = "微博";
+                            break;
+                        default:
+                            break;
+                    }
+                    return Json(new { result = false, message = "解绑" + name + "前需要绑定手机" }, JsonRequestBehavior.AllowGet);
+                }
+                var result = false;
+                switch (source)
+                {
+                    case 1:
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("WeiXin").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
+                    case 2:
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("QQ").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
+                    case 3:
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Weibo").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
+                    default:
+                        break;
+                }
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("UserController_UnBind" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 相册
         /// </summary>
         public ActionResult Pic()
@@ -1119,9 +1170,6 @@ namespace EGT_OTA.Controllers
             //我拉黑的用户
             var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
             user.BlackText = "," + string.Join(",", blacks) + ",";
-
-            //登录方式
-            user.UserLogin = db.Find<UserLogin>(x => x.UserNumber == user.Number).ToList();
 
             return user;
         }

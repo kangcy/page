@@ -297,12 +297,6 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public string BlackText { get; set; }
 
-        /// <summary>
-        /// 登录方式
-        /// </summary>
-        [SubSonicIgnore]
-        public List<UserLogin> UserLogin { get; set; }
-
         #endregion
     }
 }

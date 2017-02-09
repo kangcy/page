@@ -34,7 +34,6 @@ namespace EGT_OTA.Controllers
         protected void InitUser()
         {
             var users = new List<User>();
-            var userLogins = new List<UserLogin>();
 
             users.Add(new User
             {
@@ -66,13 +65,11 @@ namespace EGT_OTA.Controllers
 
             users.ForEach(x =>
             {
-                userLogins.Add(new UserLogin(x.Number, Guid.NewGuid().ToString("N"), Enum_UserLogin.Common));
                 x.Avatar = Thumb(x.Avatar, baseUrl, "UserAvatar", 0);
                 Thread.Sleep(2000);
             });
 
             db.AddMany<User>(users);
-            db.AddMany<UserLogin>(userLogins);
         }
 
         /// <summary>
