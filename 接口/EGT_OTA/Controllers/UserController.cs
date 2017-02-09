@@ -30,19 +30,31 @@ namespace EGT_OTA.Controllers
                 User user = null;
                 if (string.IsNullOrWhiteSpace(openID))
                 {
-                    openID = Guid.NewGuid().ToString("N");
+                    openID = BuildNumber();
                 }
                 else
                 {
-                    var userLogin = db.Single<UserLogin>(x => x.OpenID == openID);
-                    if (userLogin != null)
+                    switch (source)
                     {
-                        user = db.Single<User>(x => x.Number == userLogin.UserNumber);
+                        case 1:
+                            user = db.Single<User>(x => x.WeiXin == openID);
+                            break;
+                        case 2:
+                            user = db.Single<User>(x => x.QQ == openID);
+                            break;
+                        case 3:
+                            user = db.Single<User>(x => x.Weibo == openID);
+                            break;
+                        default:
+                            break;
                     }
+
                 }
                 if (user == null)
                 {
                     user = new User();
+                    user.ProvinceName = ZNRequest.GetString("Province");
+                    user.CityName = ZNRequest.GetString("City");
                     user.Password = string.Empty;
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
@@ -61,6 +73,24 @@ namespace EGT_OTA.Controllers
                     }
                     user.Phone = string.Empty;
                     user.WeiXin = string.Empty;
+                    user.QQ = string.Empty;
+                    user.Weibo = string.Empty;
+
+                    switch (source)
+                    {
+                        case 1:
+                            user.WeiXin = openID;
+                            break;
+                        case 2:
+                            user.QQ = openID;
+                            break;
+                        case 3:
+                            user.Weibo = openID;
+                            break;
+                        default:
+                            break;
+                    }
+
                     user.LoginTimes = 1;
                     user.CreateDate = DateTime.Now;
                     user.LastLoginDate = DateTime.Now;
@@ -93,6 +123,8 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
+                    user.ProvinceName = ZNRequest.GetString("Province");
+                    user.CityName = ZNRequest.GetString("City");
                     user.LoginTimes += 1;
                     user.LastLoginDate = DateTime.Now;
                     user.LastLoginIP = Tools.GetClientIP;
@@ -194,6 +226,8 @@ namespace EGT_OTA.Controllers
                 user.Avatar = "http://139.224.51.196/Images/User/avatar01.png";
                 user.Phone = phone;
                 user.WeiXin = string.Empty;
+                user.QQ = string.Empty;
+                user.Weibo = string.Empty;
                 user.LoginTimes = 1;
                 user.CreateDate = DateTime.Now;
                 user.LastLoginDate = DateTime.Now;
@@ -211,7 +245,7 @@ namespace EGT_OTA.Controllers
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
-                    UserLogin userlogin = new UserLogin(user.Number, Guid.NewGuid().ToString("N"), Enum_UserLogin.Common);
+                    UserLogin userlogin = new UserLogin(user.Number, BuildNumber(), Enum_UserLogin.Common);
                     db.Add<UserLogin>(userlogin);
 
                     user.Address = user.ProvinceName + " " + user.CityName;
@@ -820,13 +854,12 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var key = ZNRequest.GetString("Key");
-                if (db.Exists<UserLogin>(x => x.OpenID == key && x.Source == Enum_UserLogin.Weixin))
+                if (db.Exists<User>(x => x.WeiXin == key && x.ID != user.ID))
                 {
                     return Json(new { result = false, message = "该微信账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                UserLogin userLogin = new UserLogin(user.Number, key, Enum_UserLogin.Weixin);
-                userLogin.ID = Tools.SafeInt(db.Add<UserLogin>(userLogin), 0);
-                if (userLogin.ID > 0)
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("WeiXin").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
@@ -851,13 +884,12 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var key = ZNRequest.GetString("Key");
-                if (db.Exists<UserLogin>(x => x.OpenID == key && x.Source == Enum_UserLogin.Weibo))
+                if (db.Exists<User>(x => x.Weibo == key && x.ID != user.ID))
                 {
                     return Json(new { result = false, message = "该微博账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                UserLogin userLogin = new UserLogin(user.Number, key, Enum_UserLogin.Weibo);
-                userLogin.ID = Tools.SafeInt(db.Add<UserLogin>(userLogin), 0);
-                if (userLogin.ID > 0)
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Weibo").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
@@ -882,13 +914,12 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var key = ZNRequest.GetString("Key");
-                if (db.Exists<UserLogin>(x => x.OpenID == key && x.Source == Enum_UserLogin.QQ))
+                if (db.Exists<User>(x => x.QQ == key && x.ID != user.ID))
                 {
-                    return Json(new { result = false, message = "该QQ账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                UserLogin userLogin = new UserLogin(user.Number, key, Enum_UserLogin.QQ);
-                userLogin.ID = Tools.SafeInt(db.Add<UserLogin>(userLogin), 0);
-                if (userLogin.ID > 0)
+                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("QQ").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }

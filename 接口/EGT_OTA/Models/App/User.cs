@@ -70,13 +70,13 @@ namespace EGT_OTA.Models
         ///<summary>
         ///用户头像
         ///</summary>
-        [SubSonicNullString]
+        [SubSonicStringLength(500), SubSonicNullString]
         public string Avatar { get; set; }
 
         ///<summary>
         ///用户昵称
         ///</summary>
-        [SubSonicStringLength(50), SubSonicNullString]
+        [SubSonicNullString]
         public string NickName { get; set; }
 
         /// <summary>
@@ -122,8 +122,20 @@ namespace EGT_OTA.Models
         ///<summary>
         ///绑定微信
         ///</summary>
-        [SubSonicStringLength(50), SubSonicNullString]
+        [SubSonicStringLength(100), SubSonicNullString]
         public string WeiXin { get; set; }
+
+        ///<summary>
+        ///绑定QQ
+        ///</summary>
+        [SubSonicStringLength(100), SubSonicNullString]
+        public string QQ { get; set; }
+
+        ///<summary>
+        ///绑定微博
+        ///</summary>
+        [SubSonicStringLength(100), SubSonicNullString]
+        public string Weibo { get; set; }
 
         /// <summary>
         /// 音乐自动播放

@@ -283,7 +283,7 @@ namespace EGT_OTA.Controllers
             {
                 var pager = new Pager();
                 var userID = ZNRequest.GetString("UserNumber");
-                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID).ToList(); ;
+                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID).ToList(); 
                 if (fans.Count == 0)
                 {
                     return Json(new
