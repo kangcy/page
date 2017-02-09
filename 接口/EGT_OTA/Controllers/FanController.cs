@@ -281,11 +281,21 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var userID = ZNRequest.GetString("UserNumber");
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var userID = ZNRequest.GetString("UserNumber");
+                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID).ToList(); ;
+                if (fans.Count == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = 0,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
-                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
 
