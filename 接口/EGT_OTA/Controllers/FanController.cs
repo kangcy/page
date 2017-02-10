@@ -283,22 +283,20 @@ namespace EGT_OTA.Controllers
             {
                 var pager = new Pager();
                 var userID = ZNRequest.GetString("UserNumber");
-                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID).ToList(); 
-                if (fans.Count == 0)
-                {
-                    return Json(new
-                    {
-                        currpage = pager.Index,
-                        records = 0,
-                        totalpage = 1,
-                        list = string.Empty
-                    }, JsonRequestBehavior.AllowGet);
-                }
+                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID).ToList();
 
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
-                query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
-
+                //未关注，显示推荐关注用户
+                if (fans.Count == 0)
+                {
+                    var users = db.Find<User>(x => x.IsRecommend == 1);
+                    query.And("CreateUserNumber").In(users.Select(x => x.Number).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+                }
+                else
+                {
+                    query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+                }
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {

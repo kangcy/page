@@ -9,6 +9,7 @@ using EGT_OTA.Helper;
 using Newtonsoft.Json;
 using EGT_OTA.Helper.Config;
 using System.Drawing;
+using EGT_OTA.Models;
 
 namespace EGT_OTA.Controllers
 {
@@ -110,8 +111,15 @@ namespace EGT_OTA.Controllers
                 #region  保存缩略图
 
                 string standards = ZNRequest.GetString("standard");///缩略图规格名称
-                int isDraw = ZNRequest.GetInt("isDraw");  //是否生成水印
-                int isThumb = ZNRequest.GetInt("isThumb"); //是否生成缩略图
+                string number = ZNRequest.GetString("Number");
+
+                int isDraw = 0;//是否生成水印
+                int isThumb = 1;//是否生成缩略图
+                var user = db.Single<User>(x => x.Number == number);
+                if (user != null)
+                {
+                    isDraw = user.UseDraw;
+                }
 
                 if (standards != "Article")
                 {
