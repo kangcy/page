@@ -116,6 +116,10 @@ namespace EGT_OTA.Controllers
                 model.ParentCommentNumber = ZNRequest.GetString("ParentCommentNumber");
                 model.ParentUserNumber = ZNRequest.GetString("ParentUserNumber");
                 var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {
@@ -135,14 +139,14 @@ namespace EGT_OTA.Controllers
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ID > 0);
 
                 //文章
-                var ArticleID = ZNRequest.GetInt("ArticleID");
-                if (ArticleID <= 0)
+                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
+                if (string.IsNullOrWhiteSpace(ArticleNumber))
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    query = query.And("ArticleID").IsEqualTo(ArticleID);
+                    query = query.And("ArticleNumber").IsEqualTo(ArticleNumber);
                 }
                 var recordCount = query.GetRecordCount();
 
