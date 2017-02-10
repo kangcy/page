@@ -166,6 +166,11 @@ namespace EGT_OTA.Models
         [SubSonicNullString]
         public string Tag { get; set; }
 
+        /// <summary>
+        /// 是否投稿启用
+        /// </summary>
+        public int IsUsed { get; set; }
+
         #region 扩展
 
         /// <summary>
