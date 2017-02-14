@@ -169,7 +169,7 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 是否投稿启用
         /// </summary>
-        public int IsUsed { get; set; }
+        public int Submission { get; set; }
 
         #region 扩展
 
