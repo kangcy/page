@@ -249,7 +249,7 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower", "Number").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower", "Number", "CreateUserNumber").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).ToArray()).ExecuteTypedList<User>();
 
                 //父评论
@@ -275,12 +275,12 @@ namespace EGT_OTA.Controllers
                                    NickName = u.NickName,
                                    Avatar = u.Avatar,
                                    UserNumber = u.Number,
-                                   ArticleID = l.ArticleNumber,
+                                   ArticleID = a.ID,
                                    Title = a.Title,
                                    ArticleUserID = a.CreateUserNumber,
                                    ArticlePower = a.ArticlePower,
                                    ParentCommentID = l.ParentCommentNumber,
-                                   ParentUserID = l.ParentUserNumber,
+                                   ParentUserNumber = l.ParentUserNumber,
                                    ParentNickName = string.IsNullOrWhiteSpace(l.ParentUserNumber) ? "" : (parentUser.Exists(x => x.Number == l.ParentUserNumber) ? parentUser.FirstOrDefault(x => x.Number == l.ParentUserNumber).NickName : ""),
                                    ParentSummary = string.IsNullOrWhiteSpace(l.ParentCommentNumber) ? "" : (parentComment.Exists(x => x.Number == l.ParentCommentNumber) ? parentComment.FirstOrDefault(x => x.Number == l.ParentCommentNumber).Summary : "")
                                }).ToList();
