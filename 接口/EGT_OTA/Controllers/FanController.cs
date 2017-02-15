@@ -282,8 +282,8 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var userID = ZNRequest.GetString("UserNumber");
-                var fans = db.Find<Fan>(x => x.CreateUserNumber == userID).ToList();
+                var UserNumber = ZNRequest.GetString("UserNumber");
+                var fans = db.Find<Fan>(x => x.CreateUserNumber == UserNumber).ToList();
 
                 var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
@@ -310,7 +310,7 @@ namespace EGT_OTA.Controllers
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
-                List<ArticleJson> newlist = ArticleListInfo(list);
+                List<ArticleJson> newlist = ArticleListInfo(list, UserNumber);
                 var result = new
                 {
                     currpage = pager.Index,

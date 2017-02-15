@@ -289,6 +289,7 @@ namespace EGT_OTA.Models
         public int Recommend { get; set; }
         public string Province { get; set; }
         public string City { get; set; }
+        public int IsFollow { get; set; }
         public List<CommentJson> CommentList { get; set; }
         public List<Tag> TagList { get; set; }
     }

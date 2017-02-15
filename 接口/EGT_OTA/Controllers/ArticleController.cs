@@ -584,7 +584,7 @@ namespace EGT_OTA.Controllers
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
-                List<ArticleJson> newlist = ArticleListInfo(list);
+                List<ArticleJson> newlist = ArticleListInfo(list, Number);
                 var result = new
                 {
                     currpage = pager.Index,

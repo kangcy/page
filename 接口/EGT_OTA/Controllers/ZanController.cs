@@ -147,7 +147,7 @@ namespace EGT_OTA.Controllers
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
                 var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City", "Province").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
 
-                List<ArticleJson> newlist = ArticleListInfo(articles);
+                List<ArticleJson> newlist = ArticleListInfo(articles, CreateUserNumber);
 
                 var result = new
                 {

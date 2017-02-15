@@ -585,7 +585,7 @@ namespace EGT_OTA.Controllers
 
         #region  文章列表
 
-        protected List<ArticleJson> ArticleListInfo(List<Article> list)
+        protected List<ArticleJson> ArticleListInfo(List<Article> list, string usernumber = "")
         {
             //文章编号集合
             var array = list.Select(x => x.Number).ToArray();
@@ -595,7 +595,7 @@ namespace EGT_OTA.Controllers
 
             var orders = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved).And("ToArticleNumber").In(array).ExecuteTypedList<Order>();
             var keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where("ArticleNumber").In(array).ExecuteTypedList<Keep>();
-            var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ArticleNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+            //var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ArticleNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
 
             List<string> userids = new List<string>();
             list.ForEach(x =>
@@ -603,16 +603,23 @@ namespace EGT_OTA.Controllers
                 userids.Add(x.CreateUserNumber);
             });
 
-            list.ForEach(x =>
-            {
-                x.CommentList = comments.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(3).ToList();
-                x.CommentList.ForEach(y =>
-                {
-                    userids.Add(y.CreateUserNumber);
-                });
-            });
+            //list.ForEach(x =>
+            //{
+            //    x.CommentList = comments.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(3).ToList();
+            //    x.CommentList.ForEach(y =>
+            //    {
+            //        userids.Add(y.CreateUserNumber);
+            //    });
+            //});
 
             var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
+
+            //判断是否关注
+            var fans = new List<Fan>();
+            if (!string.IsNullOrWhiteSpace(usernumber))
+            {
+                fans = db.Find<Fan>(x => x.CreateUserNumber == usernumber).ToList();
+            }
 
             var tags = GetTag();
 
@@ -631,24 +638,24 @@ namespace EGT_OTA.Controllers
                 model.Title = x.Title;
                 model.Views = x.Views;
                 model.Goods = x.Goods;
-                model.Comments = comments.Count(y => y.ArticleNumber == x.Number);
+                //model.Comments = comments.Count(y => y.ArticleNumber == x.Number);
 
-                model.CommentList = new List<CommentJson>();
-                x.CommentList.ForEach(y =>
-                {
-                    CommentJson comment = new CommentJson();
-                    comment.ID = y.ID;
-                    comment.Summary = y.Summary;
-                    var commentUser = users.FirstOrDefault(z => z.Number == y.CreateUserNumber);
-                    if (commentUser != null)
-                    {
-                        comment.UserID = commentUser.ID;
-                        comment.UserNumber = commentUser.Number;
-                        comment.UserName = commentUser.NickName;
-                        comment.UserAvatar = commentUser.Avatar;
-                    }
-                    model.CommentList.Add(comment);
-                });
+                //model.CommentList = new List<CommentJson>();
+                //x.CommentList.ForEach(y =>
+                //{
+                //    CommentJson comment = new CommentJson();
+                //    comment.ID = y.ID;
+                //    comment.Summary = y.Summary;
+                //    var commentUser = users.FirstOrDefault(z => z.Number == y.CreateUserNumber);
+                //    if (commentUser != null)
+                //    {
+                //        comment.UserID = commentUser.ID;
+                //        comment.UserNumber = commentUser.Number;
+                //        comment.UserName = commentUser.NickName;
+                //        comment.UserAvatar = commentUser.Avatar;
+                //    }
+                //    model.CommentList.Add(comment);
+                //});
 
                 //标签
                 model.TagList = new List<Tag>();
@@ -665,7 +672,7 @@ namespace EGT_OTA.Controllers
                         }
                     });
                 }
-
+                model.IsFollow = fans.Count(y => y.ToUserNumber == x.CreateUserNumber);
                 model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
                 model.UserNumber = x.CreateUserNumber;
