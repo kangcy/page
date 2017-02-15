@@ -289,5 +289,27 @@ namespace EGT_OTA.Controllers
             }
             return Json(new { result = false, message = "验证码错误" }, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// Banner列表
+        /// </summary>
+        public ActionResult Banner()
+        {
+            try
+            {
+                var list = GetBanner();
+                var result = new
+                {
+                    records = list.Count(),
+                    list = list
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("SystemController_Banner:" + ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

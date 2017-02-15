@@ -191,6 +191,32 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// Banner
+        /// </summary>
+        protected List<Banner> GetBanner()
+        {
+            List<Banner> list = new List<Banner>();
+            if (CacheHelper.Exists("Banner"))
+            {
+                list = (List<Banner>)CacheHelper.GetCache("Banner");
+            }
+            else
+            {
+                string str = string.Empty;
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/banner.config");
+                if (System.IO.File.Exists(filePath))
+                {
+                    StreamReader sr = new StreamReader(filePath, Encoding.Default);
+                    str = sr.ReadToEnd();
+                    sr.Close();
+                }
+                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Banner>>(str);
+                CacheHelper.Insert("Banner", list);
+            }
+            return list;
+        }
+
+        /// <summary>
         /// 音乐
         /// </summary>
         protected List<MusicJson> GetMusic()
