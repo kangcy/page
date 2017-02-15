@@ -670,11 +670,13 @@ namespace EGT_OTA.Controllers
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
                 model.UserNumber = x.CreateUserNumber;
                 model.Cover = x.Cover;
-                model.CreateDate = FormatTime(x.CreateDate);
+                //model.CreateDate = FormatTime(x.CreateDate);
+                model.CreateDate = x.CreateDate.ToString("hh:mm yyyy-MM-dd");
                 model.TypeName = articletype == null ? "" : articletype.Name;
                 model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();
                 model.ArticlePower = x.ArticlePower;
                 model.Recommend = x.Recommend;
+                model.Province = x.Province;
                 model.City = x.City;
                 newlist.Add(model);
             });

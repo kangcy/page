@@ -155,6 +155,8 @@ namespace EGT_OTA.Controllers
                 model.MusicID = ZNRequest.GetInt("MusicID");
                 model.MusicName = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("MusicName"));
                 model.MusicUrl = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("MusicUrl"));
+                model.Province = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("Province"));
+                model.City = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("City"));
                 model.UpdateUserNumber = user.Number;
                 model.UpdateDate = DateTime.Now;
                 model.UpdateIP = Tools.GetClientIP;
@@ -176,8 +178,6 @@ namespace EGT_OTA.Controllers
                     model.CreateUserNumber = user.Number;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
-                    model.Province = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("Province"));
-                    model.City = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("City"));
                     model.Number = BuildNumber();
                     model.ID = Tools.SafeInt(db.Add<Article>(model));
                     result = model.ID > 0;
