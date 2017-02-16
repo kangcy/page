@@ -266,6 +266,19 @@
     <Content Include="Images\Help\7.png" />
     <Content Include="Images\Help\8.png" />
     <Content Include="Images\logo.png" />
+    <Content Include="Images\Source\Template\01-1.jpg" />
+    <Content Include="Images\Source\Template\02-1.jpg" />
+    <Content Include="Images\Source\Template\02-2.jpg" />
+    <Content Include="Images\Source\Template\03-1.jpg" />
+    <Content Include="Images\Source\Template\03-2.jpg" />
+    <Content Include="Images\Source\Template\04-1.jpg" />
+    <Content Include="Images\Source\Template\05-1.jpg" />
+    <Content Include="Images\Source\Template\05-2.jpg" />
+    <Content Include="Images\Source\Template\06-1.jpg" />
+    <Content Include="Images\Source\Template\06-2.jpg" />
+    <Content Include="Images\Source\Template\07-2.jpg" />
+    <Content Include="Images\Source\Template\背景色色值.txt" />
+    <Content Include="Images\Source\temp\000000000000000000002.jpg" />
     <Content Include="Images\User\cover01.png" />
     <Content Include="Images\User\avatar01.png" />
     <Content Include="obj\Debug\EGT_OTA.csproj.FileListAbsolute.txt" />
@@ -318,7 +331,6 @@
     <Content Include="Images\Source\video\1.png" />
     <Content Include="Images\Source\video\2.png" />
     <Content Include="Images\Source\video\3.png" />
-    <Content Include="新建文本文档.txt" />
     <None Include="Config\articletype.config" />
     <Content Include="Config\music.config" />
     <Content Include="Config\template.config">

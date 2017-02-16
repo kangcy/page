@@ -33,24 +33,9 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         /// <summary>
-        /// 名称
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
         /// 排版类型
         /// </summary>
         public int TemplateType { get; set; }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string MarginTop { get; set; }
-
-        /// <summary>
-        /// 标题颜色
-        /// </summary>
-        public string TitleColor { get; set; }
 
         /// <summary>
         /// 背景缩略图
