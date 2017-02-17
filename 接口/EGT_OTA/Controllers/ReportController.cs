@@ -15,9 +15,9 @@ using System.Text;
 namespace EGT_OTA.Controllers
 {
     /// <summary>
-    /// 分享记录管理
+    /// 举报记录管理
     /// </summary>
-    public class ShareLogController : BaseController
+    public class ReportController : BaseController
     {
         /// <summary>
         /// 编辑
@@ -31,28 +31,26 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var articleID = ZNRequest.GetInt("ArticleID");
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Shares", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
-
-                if (article == null)
+                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
+                var summary = ZNRequest.GetString("Summary");
+                summary = AntiXssChineseString.ChineseStringSanitize(summary);
+                if (string.IsNullOrWhiteSpace(ArticleNumber) || string.IsNullOrEmpty(summary))
                 {
-                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-
-                ShareLog model = new ShareLog();
+                if (db.Exists<Report>(x => x.ArticleNumber == ArticleNumber && x.CreateUserNumber == user.Number))
+                {
+                    return Json(new { result = false, message = "正在处理中" }, JsonRequestBehavior.AllowGet);
+                }
+                Report model = new Report();
                 model.CreateDate = DateTime.Now;
                 model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
-                model.ArticleNumber = article.Number;
-                model.Source = ZNRequest.GetString("Source");
+                model.ArticleNumber = ArticleNumber;
+                model.Summary = summary;
                 var result = false;
 
-                result = Tools.SafeInt(db.Add<ShareLog>(model)) > 0;
-                //修改分享数
-                if (result)
-                {
-                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Shares").EqualTo(article.Shares + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
-                }
+                result = Tools.SafeInt(db.Add<Report>(model)) > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -60,7 +58,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("ShareLogController_Edit:" + ex.Message);
+                LogHelper.ErrorLoger.Error("ReportController_Edit:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }

@@ -165,8 +165,8 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
-    <Compile Include="Controllers\ShareLogController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ShareLogController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\BlackController.cs" />
     <Compile Include="Enum\EnumAttribute.cs" />
