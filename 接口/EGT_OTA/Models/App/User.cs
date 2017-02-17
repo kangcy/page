@@ -55,12 +55,6 @@ namespace EGT_OTA.Models
         [SubSonicPrimaryKey]
         public int ID { get; set; }
 
-        /////<summary>
-        /////登陆账号
-        /////</summary>
-        //[SubSonicStringLength(20), SubSonicNullString]
-        //public string UserName { get; set; }
-
         ///<summary>
         ///登陆密码
         ///</summary>
@@ -208,6 +202,11 @@ namespace EGT_OTA.Models
         /// 是否推荐
         /// </summary>
         public int IsRecommend { get; set; }
+
+        /// <summary>
+        /// 用户角色
+        /// </summary>
+        public int UserRole { get; set; }
 
         #region  隐私管理
 

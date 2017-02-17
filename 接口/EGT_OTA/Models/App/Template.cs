@@ -38,6 +38,11 @@ namespace EGT_OTA.Models
         public int TemplateType { get; set; }
 
         /// <summary>
+        /// 背景色
+        /// </summary>
+        public string Background { get; set; }
+
+        /// <summary>
         /// 背景缩略图
         /// </summary>
         public string ThumbUrl { get; set; }

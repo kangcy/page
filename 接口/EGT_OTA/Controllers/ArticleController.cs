@@ -524,7 +524,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.ID > 0);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //昵称
                 var title = ZNRequest.GetString("Title");
@@ -610,7 +610,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.ID > 0);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //昵称
                 var title = ZNRequest.GetString("Title");
