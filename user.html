@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/loading.css">
+		<link rel="stylesheet" href="css/animate.css">
+		<link rel="stylesheet" href="css/my.css">
+		<style type="text/css">
+			/*头部*/
+			
+			#avatar {
+				border-radius: 50%;
+				width: 5rem;
+				height: 5rem;
+				border: 3px solid #fff;
+			}
+			
+			#article .head {
+				background: #EEEEEE;
+				height: 2.5rem;
+				line-height: 2.5rem;
+			}
+			
+			#article .title {
+				height: 3rem;
+				line-height: 3rem;
+			}
+			
+			#article .list {
+				display: inline-block;
+				background: #EEEEEE;
+			}
+			
+			#article .list img {
+				width: 33.3%;
+				float: left;
+				border: 1px solid #fff;
+			}
+			
+			.bt {
+				border-top: 1px solid #eee;
+			}
+			/**操作**/
+			
+			.mui-popover.mui-popover-action .mui-table-view {
+				margin-left: 0 !important;
+				margin-right: 0px !important;
+				border-radius: 0px !important;
+			}
+			
+			.mui-popover.mui-popover-action .mui-table-view {
+				margin-left: 0px !important;
+				margin-right: 0px !important;
+				margin-bottom: 0px !important;
+				margin-top: 0.5rem !important;
+				border-radius: 0px !important;
+			}
+			
+			.mui-popover.mui-popover-action .mui-table-view .mui-table-view-cell:after {
+				background-color: #ddd !important;
+			}
+			
+			.more {
+				margin-top: 0.35rem;
+				margin-right: 0.4rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-transparent">
+			<h1 class="mui-title c333" id="title">专栏</h1>
+		</header>
+		<div class="mui-content">
+			<div class="loading" id="loader">
+				<div class="card">
+					<span class="circles-loader"></span>
+				</div>
+			</div>
+			<div class="info-content" id="bg">
+				<img id="avatar" class="hide" />
+				<p class="f16 tc mt5 cfff textshadow" id="nickname"></p>
+				<p class="signature tc mt5 f12 cfff textshadow" id="signature"></p>
+				<p class="secret tc mt5 f13">
+					<span class="cfff textshadow hide" id="showFollow">关注&nbsp;<span class="cfff textshadow" id="showFollowNum">0</span></span>
+					<span class="cfff textshadow hide" id="showFan">粉丝&nbsp;<span class="cfff textshadow" id="showFanNum">0</span></span>
+					<span class="cfff textshadow hide" id="showArticle">喜欢&nbsp;<span class="cfff textshadow" id="showArticleNum">0</span></span>
+				</p>
+			</div>
+			<div id="article" class="hide f13 caaa full">
+				<div class="head tl"><span class="ml15" id="a_title">0篇文章</span></div>
+				<div id="a_list">
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script src="js/mui.min.js"></script>
+<script src="js/transparent.js"></script>
+<script type="text/javascript">
+	var RootUrl = "http://139.224.51.196/";
+
+	mui.init({
+		gestureConfig: {
+			doubletap: true
+		},
+		swipeBack: false
+	});
+
+	mui.ready(function() {
+		//base.ShowArticle("#a_list", "List", userinfo.Number);
+	});
+
+	mui.ready(function() {
+
+		var key = GetParameter("key");
+		if(IsNullOrEmpty("key")) {
+			mui.alert("参数异常");
+			return false;
+		}
+		LoadUserInfo(key);
+		LoadArticle(key);
+	});
+
+	//文章
+	function LoadArticle(key) {
+		var data = {
+			UserNumber: key
+		}
+		HttpGet(RootUrl + "User/Article", data, function(data) {
+			var table = document.getElementById('a_list');
+			if(data != null) {
+				var length = data.records;
+				if(length > 0) {
+					document.getElementById("a_title").innerHTML = data.records + "篇文章";
+
+					for(var i = 0; i < data.list.length; i++) {
+						var html = [];
+						var div = document.createElement('div');
+						div.className = 'title tl';
+						div.innerHTML = '<span class="ml15">' + data.list[i].CreateDate + '</span><span class="ml15" id="a_num">' + data.list[i].Count + '篇</span>';
+						table.appendChild(div);
+
+						var div2 = document.createElement('div');
+						div2.className = 'list full';
+						var html = [];
+						for(var y = 0; y < data.list[i].List.length; y++) {
+							var item = data.list[i].List[y];
+							html.push('<img src="' + ShowThumb(item.Cover, 2) + '" class="article" articleid="' + item.ID + '" userid="' + item.CreateUserNumber + '" power="' + item.ArticlePower + '" />');
+						}
+						div2.innerHTML = html.join('');
+						table.appendChild(div2);
+					}
+				}
+			}
+		});
+	}
+
+	//获取用户信息
+	function LoadUserInfo(key) {
+		HttpGet(RootUrl + "User/Detail", {
+			Number: key
+		}, function(data) {
+			document.getElementById("title").innerHTML = data.NickName + "的专栏";
+			document.getElementById("loader").classList.add("hide");
+
+			if(data.result) {
+				data = data.message;
+				document.getElementById("bg").style.background = "url(" + data.Cover + ") center center";
+				document.getElementById("bg").style.backgroundSize = "100% 100%";
+				document.getElementById("avatar").setAttribute("src", ShowThumb(data.Avatar, 2));
+				document.getElementById("avatar").classList.remove("hide");
+				document.getElementById("nickname").innerHTML = data.NickName;
+				document.getElementById("signature").innerHTML = data.Signature;
+
+				if(data.ShowArticle == 1) {
+					document.getElementById("showArticleNum").innerHTML = data.Keeps;
+					document.getElementById("showArticle").classList.remove("hide");
+				}
+				if(data.ShowFollow == 1) {
+					document.getElementById("showFollowNum").innerHTML = data.Follows;
+					document.getElementById("showFollow").classList.remove("hide");
+				}
+				if(data.ShowFan == 1) {
+					document.getElementById("showFanNum").innerHTML = data.Fans;
+					document.getElementById("showFan").classList.remove("hide");
+				}
+			} else {
+				mui.toast(data.message);
+			}
+			document.getElementById("article").classList.remove("hide");
+
+		});
+	}
+
+	/**
+	 * 格式化缩略图显示
+	 */
+	function ShowThumb(url, thumb) {
+		if(IsNullOrEmpty(url)) {
+			return "img/logo.png";
+		}
+		if(url.indexOf('_0') < 0) {
+			return url;
+		}
+		return url.replace("_0", "_" + thumb);
+	}
+</script>

@@ -44,7 +44,7 @@
 				display: block;
 				border-radius: 8px;
 				background: #3395ed;
-				margin: 0px 5% 25px;
+				margin: 10px 5%;
 				text-shadow: none;
 				float: left;
 			}
@@ -61,7 +61,7 @@
 			}
 			
 			.comment .title {
-				height: 16px;
+				height: 2rem;
 			}
 			
 			.comment .title .color-lump {
@@ -71,9 +71,7 @@
 			}
 			
 			.comment .title h2 {
-				line-height: 16px;
-				font-size: 16px;
-				text-indent: 12px;
+				text-indent: 1rem;
 				font-weight: normal;
 				color: #8C8C8C;
 			}
@@ -81,74 +79,7 @@
 			.comment .list {
 				width: 100%;
 				box-sizing: border-box;
-				padding: 20px 0 0;
-				position: relative;
-			}
-			
-			.comment .list .item {
-				width: 100%;
-				box-sizing: border-box;
-				padding: 5px 0;
-				position: relative;
-			}
-			
-			.clearfix {
-				zoom: 1;
-			}
-			
-			.clearfix:before {
-				display: table;
-				content: "";
-			}
-			
-			.clearfix:after {
-				display: table;
-				content: "";
-				clear: both;
-			}
-			
-			.comment .list .item .userLogo {
-				float: left;
-				height: 36px;
-				width: 36px;
-				margin-right: 8px;
-			}
-			
-			.comment .list .item .userLogo img {
-				width: 36px;
-				height: 36px;
-				border-radius: 50%;
-			}
-			
-			.comment .list .item .usercomment {
-				height: 100%;
-			}
-			
-			.comment .list .item .usercomment .userinfo {
-				height: 16px;
-				font-size: 12px;
-				color: #8C8C8C;
-				line-height: 16px;
-			}
-			
-			.comment .list .item .usercomment .userinfo .userName {
-				float: left;
-			}
-			
-			.comment .list .item .usercomment .userinfo .commentLastTime {
-				float: right;
-			}
-			
-			.comment .list .item .usercomment .commentdetail p {
-				color: #4F4F4F;
-				font-size: 16px;
-				line-height: 22px;
-				word-break: break-all;
-				box-sizing: border-box;
-				-webkit-line-clamp: 2;
-				-webkit-box-orient: vertical;
-				display: -webkit-box;
-				overflow: hidden;
+				padding: 10px 0 0;
 			}
 		</style>
 	</head>
@@ -200,12 +131,12 @@
 					<div class="c000 full" id="desc">
 
 					</div>
-					<div class="fl hide" id="bottom">
+					<div class="full fl hide" id="bottom">
 						<!--评论-->
 						<div class="comment fl">
 							<div class="title">
 								<i class="fl color-lump"></i>
-								<h2 class="fl brilliant">最新评论</h2>
+								<h2 class="fl f20">最新评论</h2>
 							</div>
 							<div class="list" id="comment">
 
@@ -229,8 +160,14 @@
 	var MusicUrl = "";
 	var RootUrl = "http://139.224.51.196/";
 
+	mui.init({
+		gestureConfig: {
+			doubletap: true
+		},
+		swipeBack: false
+	});
+
 	mui.ready(function() {
-		mui.init();
 
 		InitScroll();
 
