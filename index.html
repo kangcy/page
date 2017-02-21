@@ -38,13 +38,13 @@
 			.download {
 				text-align: center;
 				width: 90%;
-				height: 45px;
-				line-height: 45px;
+				height: 2rem;
+				line-height: 2rem;
 				color: #fff;
 				display: block;
 				border-radius: 8px;
 				background: #3395ed;
-				margin: 10px 5%;
+				margin: 1rem 5%;
 				text-shadow: none;
 				float: left;
 			}
@@ -61,7 +61,7 @@
 			}
 			
 			.comment .title {
-				height: 2rem;
+				height: 1.5rem;
 			}
 			
 			.comment .title .color-lump {
@@ -136,7 +136,7 @@
 						<div class="comment fl">
 							<div class="title">
 								<i class="fl color-lump"></i>
-								<h2 class="fl f20">最新评论</h2>
+								<h2 class="fl f16">最新评论</h2>
 							</div>
 							<div class="list" id="comment">
 
@@ -303,7 +303,8 @@
 		data = {
 			page: 1,
 			rows: 10,
-			ArticleNumber: ArticleNumber
+			ArticleNumber: ArticleNumber,
+			New: 1
 		}
 		mui.getJSON(RootUrl + "Comment/ArticleComment", data, function(data) {
 			if(data != null) {
