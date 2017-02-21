@@ -115,3 +115,23 @@ function doFilter(query) {
 	}
 	return query;
 };
+
+/**
+ * 验证权限密码
+ */
+function CheckPowerPwd(articleid, pwd, callback) {
+	mui.getJSON(RootUrl + "Article/CheckPowerPwd", {
+		ArticleID: articleid,
+		ArticlePowerPwd: pwd
+	}, function(data) {
+		if(data != null) {
+			if(data.result) {
+				if(callback) {
+					callback();
+				}
+				return;
+			}
+		}
+		mui.toast("校验失败");
+	});
+}

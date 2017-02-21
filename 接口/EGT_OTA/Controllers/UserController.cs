@@ -1076,8 +1076,17 @@ namespace EGT_OTA.Controllers
             try
             {
                 var UserNumber = ZNRequest.GetString("UserNumber");
+                var CurrUserNumber = ZNRequest.GetString("CurrUserNumber");
                 var pager = new Pager();
-                var list = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "CreateUserNumber", "Cover", "ArticlePower", "Status", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved && x.CreateUserNumber == UserNumber).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "CreateUserNumber", "Cover", "ArticlePower", "Status", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved && x.CreateUserNumber == UserNumber);
+
+
+                if (UserNumber != CurrUserNumber)
+                {
+                    query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
+                }
+
+                var list = query.OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
 
                 var recordCount = list.Count();
                 if (recordCount == 0)

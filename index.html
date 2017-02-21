@@ -53,6 +53,7 @@
 				width: auto;
 				margin: 0px;
 				padding: 15px;
+				padding-bottom: 0px;
 				-webkit-box-sizing: border-box;
 				-moz-box-sizing: border-box;
 				box-sizing: border-box;
@@ -111,7 +112,7 @@
 				<div id="main1" class="f13 tc hide">
 					<div class="full">
 						<div class="full" style="position:relative;">
-							<img id="useravatar1" class="mt30" />
+							<img id="useravatar1" class="user mt30" userid="0" />
 							<p class="full user mt10 textshadow f15 cfff" userid="0" id="nickname1"></p>
 							<i id="music1" class="fa fa-music f13" onclick="switchsound()" style="position:absolute;right:10px;top:10px"></i>
 						</div>
@@ -133,12 +134,12 @@
 					</div>
 					<div class="full fl hide" id="bottom">
 						<!--评论-->
-						<div class="comment fl">
+						<div class="comment fl hide" id="comment">
 							<div class="title">
 								<i class="fl color-lump"></i>
 								<h2 class="fl f16">最新评论</h2>
 							</div>
-							<div class="list" id="comment">
+							<div class="list" id="commentlist">
 
 							</div>
 						</div>
@@ -173,9 +174,23 @@
 
 		var key = GetParameter("key");
 		if(IsNullOrEmpty("key")) {
-			mui.alert("参数异常");
-			return false;
+			return mui.toast("参数异常");
 		}
+
+		LoadArticle(key);
+		LoadComment(key);
+
+		mui("#mui-iframe-wrapper").on('tap', '.user', function(event) {
+			var userNumber = this.getAttribute("userid");
+			window.location.href = RootUrl + "u/" + userNumber;
+		});
+
+	});
+
+	/**
+	 * 加载文章
+	 */
+	function LoadArticle(key) {
 		mui.getJSON(RootUrl + "Home/Info", {
 			key: key
 		}, function(data) {
@@ -186,8 +201,6 @@
 				return mui.toast(data.message);
 			}
 			data = data.message;
-
-			LoadComment(data.Number);
 
 			//段落
 			var html = [];
@@ -254,9 +267,12 @@
 			document.getElementById("loader").classList.add("hide");
 
 			$("#musicname0,#musicname1").html(data.MusicName);
-			$("#useravatar0,#useravatar1").attr("src", ShowThumb(data.Avatar, 1));
+			$("#useravatar0,#useravatar1").attr({
+				"src": ShowThumb(data.Avatar, 1),
+				"userid": data.CreateUserNumber
+			});
 			$("#title0,#title1").html(data.Title);
-			$("#nickname0,#nickname1").html(data.NickName);
+			$("#nickname0,#nickname1").html(data.NickName).attr("userid", data.CreateUserNumber);
 			$("#createdate0,#createdate1").html(data.CreateDateText);
 			$("#views0,#views1").html("阅读  " + data.Views);
 			$("#desc").html(html.join(""));
@@ -293,13 +309,12 @@
 
 			$("#bottom").removeClass("hide");
 		});
-	});
+	}
 
 	/**
 	 * 加载评论
 	 */
 	function LoadComment(ArticleNumber) {
-		//ArticleNumber = "148644673377157";
 		data = {
 			page: 1,
 			rows: 10,
@@ -310,7 +325,8 @@
 			if(data != null) {
 				var length = data.records;
 				if(length > 0) {
-					var table = document.getElementById('comment');
+					document.getElementById('commentlist').classList.remove("hide");
+					var table = document.getElementById('commentlist');
 					for(var i = 0, len = data.list.length; i < len; i++) {
 						var div = appendStr(data.list[i]);
 						table.appendChild(div);
@@ -330,7 +346,7 @@
 		model.push('<div class="mui-slider-cell mt10 mb10"><div class="oa-contact-cell mui-table">');
 		model.push('<div class="mui-table-cell oa-contact-avatar"><img src="' + ShowThumb(item.Avatar, 1) + '" class="user" userid="' + item.UserNumber + '" /></div>');
 		model.push('<div class="mui-table-cell pb0">');
-		model.push('<p class="f12 user cc999" userid="' + item.UserNumber + '">' + item.NickName + '<span class="fr c999 f11">' + item.CreateDate + '</span></p>');
+		model.push('<p class="f12 user c999" userid="' + item.UserNumber + '">' + item.NickName + '<span class="fr c999 f11">' + item.CreateDate + '</span></p>');
 		model.push('<p class="f12 c333 mt5 mb5" style="line-height:1.3rem;">' + item.Summary + '</p>');
 		if(item.ParentCommentID > 0) {
 			model.push('<p class="tip mb0 f12" style="line-height:1.3rem;"><span class="user blue" userid="' + item.ParentUserNumber + '">@' + item.ParentNickName + '：</span>' + item.ParentSummary + '</p>');

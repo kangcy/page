@@ -87,14 +87,13 @@
 					</div>
 				</div>
 				<!--下载-->
-				<div id="download" class="download" onclick="Download()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
+				<div id="download" class="download hide" onclick="Download()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
 			</div>
 		</div>
 	</body>
 
 </html>
 <script src="js/mui.min.js"></script>
-<script src="js/transparent.js"></script>
 <script src="js/base.js"></script>
 <script type="text/javascript">
 	mui.init({
@@ -105,7 +104,27 @@
 	});
 
 	mui.ready(function() {
-		//base.ShowArticle("#a_list", "List", userinfo.Number);
+		mui("#a_list").on('tap', '.article', function(event) {
+			var articleId = this.getAttribute("articleid");
+			var articleNumber = this.getAttribute("articleNumber");
+			var power = this.getAttribute("power").toString();
+			if(power == "0") {
+				return mui.toast("私密文章，不可见");
+			} else if(power == "2") {
+				return mui.toast("仅作者分享可见");
+			} else if(power == "1") {
+				var btnArray = ['确定', '取消'];
+				mui.prompt('确认密码', '输入4位数字密码', '权限验证', btnArray, function(e) {
+					if(e.index == 0) {
+						CheckPowerPwd(articleId, e.value, function() {
+							window.location.href = RootUrl + articleNumber;
+						});
+					}
+				})
+			} else {
+				window.location.href = RootUrl + articleNumber;
+			}
+		});
 	});
 
 	mui.ready(function() {
@@ -146,7 +165,7 @@
 						var html = [];
 						for(var y = 0; y < data.list[i].List.length; y++) {
 							var item = data.list[i].List[y];
-							html.push('<img src="' + ShowThumb(item.Cover, 2) + '" class="article" articleid="' + item.ID + '" userid="' + item.CreateUserNumber + '" power="' + item.ArticlePower + '" />');
+							html.push('<img src="' + ShowThumb(item.Cover, 2) + '" class="article" articleid="' + item.ID + '" articleNumber="' + item.Number + '" userid="' + item.CreateUserNumber + '" power="' + item.ArticlePower + '" />');
 						}
 						div2.innerHTML = html.join('');
 						table.appendChild(div2);
@@ -189,7 +208,7 @@
 				mui.toast(data.message);
 			}
 			document.getElementById("article").classList.remove("hide");
-
+			document.getElementById("download").classList.remove("hide");
 		});
 	}
 </script>
