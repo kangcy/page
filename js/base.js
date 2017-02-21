@@ -117,6 +117,13 @@ function doFilter(query) {
 };
 
 /**
+ * 下载
+ */
+function Download() {
+	alert("跳转AppStore");
+}
+
+/**
  * 验证权限密码
  */
 function CheckPowerPwd(articleid, pwd, callback) {
