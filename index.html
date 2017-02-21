@@ -45,8 +45,8 @@
 			
 			.comment {
 				width: auto;
-				margin: 30px 0 0 0;
-				padding: 0 15px;
+				margin: 0px;
+				padding:15px;
 				-webkit-box-sizing: border-box;
 				-moz-box-sizing: border-box;
 				box-sizing: border-box;
@@ -75,14 +75,14 @@
 			.comment .list {
 				width: 100%;
 				box-sizing: border-box;
-				padding: 5px 0 0;
+				padding: 20px 0 0;
 				position: relative;
 			}
 			
 			.comment .list .item {
 				width: 100%;
 				box-sizing: border-box;
-				padding: 12px 0 15px;
+				padding: 5px 0;
 				position: relative;
 			}
 			
@@ -148,7 +148,7 @@
 	</head>
 
 	<body>
-		<div class="mui-content mui-scroll-wrapper">
+		<div class="mui-content mui-scroll-wrapper" id="mui-iframe-wrapper">
 			<div class="loading" id="loader">
 				<div class="card">
 					<span class="circles-loader"></span>
@@ -194,84 +194,86 @@
 					<div class="c000 full" id="desc">
 
 					</div>
-				</div>
-				<!--评论-->
-				<div class="comment fl">
-					<div class="title">
-						<i class="fl color-lump"></i>
-						<h2 class="fl brilliant">最新评论</h2>
-					</div>
-					<div class="list">
-						<div class="item clearfix">
-							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-								<a href="https://www.meipian.cn/c/1104730">
-									<img src="http://static2.ivwen.com/users/1104730/41710e3e844146dea73916034915fad8.jpg" style="width:36px;height:36px;">
-								</a>
+					<div style="float:left;">
+						<!--评论-->
+						<div class="comment fl">
+							<div class="title">
+								<i class="fl color-lump"></i>
+								<h2 class="fl brilliant">最新评论</h2>
 							</div>
-							<div class="usercomment">
-								<div class="userinfo">
-									<div class="userName">遥闻卧似水</div>
-									<div class="commentLastTime">2016-11-29</div>
+							<div class="list">
+								<div class="item clearfix">
+									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+										<a href="https://www.meipian.cn/c/1104730">
+											<img src="http://static2.ivwen.com/users/1104730/41710e3e844146dea73916034915fad8.jpg" style="width:36px;height:36px;">
+										</a>
+									</div>
+									<div class="usercomment">
+										<div class="userinfo">
+											<div class="userName">遥闻卧似水</div>
+											<div class="commentLastTime">2016-11-29</div>
+										</div>
+										<div class="commentdetail">
+											<p>漂亮👍</p>
+										</div>
+									</div>
 								</div>
-								<div class="commentdetail">
-									<p>漂亮👍</p>
+								<div class="item clearfix">
+									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+										<a href="https://www.meipian.cn/c/4375316">
+											<img src="http://static2.ivwen.com/users/4375316/9a47d85d62164ff8ae16d642241f6469.jpg" style="width:36px;height:36px;">
+										</a>
+									</div>
+									<div class="usercomment">
+										<div class="userinfo">
+											<div class="userName">老秦</div>
+											<div class="commentLastTime">2016-11-27</div>
+										</div>
+										<div class="commentdetail">
+											<p>很美！</p>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-						<div class="item clearfix">
-							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-								<a href="https://www.meipian.cn/c/4375316">
-									<img src="http://static2.ivwen.com/users/4375316/9a47d85d62164ff8ae16d642241f6469.jpg" style="width:36px;height:36px;">
-								</a>
-							</div>
-							<div class="usercomment">
-								<div class="userinfo">
-									<div class="userName">老秦</div>
-									<div class="commentLastTime">2016-11-27</div>
+								<div class="item clearfix">
+									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+										<a href="https://www.meipian.cn/c/512212">
+											<img src="http://static2.ivwen.com/users/512212/3e9049cdcd6a46f3bd516c05bef502d7.jpg" style="width:36px;height:36px;">
+										</a>
+									</div>
+									<div class="usercomment">
+										<div class="userinfo">
+											<div class="userName">Yngtsm宋哥</div>
+											<div class="commentLastTime">2016-11-25</div>
+										</div>
+										<div class="commentdetail">
+											<p>美拍！赞赞赞！</p>
+										</div>
+									</div>
 								</div>
-								<div class="commentdetail">
-									<p>很美！</p>
-								</div>
-							</div>
-						</div>
-						<div class="item clearfix">
-							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-								<a href="https://www.meipian.cn/c/512212">
-									<img src="http://static2.ivwen.com/users/512212/3e9049cdcd6a46f3bd516c05bef502d7.jpg" style="width:36px;height:36px;">
-								</a>
-							</div>
-							<div class="usercomment">
-								<div class="userinfo">
-									<div class="userName">Yngtsm宋哥</div>
-									<div class="commentLastTime">2016-11-25</div>
-								</div>
-								<div class="commentdetail">
-									<p>美拍！赞赞赞！</p>
-								</div>
-							</div>
-						</div>
 
-						<div class="item clearfix">
-							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-								<a href="https://www.meipian.cn/c/1314171">
-									<img src="http://static2.ivwen.com/users/1314171/c2c866f8682f498e8aff64592f087df0.jpg" style="width:36px;height:36px;">
-								</a>
-							</div>
-							<div class="usercomment">
-								<div class="userinfo">
-									<div class="userName">山水清音</div>
-									<div class="commentLastTime">2016-11-25</div>
+								<div class="item clearfix">
+									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+										<a href="https://www.meipian.cn/c/1314171">
+											<img src="http://static2.ivwen.com/users/1314171/c2c866f8682f498e8aff64592f087df0.jpg" style="width:36px;height:36px;">
+										</a>
+									</div>
+									<div class="usercomment">
+										<div class="userinfo">
+											<div class="userName">山水清音</div>
+											<div class="commentLastTime">2016-11-25</div>
+										</div>
+										<div class="commentdetail">
+											<p>秋是异美的色彩!它不缺少云的缥缈，水的徜徉。还间或朦胧和隐隐的爱!</p>
+										</div>
+									</div>
 								</div>
-								<div class="commentdetail">
-									<p>秋是异美的色彩!它不缺少云的缥缈，水的徜徉。还间或朦胧和隐隐的爱!</p>
-								</div>
+
 							</div>
 						</div>
-
+						<!--下载-->
+						<div id="download" class="download hide" href="javascript:;" onclick="downloadStat()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
 					</div>
 				</div>
-				<!--下载-->
-				<div id="download" class="download hide" href="javascript:;" onclick="downloadStat()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
 			</div>
 		</div>
 	</body>
