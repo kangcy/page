@@ -112,6 +112,9 @@
 			if(!data.result) {
 				return mui.toast(data.message);
 			}
+
+			document.getElementById("loader").classList.add("hide");
+
 			data = data.message;
 
 			//段落
