@@ -94,6 +94,48 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public string Day { get; set; }
 
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        [SubSonicIgnore]
+        public int UserID { get; set; }
+
+        /// <summary>
+        /// 用户编号
+        /// </summary>
+        [SubSonicIgnore]
+        public string UserNumber { get; set; }
+
+        /// <summary>
+        /// 用户昵称
+        /// </summary>
+        [SubSonicIgnore]
+        public string NickName { get; set; }
+
+        /// <summary>
+        /// 用户头像
+        /// </summary>
+        [SubSonicIgnore]
+        public string Avatar { get; set; }
+
+        /// <summary>
+        /// 父评论用户昵称
+        /// </summary>
+        [SubSonicIgnore]
+        public string ParentNickName { get; set; }
+
+        /// <summary>
+        /// 父评论内容
+        /// </summary>
+        [SubSonicIgnore]
+        public string ParentSummary { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [SubSonicIgnore]
+        public string CreateDateText { get; set; }
+
         #endregion
     }
 

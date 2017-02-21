@@ -115,10 +115,10 @@ namespace EGT_OTA.Controllers
                 model.CreateIP = Tools.GetClientIP;
                 model.ParentCommentNumber = ZNRequest.GetString("ParentCommentNumber");
                 model.ParentUserNumber = ZNRequest.GetString("ParentUserNumber");
-                var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
-                if (result)
+                model.ID = Tools.SafeInt(db.Add<Comment>(model));
+                if (model.ID > 0)
                 {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = model.ID }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -218,6 +218,51 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error("CommentController_ArticleComment:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        /// <summary>
+        /// 详情
+        /// </summary>
+        public ActionResult Detail()
+        {
+            try
+            {
+                var id = ZNRequest.GetInt("ID");
+                if (id <= 0)
+                {
+                    return Json(null, JsonRequestBehavior.AllowGet);
+                }
+                var model = db.Single<Comment>(x => x.ID == id);
+                if (model == null)
+                {
+                    return Json(null, JsonRequestBehavior.AllowGet);
+                }
+                var isNew = ZNRequest.GetInt("New");
+                model.CreateDateText = isNew > 0 ? FormatTime(model.CreateDate) : model.CreateDate.ToString("yyyy-MM-dd");
+                var user = db.Single<User>(x => x.Number == model.CreateUserNumber);
+                model.UserID = user == null ? 0 : user.ID;
+                model.UserNumber = user == null ? "" : user.Number;
+                model.NickName = user == null ? "" : user.NickName;
+                model.Avatar = user == null ? "" : user.Avatar;
+                if (!string.IsNullOrWhiteSpace(model.ParentUserNumber))
+                {
+                    var puser = db.Single<User>(x => x.Number == model.ParentUserNumber);
+
+                    model.ParentNickName = puser == null ? "" : puser.NickName;
+                }
+                if (!string.IsNullOrWhiteSpace(model.ParentCommentNumber))
+                {
+                    var comment = db.Single<Comment>(x => x.Number == model.ParentCommentNumber);
+
+                    model.ParentSummary = comment == null ? "" : comment.Summary;
+                }
+                return Json(new { result = true, message = model }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("CommentController_Detail:" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
