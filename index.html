@@ -30,6 +30,11 @@
 				max-width: 100%;
 			}
 			
+			#bottom {
+				background: #fff;
+				margin: 10px 0px;
+			}
+			
 			.download {
 				text-align: center;
 				width: 90%;
@@ -195,7 +200,7 @@
 					<div class="c000 full" id="desc">
 
 					</div>
-					<div class="fl" style="background:#fff;margin:10px 0px;">
+					<div class="fl hide" id="bottom">
 						<!--评论-->
 						<div class="comment fl">
 							<div class="title">
@@ -207,7 +212,7 @@
 							</div>
 						</div>
 						<!--下载-->
-						<div id="download" class="download hide" href="javascript:;" onclick="downloadStat()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
+						<div id="download" class="download" onclick="Download()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
 					</div>
 				</div>
 			</div>
@@ -349,7 +354,7 @@
 					break;
 			}
 
-			$("#download").removeClass("hide");
+			$("#bottom").removeClass("hide");
 		});
 	});
 
@@ -392,11 +397,17 @@
 		if(item.ParentCommentID > 0) {
 			model.push('<p class="tip mb0 f12" style="line-height:1.3rem;"><span class="user blue" userid="' + item.ParentUserNumber + '">@' + item.ParentNickName + '：</span>' + item.ParentSummary + '</p>');
 		}
-		//model.push('<div class="full tr mt10 mb5 c999" style="display:inline-block;"><img src="../images/base/comment_nor.png" style="width:0.825rem;" class="ml15 fr comments" cid="' + item.Number + '" userid="' + item.UserNumber + '" /><span class="f13 ml5 fr" id="goods' + item.ID + '">' + item.Goods + '</span><img src="../images/base/like_nor.png" style="width:0.825rem;" class="goods ml15 fr" cid="' + item.ID + '" already="0" /></div>');
 		model.push('</div>');
 		model.push('</div>');
 		div.innerHTML = model.join('');
 		return div;
+	}
+
+	/**
+	 * 下载
+	 */
+	function Download() {
+		alert("Download");
 	}
 
 	/**
