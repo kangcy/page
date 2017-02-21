@@ -31,7 +31,7 @@ namespace EGT_OTA
 
             //用户短链路由
             routes.MapRoute(
-                name: "short",
+                name: "ushort",
                 url: "u/{number}",
                 defaults: new { controller = "Home", action = "UserShort" }
             );

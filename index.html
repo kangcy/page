@@ -152,13 +152,13 @@
 
 </html>
 <script src="js/jquery-1.10.2.min.js"></script>
-<script src="js/music.js"></script>
 <script src="js/mui.min.js"></script>
+<script src="js/music.js"></script>
+<script src="js/base.js"></script>
 <script type="text/javascript" src="http://player.youku.com/jsapi"></script>
 <script type="text/javascript">
 	var MusicID = 0;
 	var MusicUrl = "";
-	var RootUrl = "http://139.224.51.196/";
 
 	mui.init({
 		gestureConfig: {
@@ -299,7 +299,7 @@
 	 * 加载评论
 	 */
 	function LoadComment(ArticleNumber) {
-		ArticleNumber = "148644673377157";
+		//ArticleNumber = "148644673377157";
 		data = {
 			page: 1,
 			rows: 10,
@@ -372,68 +372,4 @@
 		}
 		return "";
 	}
-
-	function IsNullOrEmpty(str) {
-		if(!str) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 格式化缩略图显示
-	 */
-	function ShowThumb(url, thumb) {
-		if(IsNullOrEmpty(url)) {
-			return "img/logo.png";
-		}
-		if(url.indexOf('_0') < 0) {
-			return url;
-		}
-		return url.replace("_0", "_" + thumb);
-	}
-
-	/**
-	 * 格式化滚动条
-	 */
-	function InitScroll() {
-		var deceleration = mui.os.ios ? 0.003 : 0.0009; // 阻尼系数
-		mui('.mui-scroll-wrapper').scroll({
-			bounce: false,
-			indicators: false, // 是否显示滚动条
-			deceleration: deceleration
-		});
-	}
-
-	/*获取html的参数**********************************************/
-	function GetParameter(param) {
-		var query = window.location.search;
-		query = doFilter(query);
-		var iLen = param.length;
-		var iStart = query.indexOf(param);
-		if(iStart == -1) {
-			return "";
-		}
-		iStart += iLen + 1;
-		var iEnd = query.indexOf("&", iStart);
-		if(iEnd == -1) {
-			return query.substring(iStart);
-		}
-		return query.substring(iStart, iEnd);
-	};
-
-	//过滤多余问号的情况
-	function doFilter(query) {
-		//出现多个？的情况，保留第一个，其他都改为&
-		var queryParam = query.split('?');
-		if(queryParam.length > 1) {
-			var _index = query.indexOf("?") + 1;
-			var queryBefore = query.substr(0, _index);
-			var queryAfter = query.substr(_index);
-			queryAfter = queryAfter.replace("?", "&");
-			//替换除第一？外的情况
-			query = queryBefore + queryAfter;
-		}
-		return query;
-	};
 </script>

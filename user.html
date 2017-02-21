@@ -46,57 +46,48 @@
 			.bt {
 				border-top: 1px solid #eee;
 			}
-			/**操作**/
 			
-			.mui-popover.mui-popover-action .mui-table-view {
-				margin-left: 0 !important;
-				margin-right: 0px !important;
-				border-radius: 0px !important;
-			}
-			
-			.mui-popover.mui-popover-action .mui-table-view {
-				margin-left: 0px !important;
-				margin-right: 0px !important;
-				margin-bottom: 0px !important;
-				margin-top: 0.5rem !important;
-				border-radius: 0px !important;
-			}
-			
-			.mui-popover.mui-popover-action .mui-table-view .mui-table-view-cell:after {
-				background-color: #ddd !important;
-			}
-			
-			.more {
-				margin-top: 0.35rem;
-				margin-right: 0.4rem;
+			.download {
+				text-align: center;
+				width: 90%;
+				height: 45px;
+				line-height: 45px;
+				color: #fff;
+				display: block;
+				border-radius: 8px;
+				background: #3395ed;
+				margin: 10px 5%;
+				text-shadow: none;
+				float: left;
 			}
 		</style>
 	</head>
 
 	<body>
-		<header id="header" class="mui-bar mui-bar-transparent">
-			<h1 class="mui-title c333" id="title">专栏</h1>
-		</header>
-		<div class="mui-content">
+		<div class="mui-content mui-scroll-wrapper">
 			<div class="loading" id="loader">
 				<div class="card">
 					<span class="circles-loader"></span>
 				</div>
 			</div>
-			<div class="info-content" id="bg">
-				<img id="avatar" class="hide" />
-				<p class="f16 tc mt5 cfff textshadow" id="nickname"></p>
-				<p class="signature tc mt5 f12 cfff textshadow" id="signature"></p>
-				<p class="secret tc mt5 f13">
-					<span class="cfff textshadow hide" id="showFollow">关注&nbsp;<span class="cfff textshadow" id="showFollowNum">0</span></span>
-					<span class="cfff textshadow hide" id="showFan">粉丝&nbsp;<span class="cfff textshadow" id="showFanNum">0</span></span>
-					<span class="cfff textshadow hide" id="showArticle">喜欢&nbsp;<span class="cfff textshadow" id="showArticleNum">0</span></span>
-				</p>
-			</div>
-			<div id="article" class="hide f13 caaa full">
-				<div class="head tl"><span class="ml15" id="a_title">0篇文章</span></div>
-				<div id="a_list">
+			<div class="mui-scroll">
+				<div class="info-content" id="bg">
+					<img id="avatar" class="hide" />
+					<p class="f16 tc mt5 cfff textshadow" id="nickname"></p>
+					<p class="signature tc mt5 f12 cfff textshadow" id="signature"></p>
+					<p class="secret tc mt5 mb20 f13">
+						<span class="cfff textshadow hide" id="showFollow">关注&nbsp;<span class="cfff textshadow" id="showFollowNum">0</span></span>
+						<span class="cfff textshadow hide" id="showFan">粉丝&nbsp;<span class="cfff textshadow" id="showFanNum">0</span></span>
+						<span class="cfff textshadow hide" id="showArticle">喜欢&nbsp;<span class="cfff textshadow" id="showArticleNum">0</span></span>
+					</p>
 				</div>
+				<div id="article" class="hide f13 caaa full">
+					<div class="head tl"><span class="ml15" id="a_title">0篇文章</span></div>
+					<div id="a_list">
+					</div>
+				</div>
+				<!--下载-->
+				<div id="download" class="download" onclick="Download()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
 			</div>
 		</div>
 	</body>
@@ -104,9 +95,8 @@
 </html>
 <script src="js/mui.min.js"></script>
 <script src="js/transparent.js"></script>
+<script src="js/base.js"></script>
 <script type="text/javascript">
-	var RootUrl = "http://139.224.51.196/";
-
 	mui.init({
 		gestureConfig: {
 			doubletap: true
@@ -125,6 +115,9 @@
 			mui.alert("参数异常");
 			return false;
 		}
+
+		InitScroll();
+
 		LoadUserInfo(key);
 		LoadArticle(key);
 	});
@@ -134,7 +127,7 @@
 		var data = {
 			UserNumber: key
 		}
-		HttpGet(RootUrl + "User/Article", data, function(data) {
+		mui.getJSON(RootUrl + "User/Article", data, function(data) {
 			var table = document.getElementById('a_list');
 			if(data != null) {
 				var length = data.records;
@@ -165,10 +158,10 @@
 
 	//获取用户信息
 	function LoadUserInfo(key) {
-		HttpGet(RootUrl + "User/Detail", {
+		mui.getJSON(RootUrl + "User/Detail", {
 			Number: key
 		}, function(data) {
-			document.getElementById("title").innerHTML = data.NickName + "的专栏";
+
 			document.getElementById("loader").classList.add("hide");
 
 			if(data.result) {
@@ -198,18 +191,5 @@
 			document.getElementById("article").classList.remove("hide");
 
 		});
-	}
-
-	/**
-	 * 格式化缩略图显示
-	 */
-	function ShowThumb(url, thumb) {
-		if(IsNullOrEmpty(url)) {
-			return "img/logo.png";
-		}
-		if(url.indexOf('_0') < 0) {
-			return url;
-		}
-		return url.replace("_0", "_" + thumb);
 	}
 </script>
