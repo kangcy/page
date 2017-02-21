@@ -148,6 +148,9 @@ namespace EGT_OTA.Controllers
                 {
                     query = query.And("ArticleNumber").IsEqualTo(ArticleNumber);
                 }
+                var NewId = ZNRequest.GetInt("NewId");
+                query = query.And("ID").IsNotEqualTo(NewId);
+
                 var recordCount = query.GetRecordCount();
 
                 if (recordCount == 0)
@@ -194,7 +197,7 @@ namespace EGT_OTA.Controllers
                                    City = l.City,
                                    Goods = l.Goods,
                                    Number = l.Number,
-                                   CreateDate = isNew > 0 ? FormatTime(l.CreateDate) : l.CreateDate.ToString("yyyy-MM-dd"),
+                                   CreateDateText = isNew > 0 ? FormatTime(l.CreateDate) : l.CreateDate.ToString("yyyy-MM-dd"),
                                    UserID = u.ID,
                                    UserNumber = u.Number,
                                    NickName = u.NickName,
@@ -237,8 +240,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(null, JsonRequestBehavior.AllowGet);
                 }
-                var isNew = ZNRequest.GetInt("New");
-                model.CreateDateText = isNew > 0 ? FormatTime(model.CreateDate) : model.CreateDate.ToString("yyyy-MM-dd");
+                model.CreateDateText = model.CreateDate.ToString("yyyy-MM-dd");
                 var user = db.Single<User>(x => x.Number == model.CreateUserNumber);
                 model.UserID = user == null ? 0 : user.ID;
                 model.UserNumber = user == null ? "" : user.Number;
@@ -289,6 +291,9 @@ namespace EGT_OTA.Controllers
                     query = query.And("ArticleUserNumber").IsEqualTo(ArticleUserNumber);
                 }
 
+                var NewId = ZNRequest.GetInt("NewId");
+                query = query.And("ID").IsNotEqualTo(NewId);
+
                 var recordCount = query.GetRecordCount();
 
                 if (recordCount == 0)
@@ -325,7 +330,7 @@ namespace EGT_OTA.Controllers
                                    Summary = l.Summary,
                                    City = l.City,
                                    Goods = l.Goods,
-                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   CreateDateText = l.CreateDate.ToString("yyyy-MM-dd"),
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Avatar = u.Avatar,
