@@ -7,6 +7,8 @@
 		<title></title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<link href="css/animate.css" rel="stylesheet" />
+		<link href="css/loading.css" rel="stylesheet" />
+		<link href="css/articledetail.css" rel="stylesheet" />
 		<link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
 		<style type="text/css">
 			html,
@@ -26,172 +28,55 @@
 			img {
 				max-width: 100%;
 			}
-			
-			.detail {
-				width: 95%;
-				margin: 2.5%;
-				padding: 2.5%;
-				line-height: 1.5625rem;
-				display: inline-block;
-			}
-			
-			#useravatar1 {
-				width: 3rem;
-				height: 3rem;
-				border-radius: 50%;
-				border: 2px solid #fff;
-			}
-			
-			.cover {
-				background: RGBA(255, 255, 255, 0.6);
-				height: 100%;
-				z-index: -1;
-				border-radius: 10px;
-				margin-top: 1rem !important;
-			}
-			
-			.bg {
-				width: 100%;
-				z-index: 1;
-				min-height: 100%;
-			}
-			
-			.fa-music {
-				padding: 0.35rem;
-				background: #fff;
-				border-radius: 50px;
-				color: #333;
-				box-shadow: 0px 0px 1px #333;
-				width: 1.5rem;
-				height: 1.5rem;
-				box-shadow: 0px 0.05px 0.05px #333;
-			}
-			
-			.fa-music[play=stop] {
-				animation: rotate 4s linear infinite;
-				-webkit-animation: rotate 4s linear infinite;
-				-ms-animation: rotate 4s linear infinite;
-				-moz-animation: rotate 4s linear infinite;
-				-o-animation: rotate 4s linear infinite;
-			}
-			/**通用样式**/
-			
-			.music {
-				width: 100%;
-				height: 42px;
-				border-radius: 5px;
-				margin: 10px 8px 0 0;
-				background: #f6f6f6;
-				padding: 0;
-				line-height: 42px;
-				cursor: pointer;
-			}
-			
-			.music[play=on] i {
-				background-image: url("img/on.png");
-			}
-			
-			.music[play=stop] i {
-				background-image: url("img/off.png");
-			}
-			
-			.music i {
-				float: left;
-				width: 25px;
-				height: 25px;
-				background-size: contain;
-				background-repeat: no-repeat;
-				background-position: center;
-				margin: 8px 10px 0 15px;
-			}
-			
-			.music span {
-				width: calc(100% - 70px);
-				width: -webkit-calc(100% - 70px);
-				margin: 0;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				float: left;
-				text-align: left;
-			}
-			/*模板选择*/
-			
-			#temps {
-				background: #eee;
-				height: 100px;
-				position: fixed;
-				bottom: 0px;
-				top: auto;
-				z-index: 99999;
-				border: 0px;
-			}
-			
-			.temp {
-				width: 80px !important;
-				height: 80px !important;
-				padding: 0px !important;
-				position: relative;
-				margin-left: 8px !important;
-			}
-			
-			.temp:first-child {
-				margin-left: 10px !important;
-			}
-			
-			.temp:last-child {
-				margin-right: 10px !important;
-			}
-			
-			.temp img {
-				width: 100% !important;
-				height: 100% !important;
-			}
-			
-			.temp.hover img {
-				border: 2px solid #ed5565;
-			}
 		</style>
 	</head>
 
 	<body>
-		<div class="mui-content mui-scroll-wrapper bg" id="bg">
-			<div class="mui-scroll">
-				<!--通用样式-->
-				<div id="main0" class="hide">
-					<div class="f13 tl detail">
-						<div class="full tl">
-							<p class="f20 c000" id="title0"></p>
-							<span class="mt0 mb0 csubtitle f13" id="createdate0"></span>
-							<span class="mb0 blue ml10 user mt10" userid="0" id="nickname0"></span>
-							<span class="mt0 mb0 ml10 csubtitle f13" id="views0"></span>
-							<p id="music0" play="on" class="music" onclick="switchsound()">
-								<i></i>
-								<span id="musicname0"></span>
-							</p>
-						</div>
-						<div class="c000 full mt20 mb20" id="desc0">
-						</div>
-					</div>
+		<div class="mui-content mui-scroll-wrapper">
+			<div class="loading" id="loader">
+				<div class="card">
+					<span class="circles-loader"></span>
 				</div>
-				<!--排版1-->
-				<div id="main1" class="hide">
-					<div class="tc" style="width: 95%; margin: 0px 2.5%; padding-top: 2.5%;">
-						<div class="full" style="position: relative;">
-							<img id="useravatar1" />
-							<p class="full mb0 user blue mt10" userid="0" id="nickname1"></p>
-							<i id="music1" class="fa fa-music f13" onclick="switchsound()" style="position: absolute; right: 0px; top: 0px;"></i>
+			</div>
+			<div class="mui-scroll">
+				<div class="mui-scroll" id="bg">
+					<!--通用样式-->
+					<div id="main0" class="f13 tl mt20 hide">
+						<div class="detail">
+							<div class="full tl">
+								<p class="f16 c000" id="title0"></p>
+								<span class="mt0 mb0 csubtitle f13" id="createdate0"></span>
+								<span class="mb0 ml10 user mt5 blue" userid="0" id="nickname0"></span>
+								<span class="mt0 mb0 ml10 csubtitle f13" id="views0"></span>
+								<p id="music0" play="on" class="music mb10" onclick="switchsound()">
+									<i></i>
+									<span id="musicname0"></span>
+								</p>
+							</div>
 						</div>
 					</div>
-					<div class="f13 tl detail cover">
-						<div class="full tc">
-							<p class="mt10 mb0 f20 c000" id="title1"></p>
-							<p class="mt0 mb10 full csubtitle f13 tc">
-								<span id="createdate1"></span>
-								<span class="ml10" id="views1"></span>
-							</p>
+					<!--排版1-->
+					<div id="main1" class="f13 tc hide">
+						<div class="full">
+							<div class="full" style="position:relative;">
+								<img id="useravatar1" class="mt30" />
+								<p class="full user mt10 textshadow f15 cfff" userid="0" id="nickname1"></p>
+								<i id="music1" class="fa fa-music f13" onclick="switchsound()" style="position:absolute;right:10px;top:10px"></i>
+							</div>
 						</div>
-						<div class="c000 full mb20" id="desc1">
+						<div class="detail cover cover1 fl">
+							<div class="full">
+								<p class="mt10 f16 c333" id="title1"></p>
+								<p class="mt5 mb0 full csubtitle f13">
+									<span id="createdate1" class="mr15"></span>
+									<span class="ml15" id="views1"></span>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="detail2 cover cover2 fl tl mb20">
+						<div class="c000 full" id="desc">
+
 						</div>
 					</div>
 				</div>
@@ -207,6 +92,8 @@
 <script type="text/javascript">
 	var MusicID = 0;
 	var MusicUrl = "";
+	var CurrTemplate = 0;
+	var CurrBackground = 0;
 
 	$(function() {
 
@@ -242,30 +129,63 @@
 				}
 			}
 
-			if(!IsNullOrEmpty(data.Cover)) {
-				ChangeBg(data.Background, data.Cover);
-			}
-
 			$("#footer_zan").html(data.Goods);
 			$("#footer_comment").html(data.Comments);
 
 			//排版
+			CurrCover = data.Cover;
 			var mainIndex = 0;
 			if(data.TemplateJson.ID > 0) {
 				mainIndex = data.TemplateJson.TemplateType;
 				CurrCover = data.TemplateJson.Cover;
+				$("#mui-iframe-wrapper").css("background-color", data.TemplateJson.Background);
+			}
+			CurrTemplate = data.Template;
+			CurrBackground = data.Background;
 
-				$("#useravatar1").css("margin-top", data.TemplateJson.MarginTop);
-				$("#nickname1").css("color", data.TemplateJson.TitleColor);
+			//纯白背景
+			if(data.Template == 1) {
+				$("#bg").css("background", "#fff");
+			} else if(data.Template > 1) {
+				$("#bg").css({
+					"background": "url(" + CurrCover + ") no-repeat top",
+					"background-size": "100% auto"
+				});
 			} else {
-				CurrCover = "";
+				switch(data.Background) {
+					case 0:
+						//全屏
+						$("#bg").css({
+							"background": "url(" + CurrCover + ") no-repeat",
+							"background-size": "100% 100%"
+						});
+						break;
+					case 1:
+						//居顶
+						$("#bg").css({
+							"background": "url(" + CurrCover + ") no-repeat top",
+							"background-size": "100% auto"
+						});
+						break;
+					case 2:
+						//平铺
+						$("#bg").css({
+							"background": "url(" + CurrCover + ") top left repeat",
+							"background-size": "auto auto"
+						});
+						break;
+					default:
+						break;
+				}
 			}
 
-			$("#title" + mainIndex).html(data.Title);
-			$("#nickname" + mainIndex).html(data.NickName);
-			$("#createdate" + mainIndex).html(data.CreateDateText);
-			$("#views" + mainIndex).html("阅读  " + data.Views);
-			$("#desc" + mainIndex).html(html.join(""));
+			$("#musicname0,#musicname1").html(data.MusicName);
+			$("#useravatar0,#useravatar1").attr("src", base.ShowThumb(data.Avatar, 1));
+			$("#title0,#title1").html(data.Title);
+			$("#nickname0,#nickname1").html(data.NickName);
+			$("#createdate0,#createdate1").html(data.CreateDateText);
+			$("#views0,#views1").html("阅读  " + data.Views);
+			$("#desc").html(html.join(""));
 
 			//实例化播放器
 			$(".youku_player").each(function() {
@@ -298,40 +218,6 @@
 			}
 		});
 	});
-
-	//背景状态切换
-	function ChangeBg(index, cover) {
-		//纯白背景
-		if(CurrTemplate == 1) {
-			$("#bg").css("background", "#fff");
-		} else {
-			switch(index) {
-				case 0:
-					//全屏
-					$("#bg").css({
-						"background": "url(" + cover + ") no-repeat",
-						"background-size": "100% 100%"
-					});
-					break;
-				case 1:
-					//居顶
-					$("#bg").css({
-						"background": "url(" + cover + ") no-repeat top",
-						"background-size": "100% auto"
-					});
-					break;
-				case 2:
-					//平铺
-					$("#bg").css({
-						"background": "url(" + cover + ") top left repeat",
-						"background-size": "auto auto"
-					});
-					break;
-				default:
-					break;
-			}
-		}
-	}
 
 	function ShowVideo(domid, vid) {
 		player = new YKU.Player(domid, {
