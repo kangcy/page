@@ -162,8 +162,18 @@ namespace EGT_OTA.Controllers
                 }
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
 
+                var isNew = ZNRequest.GetInt("New");
+
+                var list = new List<Comment>();
+                if (isNew > 0)
+                {
+                    list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
+                }
+                else
+                {
+                    list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
+                }
                 //所有用户
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
 
@@ -184,7 +194,7 @@ namespace EGT_OTA.Controllers
                                    City = l.City,
                                    Goods = l.Goods,
                                    Number = l.Number,
-                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   CreateDate = isNew > 0 ? FormatTime(l.CreateDate) : l.CreateDate.ToString("yyyy-MM-dd"),
                                    UserID = u.ID,
                                    UserNumber = u.Number,
                                    NickName = u.NickName,
