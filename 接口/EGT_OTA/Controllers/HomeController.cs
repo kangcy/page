@@ -12,7 +12,7 @@ namespace EGT_OTA.Controllers
     public class HomeController : BaseController
     {
         /// <summary>
-        /// 跳转
+        /// 跳转文章详情
         /// </summary>
         public ActionResult Short(string number)
         {
@@ -21,6 +21,18 @@ namespace EGT_OTA.Controllers
                 return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
             }
             return Redirect(System.Configuration.ConfigurationManager.AppSettings["share_url"] + "Home/index.html?key=" + number);
+        }
+
+        /// <summary>
+        /// 跳转用户详情
+        /// </summary>
+        public ActionResult UserShort(string number)
+        {
+            if (string.IsNullOrWhiteSpace(number))
+            {
+                return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+            }
+            return Redirect(System.Configuration.ConfigurationManager.AppSettings["share_url"] + "Home/user.html?key=" + number);
         }
 
         /// <summary>
