@@ -28,6 +28,122 @@
 			img {
 				max-width: 100%;
 			}
+			
+			.download {
+				text-align: center;
+				width: 90%;
+				height: 45px;
+				line-height: 45px;
+				color: #fff;
+				display: block;
+				border-radius: 8px;
+				background: #3395ed;
+				margin: 0px 5% 25px;
+				text-shadow: none;
+				float: left;
+			}
+			
+			.comment {
+				width: auto;
+				margin: 30px 0 0 0;
+				padding: 0 15px;
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+				border-radius: 0;
+				background-color: transparent;
+			}
+			
+			.comment .title {
+				height: 16px;
+			}
+			
+			.comment .title .color-lump {
+				background: #2887F0;
+				width: 5px;
+				height: 100%;
+			}
+			
+			.comment .title h2 {
+				line-height: 16px;
+				font-size: 16px;
+				text-indent: 12px;
+				font-weight: normal;
+				color: #8C8C8C;
+			}
+			
+			.comment .list {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 5px 0 0;
+				position: relative;
+			}
+			
+			.comment .list .item {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 12px 0 15px;
+				position: relative;
+			}
+			
+			.clearfix {
+				zoom: 1;
+			}
+			
+			.clearfix:before {
+				display: table;
+				content: "";
+			}
+			
+			.clearfix:after {
+				display: table;
+				content: "";
+				clear: both;
+			}
+			
+			.comment .list .item .userLogo {
+				float: left;
+				height: 36px;
+				width: 36px;
+				margin-right: 8px;
+			}
+			
+			.comment .list .item .userLogo img {
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+			}
+			
+			.comment .list .item .usercomment {
+				height: 100%;
+			}
+			
+			.comment .list .item .usercomment .userinfo {
+				height: 16px;
+				font-size: 12px;
+				color: #8C8C8C;
+				line-height: 16px;
+			}
+			
+			.comment .list .item .usercomment .userinfo .userName {
+				float: left;
+			}
+			
+			.comment .list .item .usercomment .userinfo .commentLastTime {
+				float: right;
+			}
+			
+			.comment .list .item .usercomment .commentdetail p {
+				color: #4F4F4F;
+				font-size: 16px;
+				line-height: 22px;
+				word-break: break-all;
+				box-sizing: border-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				display: -webkit-box;
+				overflow: hidden;
+			}
 		</style>
 	</head>
 
@@ -38,48 +154,124 @@
 					<span class="circles-loader"></span>
 				</div>
 			</div>
-			<div class="mui-scroll">
-				<div class="mui-scroll" id="bg">
-					<!--通用样式-->
-					<div id="main0" class="f13 tl mt20 hide">
-						<div class="detail">
-							<div class="full tl">
-								<p class="f16 c000" id="title0"></p>
-								<span class="mt0 mb0 csubtitle f13" id="createdate0"></span>
-								<span class="mb0 ml10 user mt5 blue" userid="0" id="nickname0"></span>
-								<span class="mt0 mb0 ml10 csubtitle f13" id="views0"></span>
-								<p id="music0" play="on" class="music mb10" onclick="switchsound()">
-									<i></i>
-									<span id="musicname0"></span>
-								</p>
-							</div>
-						</div>
-					</div>
-					<!--排版1-->
-					<div id="main1" class="f13 tc hide">
-						<div class="full">
-							<div class="full" style="position:relative;">
-								<img id="useravatar1" class="mt30" />
-								<p class="full user mt10 textshadow f15 cfff" userid="0" id="nickname1"></p>
-								<i id="music1" class="fa fa-music f13" onclick="switchsound()" style="position:absolute;right:10px;top:10px"></i>
-							</div>
-						</div>
-						<div class="detail cover cover1 fl">
-							<div class="full">
-								<p class="mt10 f16 c333" id="title1"></p>
-								<p class="mt5 mb0 full csubtitle f13">
-									<span id="createdate1" class="mr15"></span>
-									<span class="ml15" id="views1"></span>
-								</p>
-							</div>
-						</div>
-					</div>
-					<div class="detail2 cover cover2 fl tl mb20">
-						<div class="c000 full" id="desc">
-
+			<div class="mui-scroll" id="bg">
+				<!--通用样式-->
+				<div id="main0" class="f13 tl mt20 hide">
+					<div class="detail">
+						<div class="full tl">
+							<p class="f16 c000" id="title0"></p>
+							<span class="mt0 mb0 csubtitle f13" id="createdate0"></span>
+							<span class="mb0 ml10 user mt5 blue" userid="0" id="nickname0"></span>
+							<span class="mt0 mb0 ml10 csubtitle f13" id="views0"></span>
+							<p id="music0" play="on" class="music mb10" onclick="switchsound()">
+								<i></i>
+								<span id="musicname0"></span>
+							</p>
 						</div>
 					</div>
 				</div>
+				<!--排版1-->
+				<div id="main1" class="f13 tc hide">
+					<div class="full">
+						<div class="full" style="position:relative;">
+							<img id="useravatar1" class="mt30" />
+							<p class="full user mt10 textshadow f15 cfff" userid="0" id="nickname1"></p>
+							<i id="music1" class="fa fa-music f13" onclick="switchsound()" style="position:absolute;right:10px;top:10px"></i>
+						</div>
+					</div>
+					<div class="detail cover cover1 fl">
+						<div class="full">
+							<p class="mt10 f16 c333" id="title1"></p>
+							<p class="mt5 mb0 full csubtitle f13">
+								<span id="createdate1" class="mr15"></span>
+								<span class="ml15" id="views1"></span>
+							</p>
+						</div>
+					</div>
+				</div>
+				<!--内容-->
+				<div class="detail2 cover cover2 fl tl mb20">
+					<div class="c000 full" id="desc">
+
+					</div>
+				</div>
+				<!--评论-->
+				<div class="comment fl">
+					<div class="title">
+						<i class="fl color-lump"></i>
+						<h2 class="fl brilliant">最新评论</h2>
+					</div>
+					<div class="list">
+						<div class="item clearfix">
+							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+								<a href="https://www.meipian.cn/c/1104730">
+									<img src="http://static2.ivwen.com/users/1104730/41710e3e844146dea73916034915fad8.jpg" style="width:36px;height:36px;">
+								</a>
+							</div>
+							<div class="usercomment">
+								<div class="userinfo">
+									<div class="userName">遥闻卧似水</div>
+									<div class="commentLastTime">2016-11-29</div>
+								</div>
+								<div class="commentdetail">
+									<p>漂亮👍</p>
+								</div>
+							</div>
+						</div>
+						<div class="item clearfix">
+							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+								<a href="https://www.meipian.cn/c/4375316">
+									<img src="http://static2.ivwen.com/users/4375316/9a47d85d62164ff8ae16d642241f6469.jpg" style="width:36px;height:36px;">
+								</a>
+							</div>
+							<div class="usercomment">
+								<div class="userinfo">
+									<div class="userName">老秦</div>
+									<div class="commentLastTime">2016-11-27</div>
+								</div>
+								<div class="commentdetail">
+									<p>很美！</p>
+								</div>
+							</div>
+						</div>
+						<div class="item clearfix">
+							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+								<a href="https://www.meipian.cn/c/512212">
+									<img src="http://static2.ivwen.com/users/512212/3e9049cdcd6a46f3bd516c05bef502d7.jpg" style="width:36px;height:36px;">
+								</a>
+							</div>
+							<div class="usercomment">
+								<div class="userinfo">
+									<div class="userName">Yngtsm宋哥</div>
+									<div class="commentLastTime">2016-11-25</div>
+								</div>
+								<div class="commentdetail">
+									<p>美拍！赞赞赞！</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="item clearfix">
+							<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
+								<a href="https://www.meipian.cn/c/1314171">
+									<img src="http://static2.ivwen.com/users/1314171/c2c866f8682f498e8aff64592f087df0.jpg" style="width:36px;height:36px;">
+								</a>
+							</div>
+							<div class="usercomment">
+								<div class="userinfo">
+									<div class="userName">山水清音</div>
+									<div class="commentLastTime">2016-11-25</div>
+								</div>
+								<div class="commentdetail">
+									<p>秋是异美的色彩!它不缺少云的缥缈，水的徜徉。还间或朦胧和隐隐的爱!</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<!--下载-->
+				<div id="download" class="download hide" href="javascript:;" onclick="downloadStat()"><i class="mui-icon mui-icon-download"></i><span>免费制作你自己的图文故事</span></div>
 			</div>
 		</div>
 	</body>
@@ -180,7 +372,7 @@
 			}
 
 			$("#musicname0,#musicname1").html(data.MusicName);
-			$("#useravatar0,#useravatar1").attr("src", base.ShowThumb(data.Avatar, 1));
+			$("#useravatar0,#useravatar1").attr("src", ShowThumb(data.Avatar, 1));
 			$("#title0,#title1").html(data.Title);
 			$("#nickname0,#nickname1").html(data.NickName);
 			$("#createdate0,#createdate1").html(data.CreateDateText);
@@ -216,6 +408,8 @@
 				default:
 					break;
 			}
+
+			$("#download").removeClass("hide");
 		});
 	});
 
