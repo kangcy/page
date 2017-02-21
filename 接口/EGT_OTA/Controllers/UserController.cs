@@ -108,6 +108,7 @@ namespace EGT_OTA.Controllers
                     user.ShowFan = 1;
                     user.Birthday = DateTime.Now;
                     user.Number = BuildNumber();
+                    user.IsPay = 1;
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                     if (user.ID > 0)
                     {
@@ -238,6 +239,7 @@ namespace EGT_OTA.Controllers
                 user.ShowFan = 1;
                 user.Status = Enum_Status.Approved;
                 user.Number = BuildNumber();
+                user.IsPay = 1;
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {

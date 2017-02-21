@@ -256,6 +256,7 @@ namespace EGT_OTA.Controllers
                 {
                     var comment = db.Single<Comment>(x => x.Number == model.ParentCommentNumber);
 
+                    model.ParentCommentID = comment == null ? 0 : comment.ID;
                     model.ParentSummary = comment == null ? "" : comment.Summary;
 
                     var article = db.Single<Article>(x => x.Number == model.ArticleNumber);

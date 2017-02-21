@@ -131,6 +131,12 @@ namespace EGT_OTA.Models
         public string ParentSummary { get; set; }
 
         /// <summary>
+        /// 父评论ID
+        /// </summary>
+        [SubSonicIgnore]
+        public int ParentCommentID { get; set; }
+
+        /// <summary>
         /// 文章标题
         /// </summary>
         [SubSonicIgnore]
