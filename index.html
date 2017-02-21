@@ -9,6 +9,7 @@
 		<link href="css/animate.css" rel="stylesheet" />
 		<link href="css/loading.css" rel="stylesheet" />
 		<link href="css/articledetail.css" rel="stylesheet" />
+		<link href="css/comment.css" rel="stylesheet" />
 		<link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
 		<style type="text/css">
 			html,
@@ -46,7 +47,7 @@
 			.comment {
 				width: auto;
 				margin: 0px;
-				padding:15px;
+				padding: 15px;
 				-webkit-box-sizing: border-box;
 				-moz-box-sizing: border-box;
 				box-sizing: border-box;
@@ -194,79 +195,14 @@
 					<div class="c000 full" id="desc">
 
 					</div>
-					<div style="float:left;">
+					<div class="fl" style="background:#fff;margin:10px 0px;">
 						<!--评论-->
 						<div class="comment fl">
 							<div class="title">
 								<i class="fl color-lump"></i>
 								<h2 class="fl brilliant">最新评论</h2>
 							</div>
-							<div class="list">
-								<div class="item clearfix">
-									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-										<a href="https://www.meipian.cn/c/1104730">
-											<img src="http://static2.ivwen.com/users/1104730/41710e3e844146dea73916034915fad8.jpg" style="width:36px;height:36px;">
-										</a>
-									</div>
-									<div class="usercomment">
-										<div class="userinfo">
-											<div class="userName">遥闻卧似水</div>
-											<div class="commentLastTime">2016-11-29</div>
-										</div>
-										<div class="commentdetail">
-											<p>漂亮👍</p>
-										</div>
-									</div>
-								</div>
-								<div class="item clearfix">
-									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-										<a href="https://www.meipian.cn/c/4375316">
-											<img src="http://static2.ivwen.com/users/4375316/9a47d85d62164ff8ae16d642241f6469.jpg" style="width:36px;height:36px;">
-										</a>
-									</div>
-									<div class="usercomment">
-										<div class="userinfo">
-											<div class="userName">老秦</div>
-											<div class="commentLastTime">2016-11-27</div>
-										</div>
-										<div class="commentdetail">
-											<p>很美！</p>
-										</div>
-									</div>
-								</div>
-								<div class="item clearfix">
-									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-										<a href="https://www.meipian.cn/c/512212">
-											<img src="http://static2.ivwen.com/users/512212/3e9049cdcd6a46f3bd516c05bef502d7.jpg" style="width:36px;height:36px;">
-										</a>
-									</div>
-									<div class="usercomment">
-										<div class="userinfo">
-											<div class="userName">Yngtsm宋哥</div>
-											<div class="commentLastTime">2016-11-25</div>
-										</div>
-										<div class="commentdetail">
-											<p>美拍！赞赞赞！</p>
-										</div>
-									</div>
-								</div>
-
-								<div class="item clearfix">
-									<div class="userLogo" style="width:auto;position:relative;height: 36px;width: 36px;">
-										<a href="https://www.meipian.cn/c/1314171">
-											<img src="http://static2.ivwen.com/users/1314171/c2c866f8682f498e8aff64592f087df0.jpg" style="width:36px;height:36px;">
-										</a>
-									</div>
-									<div class="usercomment">
-										<div class="userinfo">
-											<div class="userName">山水清音</div>
-											<div class="commentLastTime">2016-11-25</div>
-										</div>
-										<div class="commentdetail">
-											<p>秋是异美的色彩!它不缺少云的缥缈，水的徜徉。还间或朦胧和隐隐的爱!</p>
-										</div>
-									</div>
-								</div>
+							<div class="list" id="comment">
 
 							</div>
 						</div>
@@ -286,6 +222,7 @@
 <script type="text/javascript">
 	var MusicID = 0;
 	var MusicUrl = "";
+	var RootUrl = "http://139.224.51.196/";
 
 	mui.ready(function() {
 		mui.init();
@@ -297,7 +234,7 @@
 			mui.alert("参数异常");
 			return false;
 		}
-		mui.getJSON("http://139.224.51.196/Home/Info", {
+		mui.getJSON(RootUrl + "Home/Info", {
 			key: key
 		}, function(data) {
 			if(!data) {
@@ -306,10 +243,9 @@
 			if(!data.result) {
 				return mui.toast(data.message);
 			}
-
-			document.getElementById("loader").classList.add("hide");
-
 			data = data.message;
+
+			LoadComment(data.Number);
 
 			//段落
 			var html = [];
@@ -373,6 +309,8 @@
 				}
 			}
 
+			document.getElementById("loader").classList.add("hide");
+
 			$("#musicname0,#musicname1").html(data.MusicName);
 			$("#useravatar0,#useravatar1").attr("src", ShowThumb(data.Avatar, 1));
 			$("#title0,#title1").html(data.Title);
@@ -414,6 +352,52 @@
 			$("#download").removeClass("hide");
 		});
 	});
+
+	/**
+	 * 加载评论
+	 */
+	function LoadComment(ArticleNumber) {
+		ArticleNumber = "148644673377157";
+		data = {
+			page: 1,
+			rows: 10,
+			ArticleNumber: ArticleNumber
+		}
+		mui.getJSON(RootUrl + "Comment/ArticleComment", data, function(data) {
+			if(data != null) {
+				var length = data.records;
+				if(length > 0) {
+					var table = document.getElementById('comment');
+					for(var i = 0, len = data.list.length; i < len; i++) {
+						var div = appendStr(data.list[i]);
+						table.appendChild(div);
+					}
+				}
+			}
+		});
+	}
+
+	/**
+	 * 评论视频HTML
+	 */
+	function appendStr(item) {
+		var div = document.createElement('div');
+		div.className = 'mui-table-view-cell';
+		var model = [];
+		model.push('<div class="mui-slider-cell mt10 mb10"><div class="oa-contact-cell mui-table">');
+		model.push('<div class="mui-table-cell oa-contact-avatar"><img src="' + ShowThumb(item.Avatar, 1) + '" class="user" userid="' + item.UserNumber + '" /></div>');
+		model.push('<div class="mui-table-cell pb0">');
+		model.push('<p class="f12 user cc999" userid="' + item.UserNumber + '">' + item.NickName + '<span class="fr c999 f11">' + item.CreateDate + '</span></p>');
+		model.push('<p class="f12 c333 mt5 mb5" style="line-height:1.3rem;">' + item.Summary + '</p>');
+		if(item.ParentCommentID > 0) {
+			model.push('<p class="tip mb0 f12" style="line-height:1.3rem;"><span class="user blue" userid="' + item.ParentUserNumber + '">@' + item.ParentNickName + '：</span>' + item.ParentSummary + '</p>');
+		}
+		//model.push('<div class="full tr mt10 mb5 c999" style="display:inline-block;"><img src="../images/base/comment_nor.png" style="width:0.825rem;" class="ml15 fr comments" cid="' + item.Number + '" userid="' + item.UserNumber + '" /><span class="f13 ml5 fr" id="goods' + item.ID + '">' + item.Goods + '</span><img src="../images/base/like_nor.png" style="width:0.825rem;" class="goods ml15 fr" cid="' + item.ID + '" already="0" /></div>');
+		model.push('</div>');
+		model.push('</div>');
+		div.innerHTML = model.join('');
+		return div;
+	}
 
 	/**
 	 * 显示播放器
