@@ -257,6 +257,10 @@ namespace EGT_OTA.Controllers
                     var comment = db.Single<Comment>(x => x.Number == model.ParentCommentNumber);
 
                     model.ParentSummary = comment == null ? "" : comment.Summary;
+
+                    var article = db.Single<Article>(x => x.Number == model.ArticleNumber);
+
+                    model.Title = article == null ? "" : article.Title;
                 }
                 return Json(new { result = true, message = model }, JsonRequestBehavior.AllowGet);
             }
@@ -339,6 +343,7 @@ namespace EGT_OTA.Controllers
                                    Title = a.Title,
                                    ArticleUserID = a.CreateUserNumber,
                                    ArticlePower = a.ArticlePower,
+                                   Number = l.Number,
                                    ParentCommentID = l.ParentCommentNumber,
                                    ParentUserNumber = l.ParentUserNumber,
                                    ParentNickName = string.IsNullOrWhiteSpace(l.ParentUserNumber) ? "" : (parentUser.Exists(x => x.Number == l.ParentUserNumber) ? parentUser.FirstOrDefault(x => x.Number == l.ParentUserNumber).NickName : ""),

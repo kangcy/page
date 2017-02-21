@@ -131,6 +131,12 @@ namespace EGT_OTA.Models
         public string ParentSummary { get; set; }
 
         /// <summary>
+        /// 文章标题
+        /// </summary>
+        [SubSonicIgnore]
+        public string Title { get; set; }
+
+        /// <summary>
         /// 创建时间
         /// </summary>
         [SubSonicIgnore]
