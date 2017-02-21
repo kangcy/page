@@ -92,26 +92,28 @@
 <script type="text/javascript">
 	var MusicID = 0;
 	var MusicUrl = "";
-	var CurrTemplate = 0;
-	var CurrBackground = 0;
 
-	$(function() {
+	mui.ready(function() {
+		mui.init();
 
-		var deceleration = mui.os.ios ? 0.003 : 0.0009; // 阻尼系数
-		mui('.mui-scroll-wrapper').scroll({
-			bounce: false,
-			indicators: false, // 是否显示滚动条
-			deceleration: deceleration
-		});
+		InitScroll();
 
 		var key = GetParameter("key");
+		if(IsNullOrEmpty("key")) {
+			mui.alert("参数异常");
+			return false;
+		}
 		mui.getJSON("http://139.224.51.196/Home/Info", {
 			key: key
 		}, function(data) {
+			if(!data) {
+				return mui.toast("信息异常");
+			}
 			if(!data.result) {
 				return mui.toast(data.message);
 			}
 			data = data.message;
+
 			//段落
 			var html = [];
 			var parts = data.ArticlePart;
@@ -129,19 +131,14 @@
 				}
 			}
 
-			$("#footer_zan").html(data.Goods);
-			$("#footer_comment").html(data.Comments);
-
 			//排版
-			CurrCover = data.Cover;
-			var mainIndex = 0;
+			var CurrCover = data.Cover;
+			var TemplateType = 0;
 			if(data.TemplateJson.ID > 0) {
-				mainIndex = data.TemplateJson.TemplateType;
+				TemplateType = data.TemplateJson.TemplateType;
 				CurrCover = data.TemplateJson.Cover;
 				$("#mui-iframe-wrapper").css("background-color", data.TemplateJson.Background);
 			}
-			CurrTemplate = data.Template;
-			CurrBackground = data.Background;
 
 			//纯白背景
 			if(data.Template == 1) {
@@ -194,18 +191,18 @@
 			});
 
 			//音乐
-			MusicID = "music" + mainIndex;
+			MusicID = "music" + TemplateType;
 			MusicUrl = data.MusicUrl;
 			if(!IsNullOrEmpty(MusicUrl)) {
 				if(data.AutoMusic == "1") {
 					document.addEventListener('touchstart', startsound);
 				}
-				$("#music" + mainIndex).removeClass("hide");
+				$("#music" + TemplateType).removeClass("hide");
 			} else {
-				$("#music" + mainIndex).addClass("hide");
+				$("#music" + TemplateType).addClass("hide");
 			}
 
-			switch(mainIndex) {
+			switch(TemplateType) {
 				case 0:
 					$("#musicname0").html(data.MusicName);
 					break;
@@ -219,6 +216,9 @@
 		});
 	});
 
+	/**
+	 * 显示播放器
+	 */
 	function ShowVideo(domid, vid) {
 		player = new YKU.Player(domid, {
 			client_id: "59bec9b0be1fc34b",
@@ -243,7 +243,7 @@
 	}
 
 	function IsNullOrEmpty(str) {
-		if(str == null || str == undefined || str == "") {
+		if(!str) {
 			return true;
 		}
 		return false;
@@ -260,6 +260,18 @@
 			return url;
 		}
 		return url.replace("_0", "_" + thumb);
+	}
+
+	/**
+	 * 格式化滚动条
+	 */
+	function InitScroll() {
+		var deceleration = mui.os.ios ? 0.003 : 0.0009; // 阻尼系数
+		mui('.mui-scroll-wrapper').scroll({
+			bounce: false,
+			indicators: false, // 是否显示滚动条
+			deceleration: deceleration
+		});
 	}
 
 	/*获取html的参数**********************************************/
