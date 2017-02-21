@@ -1180,6 +1180,8 @@ namespace EGT_OTA.Controllers
             var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
             user.BlackText = "," + string.Join(",", blacks) + ",";
 
+            user.ShareUrl = System.Configuration.ConfigurationManager.AppSettings["share_url"] + "u/" + user.Number;
+
             return user;
         }
     }

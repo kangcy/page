@@ -301,6 +301,12 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public string BlackText { get; set; }
 
+        /// <summary>
+        /// 分享链接
+        /// </summary>
+        [SubSonicIgnore]
+        public string ShareUrl { get; set; }
+
         #endregion
     }
 }
