@@ -219,7 +219,7 @@ namespace EGT_OTA.Controllers
                     var result = SmsHelper.Send(templateId, mobile, "@1@=" + num, "");
                     if (string.IsNullOrWhiteSpace(result))
                     {
-                        return Json(false, JsonRequestBehavior.AllowGet);
+                        return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
                     }
                     var model = JObject.Parse(result);
                     code = model["code"].ToString();
