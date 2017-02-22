@@ -189,23 +189,22 @@ namespace EGT_OTA.Controllers
                 string mobile = ZNRequest.GetString("Mobile");
                 string sms = ZNRequest.GetString("SMS");
                 string num = new Random().Next(100000, 999999).ToString();
-                var templateId = "";//短信模板
+                var templateId = System.Web.Configuration.WebConfigurationManager.AppSettings["defaultTemplate"].ToString();
                 switch (sms)
                 {
                     //找回密码验证码
                     case "findpwdsms":
-                        templateId = "3099560a730045f299c34ae169c30e16";
+                        templateId = System.Web.Configuration.WebConfigurationManager.AppSettings["findpwdsmsTemplate"].ToString();
                         break;
                     //用户注册验证码
                     case "regsms":
-                        templateId = "3099560a730045f299c34ae169c30e16";
+                        templateId = System.Web.Configuration.WebConfigurationManager.AppSettings["regsmsTemplate"].ToString();
                         break;
                     //绑定手机号码
                     case "bindphone":
-                        templateId = "3099560a730045f299c34ae169c30e16";
+                        templateId = System.Web.Configuration.WebConfigurationManager.AppSettings["bindphoneTemplate"].ToString();
                         break;
                     default:
-                        templateId = "3099560a730045f299c34ae169c30e16";
                         break;
                 }
 
