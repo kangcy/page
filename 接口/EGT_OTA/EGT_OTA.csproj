@@ -153,7 +153,6 @@
     <Compile Include="Controllers\ArticleTypeController.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
     <Compile Include="Controllers\RedisController.cs" />
-    <Compile Include="Controllers\SmsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\FanController.cs" />
@@ -209,6 +208,7 @@
     <Compile Include="Helper\UnixTimeHelper.cs" />
     <Compile Include="Helper\ValidateCodeHelper.cs" />
     <Compile Include="Helper\XmlHelper.cs" />
+    <Compile Include="Helper\SmsHelper.cs" />
     <Compile Include="Models\App\Article.cs" />
     <Compile Include="Models\App\Order.cs" />
     <Compile Include="Models\App\SendSMS.cs" />
