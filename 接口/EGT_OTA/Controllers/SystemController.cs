@@ -200,6 +200,10 @@ namespace EGT_OTA.Controllers
                     case "regsms":
                         templateId = "3099560a730045f299c34ae169c30e16";
                         break;
+                    //绑定手机号码
+                    case "bindphone":
+                        templateId = "3099560a730045f299c34ae169c30e16";
+                        break;
                     default:
                         templateId = "3099560a730045f299c34ae169c30e16";
                         break;

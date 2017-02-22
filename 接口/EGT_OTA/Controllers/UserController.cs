@@ -833,6 +833,20 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请填写手机号码" }, JsonRequestBehavior.AllowGet);
                 }
+                var code = ZNRequest.GetString("Code");
+                var sms = ZNRequest.GetString("SMS");
+
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    return Json(new { result = false, message = "请填写验证码" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var value = CookieHelper.GetCookieValue("SMS");
+                if (value != phone + sms + code)
+                {
+                    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
+                }
+
                 if (db.Exists<User>(x => x.Phone == phone && x.ID != user.ID))
                 {
                     return Json(new { result = false, message = "该手机号码已绑定其他账号" }, JsonRequestBehavior.AllowGet);
@@ -840,6 +854,8 @@ namespace EGT_OTA.Controllers
                 var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Phone").EqualTo(phone).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
+                    CookieHelper.ClearCookie("SMS");
+
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
