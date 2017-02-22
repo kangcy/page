@@ -50,7 +50,7 @@
 
 })(document, window);
 
-var RootUrl = "http://139.224.51.196/";
+var RootUrl = "http://www.ishaoxia.com/";
 
 function IsNullOrEmpty(str) {
 	if(!str) {
