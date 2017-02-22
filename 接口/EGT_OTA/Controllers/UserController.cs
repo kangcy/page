@@ -61,7 +61,7 @@ namespace EGT_OTA.Controllers
                     user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
                     if (string.IsNullOrWhiteSpace(user.Cover))
                     {
-                        user.Cover = "http://139.224.51.196/Images/User/cover01.png";
+                        user.Cover = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/cover01.png";
                     }
                     user.Email = string.Empty;
                     user.IsEmail = 0;
@@ -69,7 +69,7 @@ namespace EGT_OTA.Controllers
                     user.Avatar = avatar;
                     if (string.IsNullOrWhiteSpace(user.Avatar))
                     {
-                        user.Avatar = "http://139.224.51.196/Images/User/avatar01.png";
+                        user.Avatar = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/avatar01.png";
                     }
                     user.Phone = string.Empty;
                     user.WeiXin = string.Empty;
@@ -188,12 +188,25 @@ namespace EGT_OTA.Controllers
             var result = string.Empty;
             try
             {
-                var phone = ZNRequest.GetString("Phone").Trim();
-                var password = ZNRequest.GetString("Password").Trim();
-                if (String.IsNullOrWhiteSpace(phone) || String.IsNullOrWhiteSpace(password))
+                var phone = ZNRequest.GetString("Phone");
+                var password = ZNRequest.GetString("Password");
+                var code = ZNRequest.GetString("Code");
+                var sms = ZNRequest.GetString("SMS");
+                if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(password))
                 {
                     return Json(new { result = false, message = "手机号码和密码不能为空" }, JsonRequestBehavior.AllowGet);
                 }
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    return Json(new { result = false, message = "验证码不能为空" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var value = CookieHelper.GetCookieValue("SMS");
+                if (value != phone + sms + code)
+                {
+                    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
+                }
+
                 if (db.Exists<User>(x => x.Phone == phone))
                 {
                     return Json(new { result = false, message = "当前账号已注册" }, JsonRequestBehavior.AllowGet);
@@ -213,14 +226,14 @@ namespace EGT_OTA.Controllers
                 user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
                 if (string.IsNullOrWhiteSpace(user.Cover))
                 {
-                    user.Cover = "http://139.224.51.196/Images/User/cover01.png";
+                    user.Cover = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/cover01.png";
                 }
                 user.ProvinceName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Province")));
                 user.CityName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("City")));
                 user.Email = string.Empty;
                 user.IsEmail = 0;
                 user.Signature = string.Empty;
-                user.Avatar = "http://139.224.51.196/Images/User/avatar01.png";
+                user.Avatar = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/avatar01.png";
                 user.Phone = phone;
                 user.WeiXin = string.Empty;
                 user.QQ = string.Empty;
@@ -245,6 +258,8 @@ namespace EGT_OTA.Controllers
                 {
                     user.Address = user.ProvinceName + " " + user.CityName;
                     user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+
+                    CookieHelper.ClearCookie("SMS");
 
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
