@@ -208,37 +208,45 @@ namespace EGT_OTA.Controllers
                         break;
                 }
 
-                //发送模板短信
-                var result = SmsHelper.Send(templateId, mobile, "@1@=" + num, "");
-                if (string.IsNullOrWhiteSpace(result))
+                var code = "0";
+                var msg = string.Empty;
+
+                //是否启用短信
+                var usesms = System.Web.Configuration.WebConfigurationManager.AppSettings["usesms"].ToString();
+                if (usesms == "1")
                 {
-                    return Json(false, JsonRequestBehavior.AllowGet);
+                    //发送模板短信
+                    var result = SmsHelper.Send(templateId, mobile, "@1@=" + num, "");
+                    if (string.IsNullOrWhiteSpace(result))
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+                    var model = JObject.Parse(result);
+                    code = model["code"].ToString();
+                    msg = model["msg"].ToString();
                 }
-                var model = JObject.Parse(result);
-                var code = model["code"].ToString();
 
                 //发送记录
                 SendSMS log = new SendSMS();
                 log.Mobile = mobile;
-                log.Remark = sms;
+                log.Remark = sms + "|" + msg;
                 log.Result = code;
+                log.Code = num;
                 log.CreateDate = DateTime.Now;
                 log.CreateIP = Tools.GetClientIP;
                 db.Add<SendSMS>(log);
 
-                CookieHelper.SetCookie("SMS", mobile + sms + num, DateTime.Now.AddMinutes(15));
-
                 if (code == "0")
                 {
-                    CookieHelper.SetCookie("SMS", mobile + num, DateTime.Now.AddMinutes(15));
-                    return Json(true, JsonRequestBehavior.AllowGet);
+                    CookieHelper.SetCookie("SMS", mobile + sms + num, DateTime.Now.AddMinutes(15));
+                    return Json(new { result = true, usesms = usesms, message = usesms == "1" ? msg : num }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("SystemController_SendSMS:" + ex.Message);
             }
-            return Json(false, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

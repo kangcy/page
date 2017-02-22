@@ -38,6 +38,12 @@ namespace EGT_OTA.Models
         [SubSonicStringLength(50), SubSonicNullString]
         public string Result { get; set; }
 
+        ///<summary>
+        ///验证码
+        ///</summary>
+        [SubSonicStringLength(6), SubSonicNullString]
+        public string Code { get; set; }
+
         /// <summary>
         /// 发送时间
         /// </summary>

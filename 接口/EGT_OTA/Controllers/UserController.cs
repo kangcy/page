@@ -540,7 +540,12 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                User user = GetUserInfo();
+                var mobile = ZNRequest.GetString("Mobile");
+                if (string.IsNullOrWhiteSpace(mobile))
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var user = db.Single<User>(x => x.Phone == mobile);
                 if (user == null)
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
