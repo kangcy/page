@@ -1203,7 +1203,7 @@ namespace EGT_OTA.Controllers
             user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             //点赞
-            user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserNumber == user.Number && x.ZanType == Enum_ZanType.Article).GetRecordCount();
+            user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.ArticleUserNumber == user.Number && x.ZanType == Enum_ZanType.Article).GetRecordCount();
 
             //我关注的用户
             var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();

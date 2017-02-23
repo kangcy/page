@@ -136,9 +136,9 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City", "Province").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsEqualTo(Enum_Status.Approved).And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City", "Province").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsNotEqualTo(Enum_Status.Audit).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
 
-                List<ArticleJson> newlist = ArticleListInfo(articles);
+                List<ArticleJson> newlist = ArticleListInfo(articles, CreateUserNumber);
 
                 var result = new
                 {

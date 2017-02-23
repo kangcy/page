@@ -285,7 +285,7 @@ namespace EGT_OTA.Controllers
                 var UserNumber = ZNRequest.GetString("UserNumber");
                 var fans = db.Find<Fan>(x => x.CreateUserNumber == UserNumber).ToList();
 
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved && x.ArticlePower == Enum_ArticlePower.Public);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //未关注，显示推荐关注用户
                 if (fans.Count == 0)

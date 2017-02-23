@@ -248,7 +248,7 @@ namespace EGT_OTA.Controllers
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
 
                 var articleArray = list.Select(x => x.ArticleNumber).ToArray();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Cover", "ArticlePower", "CreateUserNumber", "Status", "Title").From<Article>().Where("Number").In(articleArray).And("Status").IsEqualTo(Enum_Status.Approved).And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public).And("CreateUserNumber").IsEqualTo(UserNumber).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Cover", "ArticlePower", "CreateUserNumber", "Status", "Title").From<Article>().Where("Number").In(articleArray).And("Status").IsNotEqualTo(Enum_Status.Audit).And("CreateUserNumber").IsEqualTo(UserNumber).ExecuteTypedList<Article>();
 
                 var userArray = list.Select(x => x.CreateUserNumber).ToArray();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(userArray).ExecuteTypedList<User>();
