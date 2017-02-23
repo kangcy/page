@@ -263,6 +263,12 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public List<Tag> TagList { get; set; }
 
+        /// <summary>
+        /// 启用打赏
+        /// </summary>
+        [SubSonicIgnore]
+        public int IsPay { get; set; }
+
         #endregion
     }
 
@@ -292,6 +298,7 @@ namespace EGT_OTA.Models
         public int IsFollow { get; set; }
         public List<CommentJson> CommentList { get; set; }
         public List<Tag> TagList { get; set; }
+        public int IsPay { get; set; }
     }
 
     public class UserArticleJson

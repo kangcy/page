@@ -283,6 +283,7 @@ namespace EGT_OTA.Controllers
                     model.Avatar = createUser.Avatar;
                     model.AutoMusic = createUser.AutoMusic;
                     model.ShareNick = createUser.ShareNick;
+                    model.IsPay = createUser.IsPay;
                 }
 
                 //类型

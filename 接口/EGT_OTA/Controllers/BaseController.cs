@@ -612,7 +612,7 @@ namespace EGT_OTA.Controllers
             //    });
             //});
 
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number", "IsPay").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
 
             //判断是否关注
             var fans = new List<Fan>();
@@ -633,6 +633,7 @@ namespace EGT_OTA.Controllers
                 model.NickName = user == null ? "" : user.NickName;
                 model.Avatar = user == null ? "" : user.Avatar;
                 model.Signature = user == null ? "" : user.Signature;
+                model.IsPay = user == null ? 0 : user.IsPay;
                 model.ArticleID = x.ID;
                 model.ArticleNumber = x.Number;
                 model.Title = x.Title;
