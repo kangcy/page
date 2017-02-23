@@ -55,9 +55,31 @@ namespace EGT_OTA.Controllers
                 }
                 if (model.Status == Enum_Status.DELETE)
                 {
-                    return Json(new { result = false, message = "当前文章已删除，请刷新重试" }, JsonRequestBehavior.AllowGet);
+                    var newmodel = new Article();
+                    newmodel.Title = model.Title;
+                    newmodel.ArticlePower = model.ArticlePower;
+                    newmodel.Status = model.Status;
+                    return Json(new { result = true, message = newmodel }, JsonRequestBehavior.AllowGet);
                 }
+
                 string password = ZNRequest.GetString("ArticlePassword");
+
+                //私密
+                if (model.ArticlePower == Enum_ArticlePower.Myself)
+                {
+                    var newmodel = new Article();
+                    newmodel.Title = model.Title;
+                    newmodel.ArticlePower = Enum_ArticlePower.Myself;
+                    return Json(new { result = true, message = newmodel }, JsonRequestBehavior.AllowGet);
+                }
+                //加密
+                if (model.ArticlePower == Enum_ArticlePower.Password)
+                {
+                    var newmodel = new Article();
+                    newmodel.Title = model.Title;
+                    newmodel.ArticlePower = Enum_ArticlePower.Password;
+                    return Json(new { result = true, message = newmodel }, JsonRequestBehavior.AllowGet);
+                }
 
                 //浏览数
                 new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();

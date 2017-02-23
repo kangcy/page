@@ -10,6 +10,7 @@
 		<link href="css/loading.css" rel="stylesheet" />
 		<link href="css/articledetail.css" rel="stylesheet" />
 		<link href="css/comment.css" rel="stylesheet" />
+		<link href="css/input.css" rel="stylesheet" />
 		<link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
 		<style type="text/css">
 			html,
@@ -86,12 +87,33 @@
 	</head>
 
 	<body>
-		<div class="mui-content mui-scroll-wrapper" id="mui-iframe-wrapper">
-			<div class="loading" id="loader">
-				<div class="card">
-					<span class="circles-loader"></span>
+		<div id="delete" class="full tc hide">
+			<img src="img/stop.png" class="none" />
+			<p class="mt20 f12 c999">当前文章已删除</p>
+		</div>
+		<div id="self" class="full tc hide">
+			<img src="img/stop.png" class="none" />
+			<p class="mt20 f16 c333">私密文章</p>
+			<p class="mt10 f12 c999">您查看的是私密文章,仅作者自己可见</p>
+		</div>
+		<div id="password" class="full tc hide">
+			<img src="img/stop.png" class="none" />
+			<p class="mt20 f12 c999">文章已设权限,请输入密码浏览</p>
+			<div id="input-form">
+				<div class="pwd mt10 mui-input-row">
+					<input id='pwd' type="password" class="mui-input-password text f13" placeholder="请输入位密码" maxlength="4" /><span class="mui-icon mui-icon-eye" style="top:0.8rem !important;"></span>
+				</div>
+				<div id="submit" class="input mt20 tc fl">
+					解&nbsp;锁
 				</div>
 			</div>
+		</div>
+		<div class="loading" id="loader">
+			<div class="card">
+				<span class="circles-loader"></span>
+			</div>
+		</div>
+		<div class="mui-content mui-scroll-wrapper hide" id="wrapper">
 			<div class="mui-scroll" id="bg">
 				<!--通用样式-->
 				<div id="main0" class="f13 tl mt20 hide">
@@ -160,6 +182,7 @@
 <script type="text/javascript">
 	var MusicID = 0;
 	var MusicUrl = "";
+	var isLoading = false;
 
 	mui.init({
 		gestureConfig: {
@@ -180,19 +203,44 @@
 		LoadArticle(key);
 		LoadComment(key);
 
-		mui("#mui-iframe-wrapper").on('tap', '.user', function(event) {
+		mui("#wrapper").on('tap', '.user', function(event) {
 			var userNumber = this.getAttribute("userid");
 			window.location.href = RootUrl + "u/" + userNumber;
 		});
 
+		//解锁
+		document.getElementById('submit').addEventListener('tap', function(event) {
+			var pwd = document.getElementById("pwd").value;
+			if(IsNullOrEmpty(pwd)) {
+				return mui.toast("请填写解锁密码");
+			}
+			if(isLoading) {
+				return false;
+			}
+			isLoading = true;
+			mui.getJSON(RootUrl + "Article/CheckPowerPwd", {
+				ArticleID: key,
+				ArticlePowerPwd: pwd
+			}, function(data) {
+				if(data != null) {
+					if(data.result) {
+						LoadArticle(key, pwd);
+						return;
+					}
+				}
+				mui.toast("解锁失败");
+				isLoading = false;
+			});
+		});
 	});
 
 	/**
 	 * 加载文章
 	 */
-	function LoadArticle(key) {
+	function LoadArticle(key, pwd) {
 		mui.getJSON(RootUrl + "Home/Info", {
-			key: key
+			key: key,
+			ArticlePassword: pwd
 		}, function(data) {
 			if(!data) {
 				return mui.toast("信息异常");
@@ -201,8 +249,26 @@
 				return mui.toast(data.message);
 			}
 			data = data.message;
-
 			document.title = data.Title;
+
+			//是否删除
+			if(data.Status == 2) {
+				document.getElementById("loader").classList.add("hide");
+				$("#delete").removeClass("hide");
+				return;
+			}
+			//私密 
+			if(data.ArticlePower == 0) {
+				document.getElementById("loader").classList.add("hide");
+				$("#self").removeClass("hide");
+				return;
+			}
+			//密码可见
+			else if(data.ArticlePower == 1) {
+				$("#password").removeClass("hide");
+			} else {
+				$("#wrapper").removeClass("hide");
+			}
 
 			//段落
 			var html = [];
@@ -227,7 +293,7 @@
 			if(data.TemplateJson.ID > 0) {
 				TemplateType = data.TemplateJson.TemplateType;
 				CurrCover = data.TemplateJson.Cover;
-				$("#mui-iframe-wrapper").css("background-color", data.TemplateJson.Background);
+				$("#wrapper").css("background-color", data.TemplateJson.Background);
 			}
 
 			//纯白背景
@@ -310,6 +376,8 @@
 			}
 
 			$("#bottom").removeClass("hide");
+
+			isLoading = false;
 		});
 	}
 
