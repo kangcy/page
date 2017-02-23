@@ -502,7 +502,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
-                var pwd = ZNRequest.GetInt("ArticlePowerPwd");
+                var pwd = ZNRequest.GetString("ArticlePowerPwd");
                 var result = db.Exists<Article>(x => x.ID == ArticleID && x.ArticlePower == Enum_ArticlePower.Password && x.ArticlePowerPwd == pwd && x.Status == Enum_Status.Approved);
                 if (result)
                 {

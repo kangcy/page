@@ -14,14 +14,14 @@
 }
 #input-form .user {
 	background: #EFEFEF;
-	background-image: url(../images/login/user.png);
+	background-image: url(../img/user.png);
 	background-repeat: no-repeat;
 	background-position: 0.8rem 0.6rem;
 	background-size: 1.3rem;
 }
 #input-form .phone {
 	background: #EFEFEF;
-	background-image: url(../images/login/phone.png);
+	background-image: url(../img/phone.png);
 	background-repeat: no-repeat;
 	background-position: 0.8rem 0.6rem;
 	background-size: 1.3rem;
@@ -29,7 +29,7 @@
 
 #input-form .pwd {
 	background: #EFEFEF;
-	background-image: url(../images/login/pwd.png);
+	background-image: url(../img/pwd.png);
 	background-repeat: no-repeat;
 	background-position: 0.8rem 0.6rem;
 	background-size: 1.3rem;

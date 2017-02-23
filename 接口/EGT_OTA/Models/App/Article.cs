@@ -129,8 +129,8 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 文章权限密码
         /// </summary>
-        [SubSonicStringLength(50), SubSonicNullString]
-        public int ArticlePowerPwd { get; set; }
+        [SubSonicStringLength(10), SubSonicNullString]
+        public string ArticlePowerPwd { get; set; }
 
         /// <summary>
         /// 发帖省份

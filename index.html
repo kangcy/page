@@ -182,6 +182,7 @@
 <script type="text/javascript">
 	var MusicID = 0;
 	var MusicUrl = "";
+	var ArticleID = 0;
 	var isLoading = false;
 
 	mui.init({
@@ -200,7 +201,7 @@
 			return mui.toast("参数异常");
 		}
 
-		LoadArticle(key);
+		LoadArticle(key, "");
 		LoadComment(key);
 
 		mui("#wrapper").on('tap', '.user', function(event) {
@@ -219,7 +220,7 @@
 			}
 			isLoading = true;
 			mui.getJSON(RootUrl + "Article/CheckPowerPwd", {
-				ArticleID: key,
+				ArticleID: ArticleID,
 				ArticlePowerPwd: pwd
 			}, function(data) {
 				if(data != null) {
@@ -249,6 +250,7 @@
 				return mui.toast(data.message);
 			}
 			data = data.message;
+			ArticleID = data.ID;
 			document.title = data.Title;
 
 			//是否删除
@@ -265,7 +267,10 @@
 			}
 			//密码可见
 			else if(data.ArticlePower == 1) {
-				$("#password").removeClass("hide");
+				if(pwd != data.ArticlePowerPwd)
+					$("#password").removeClass("hide");
+				else
+					$("#wrapper").removeClass("hide");
 			} else {
 				$("#wrapper").removeClass("hide");
 			}
@@ -273,27 +278,31 @@
 			//段落
 			var html = [];
 			var parts = data.ArticlePart;
-			for(var i = 0; i < parts.length; i++) {
-				var part = parts[i];
-				if(part.Types == 1) {
-					//图片
-					html.push('<div class="full f13 mt10"><img src="' + ShowThumb(part.Introduction, 1) + '" class="full" /></div>');
-				} else if(part.Types == 2) {
-					//文本
-					html.push('<div class="full f13 mt10">' + part.Introduction + '</div>');
-				} else if(part.Types == 3) {
-					//视频
-					html.push('<div class="full f13 mt10">' + AppendVideo(part.Introduction) + '</div>');
+			if(parts != null) {
+				for(var i = 0; i < parts.length; i++) {
+					var part = parts[i];
+					if(part.Types == 1) {
+						//图片
+						html.push('<div class="full f13 mt10"><img src="' + ShowThumb(part.Introduction, 1) + '" class="full" /></div>');
+					} else if(part.Types == 2) {
+						//文本
+						html.push('<div class="full f13 mt10">' + part.Introduction + '</div>');
+					} else if(part.Types == 3) {
+						//视频
+						html.push('<div class="full f13 mt10">' + AppendVideo(part.Introduction) + '</div>');
+					}
 				}
 			}
 
 			//排版
 			var CurrCover = data.Cover;
 			var TemplateType = 0;
-			if(data.TemplateJson.ID > 0) {
-				TemplateType = data.TemplateJson.TemplateType;
-				CurrCover = data.TemplateJson.Cover;
-				$("#wrapper").css("background-color", data.TemplateJson.Background);
+			if(data.TemplateJson != null) {
+				if(data.TemplateJson.ID > 0) {
+					TemplateType = data.TemplateJson.TemplateType;
+					CurrCover = data.TemplateJson.Cover;
+					$("#wrapper").css("background-color", data.TemplateJson.Background);
+				}
 			}
 
 			//纯白背景
