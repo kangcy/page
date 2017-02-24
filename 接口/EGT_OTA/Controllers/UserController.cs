@@ -1027,9 +1027,14 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic && x.Status == Enum_Status.Approved);
+                var Number = ZNRequest.GetString("Number");
                 var UserNumber = ZNRequest.GetString("UserNumber");
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic);
+                if (Number != UserNumber)
+                {
+                    query = query.And("Status").IsEqualTo(Enum_Status.Approved);
+                }
                 if (string.IsNullOrWhiteSpace(UserNumber))
                 {
                     return Json(new
