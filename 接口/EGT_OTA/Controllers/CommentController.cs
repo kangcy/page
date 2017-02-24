@@ -36,6 +36,12 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
                 }
+                //判断是否拉黑
+                var black = db.Exists<Black>(x => x.CreateUserNumber == comment.ArticleUserNumber && x.ToUserNumber == user.Number);
+                if (black)
+                {
+                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                }
 
                 Zan model = db.Single<Zan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == comment.Number);
                 if (model == null)
@@ -98,11 +104,20 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "您的输入内容含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
+
                 Article article = new SubSonic.Query.Select(Repository.GetProvider(), "Number", "CreateUserNumber").From<Article>().Where<Article>(x => x.ID == ArticleID).ExecuteSingle<Article>();
                 if (article == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
+
+                //判断是否拉黑
+                var black = db.Exists<Black>(x => x.CreateUserNumber == article.CreateUserNumber && x.ToUserNumber == user.Number);
+                if (black)
+                {
+                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                }
+
                 Comment model = new Comment();
                 model.ArticleNumber = article.Number;
                 model.ArticleUserNumber = article.CreateUserNumber;
