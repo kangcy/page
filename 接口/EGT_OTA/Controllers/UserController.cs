@@ -69,7 +69,7 @@ namespace EGT_OTA.Controllers
                     user.Avatar = avatar;
                     if (string.IsNullOrWhiteSpace(user.Avatar))
                     {
-                        user.Avatar = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/avatar01.png";
+                        user.Avatar = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/sysavatar" + new Random().Next(1, 36) + ".jpg";
                     }
                     user.Phone = string.Empty;
                     user.WeiXin = string.Empty;
@@ -233,7 +233,7 @@ namespace EGT_OTA.Controllers
                 user.Email = string.Empty;
                 user.IsEmail = 0;
                 user.Signature = string.Empty;
-                user.Avatar = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/avatar01.png";
+                user.Avatar = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/sysavatar" + new Random().Next(1, 36) + ".jpg";
                 user.Phone = phone;
                 user.WeiXin = string.Empty;
                 user.QQ = string.Empty;

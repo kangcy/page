@@ -175,6 +175,7 @@ namespace EGT_OTA.Controllers
                     model.TypeID = 10000;
                     model.TypeIDList = "-10000-";
                     model.ArticlePower = Enum_ArticlePower.Myself;
+                    model.ArticlePowerPwd = string.Empty;
                     model.CreateUserNumber = user.Number;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
