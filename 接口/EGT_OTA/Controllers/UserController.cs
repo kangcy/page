@@ -1030,7 +1030,7 @@ namespace EGT_OTA.Controllers
                 var Number = ZNRequest.GetString("Number");
                 var UserNumber = ZNRequest.GetString("UserNumber");
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic && x.Status != Enum_Status.DELETE);
                 if (Number != UserNumber)
                 {
                     query = query.And("Status").IsEqualTo(Enum_Status.Approved);
@@ -1064,6 +1064,42 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error("UserController_Pic" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
+        }
+
+
+        /// <summary>
+        /// 相册图片删除
+        /// </summary>
+        public ActionResult PicDelete()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var id = ZNRequest.GetInt("PartID");
+                ArticlePart part = db.Single<ArticlePart>(x => x.ID == id);
+                if (part == null)
+                {
+                    return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                if (part.CreateUserNumber != user.Number)
+                {
+                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                }
+                var result = new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider()).Set("Status").EqualTo(Enum_Status.DELETE).Where<ArticlePart>(x => x.ID == id).Execute() > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("UserController_PicDelete:" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
