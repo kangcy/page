@@ -100,7 +100,13 @@ namespace EGT_OTA.Controllers
                 //音乐
                 if (model.MusicID > 0)
                 {
-                    Music music = db.Single<Music>(x => x.ID == model.MusicID);
+                    List<Music> musics = new List<Music>();
+                    List<MusicJson> list = GetMusic();
+                    list.ForEach(x =>
+                    {
+                        musics.AddRange(x.Music);
+                    });
+                    Music music = musics.FirstOrDefault<Music>(x => x.ID == model.MusicID);
                     model.MusicUrl = music == null ? "" : music.FileUrl;
                     model.MusicName = music == null ? "" : music.Name;
                 }
