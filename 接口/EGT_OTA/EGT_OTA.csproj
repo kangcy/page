@@ -46,6 +46,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="GetuiServerApiSDK, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\GetuiServerApiSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.ProtocolBuffers, Version=2.4.1.473, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Google.ProtocolBuffers.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlSanitizationLibrary, Version=4.0.0.0, Culture=neutral, PublicKeyToken=d127efab8a9c114f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\HtmlSanitizationLibrary.1.0.0\lib\HtmlSanitizationLibrary.dll</HintPath>
@@ -152,6 +160,7 @@
     <Compile Include="Controllers\MusicController.cs" />
     <Compile Include="Controllers\ArticleTypeController.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
+    <Compile Include="Controllers\PushController.cs" />
     <Compile Include="Controllers\RedisController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
@@ -179,6 +188,7 @@
     <Compile Include="Enum\Enum_ArticleRecommend.cs" />
     <Compile Include="Enum\Enum_ZanType.cs" />
     <Compile Include="Enum\Enum_ArticlePart.cs" />
+    <Compile Include="Enum\Enum_UserRole.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -189,6 +199,7 @@
     <Compile Include="Helper\ChineseLunisolar.cs" />
     <Compile Include="Helper\CommDataHelper.cs" />
     <Compile Include="Helper\Config\CommonConfig.cs" />
+    <Compile Include="Helper\PushHelper.cs" />
     <Compile Include="Helper\Config\RewriteConfig.cs" />
     <Compile Include="Helper\Config\UploadConfig.cs" />
     <Compile Include="Helper\CookieHelper.cs" />
@@ -243,6 +254,8 @@
   <ItemGroup>
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="DLL\Castle.Core.dll" />
+    <Content Include="DLL\GetuiServerApiSDK.dll" />
+    <Content Include="DLL\Google.ProtocolBuffers.dll" />
     <Content Include="DLL\HtmlSanitizationLibrary.dll" />
     <Content Include="DLL\HtmlSanitizationLibrary.xml" />
     <Content Include="DLL\log4net.dll" />
