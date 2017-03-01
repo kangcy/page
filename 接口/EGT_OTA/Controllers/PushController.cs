@@ -25,20 +25,22 @@ namespace EGT_OTA.Controllers
             //    result = ex.Message;
             //}
 
-            string clientId = "f67adb8d5b04a225fa7192b8741eb47b";
+            string clientId = "54f3c1dc7795e813a8e0cdb039becb6f";
             PushHelper message = new PushHelper(clientId);
-            //方法调用过程中一定要注意，截止时间一定要大于当前操作时间，建议在当前操作时间的基础上加5分钟时间  
-            string msg = message.PushMessageToSingleByNotificationTemplate("XXX - 单用户", "您有新的任务，点击查看！" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "", "", "", "2015-04-20 15:10", "2015-04-20 16:30");
-            string msg2 = message.PushMessageToAppByNotificationTemplate("XXX  - APP应用", "您有新的任务，点击查看！", "", "", "", "2015-04-20 10:10", "2015-04-20 14:30");
-            string msg3 = message.PushMessageToListByNotificationTemplate("XXX  - 多用户", "您有新的任务，点击查看！", "", "", "", "2015-04-20 10:10", "2015-04-20 14:30");
-            Response.Write(msg + "</br>");
-            Response.Write(msg2 + "</br>");
-            Response.Write(msg3 + "</br>");
+
+            var beginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var endTime = DateTime.Now.AddMinutes(5).ToString("yyyy-MM-dd HH:mm:ss");
+            //string msg1 = message.PushMessageToSingleByNotificationTemplate("XXX - 单用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
+            //string msg2 = message.PushMessageToListByNotificationTemplate("XXX  - 多用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
+            string msg3 = message.PushMessageToAppByNotificationTemplate("XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
+
             //解析输出结果  
             //{"taskId":"OSS-0420_ZiFBb3Sx7A7Pz7YWMwJdD9","result":"ok","status":"successed_online"} 在线状态  
             //{"taskId":"OSS-0420_2qtgpolflJAuYGSiGTfQ04","result":"ok","status":"successed_offline"} 离线状态  
 
-            return Content(result);
+            return Content(msg3);
+
+            //return Content(msg1 + "</br>" + msg2 + "</br>" + msg3 + "</br>");
         }
 
     }

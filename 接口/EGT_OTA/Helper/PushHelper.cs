@@ -16,136 +16,24 @@ namespace EGT_OTA.Helper
     /// </summary>
     public class PushHelper
     {
-        //参数设置 <-----参数需要重新设置----->
-        //http的域名
-        //private static String HOST = "http://sdk.open.api.igexin.com/apiex.htm";
-
-        //https的域名
-        //private static String HOST = "https://api.getui.com/apiex.htm";
-
-        //定义常量, appId、appKey、masterSecret 采用本文档 "第二步 获取访问凭证 "中获得的应用配置
-        //private static string APPID = "lj3zn7lhe8AnwY2fRGkXxA";
-        //private static string APPKEY = "22yXZ7maL29z3H0OcCnU39";
-        //private static string APPSECRET = "NfEHRptCe4AqvzpRVqkNL4";
-        //private static string MASTERSECRET = "22yXZ7maL29z3H0OcCnU39";
-
-        ///// <summary>
-        ///// 推送
-        ///// </summary>
-        //public static string PushMessageToApp()
-        //{
-        //    IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-        //    AppMessage message = new AppMessage();
-
-        //    //TransmissionTemplate template = TransmissionTemplateDemo();
-        //    LinkTemplate template = PushMessage();
-
-        //    message.IsOffline = true;                         // 用户当前不在线时，是否离线存储,可选
-        //    message.OfflineExpireTime = 1000 * 3600 * 12;     // 离线有效时间，单位为毫秒，可选
-        //    message.Data = template;
-        //    //判断是否客户端是否wifi环境下推送，2:4G/3G/2G,1为在WIFI环境下，0为无限制环境
-        //    //message.PushNetWorkType = 0; 
-        //    //message.Speed = 1000;
-
-        //    List<String> appIdList = new List<string>();
-        //    appIdList.Add(APPID);
-
-        //    List<String> phoneTypeList = new List<string>();   //通知接收者的手机操作系统类型
-        //    phoneTypeList.Add("ANDROID");
-        //    //phoneTypeList.Add("IOS");
-
-        //    List<String> provinceList = new List<string>();    //通知接收者所在省份
-        //    //provinceList.Add("浙江");
-        //    //provinceList.Add("上海");
-        //    //provinceList.Add("北京");
-
-        //    List<String> tagList = new List<string>();
-        //    //tagList.Add("中文");
-
-        //    message.AppIdList = appIdList;
-        //    message.PhoneTypeList = phoneTypeList;
-        //    message.ProvinceList = provinceList;
-        //    message.TagList = tagList;
-
-
-        //    string pushResult = push.pushMessageToApp(message);
-        //    //System.Console.WriteLine("-----------------------------------------------");
-        //    //System.Console.WriteLine("服务端返回结果：" + pushResult);
-        //    return pushResult;
-        //}
-
-        ////透传模板动作内容
-        //public static TransmissionTemplate TransmissionTemplateDemo()
-        //{
-        //    TransmissionTemplate template = new TransmissionTemplate();
-        //    template.AppId = APPID;
-        //    template.AppKey = APPKEY;
-
-        //    template.TransmissionType = "1";//应用启动类型，1：强制应用启动 2：等待应用启动
-
-        //    //透传内容  
-        //    template.TransmissionContent = "测试";
-        //    //设置通知定时展示时间，结束时间与开始时间相差需大于6分钟，消息推送后，客户端将在指定时间差内展示消息（误差6分钟）
-        //    String begin = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-        //    String end = DateTime.Now.AddMinutes(10).ToString("yyyy-MM-dd hh:mm:ss");
-        //    template.setDuration(begin, end);
-        //    return template;
-        //}
-
-        ////通知链接动作内容
-        //public static LinkTemplate PushMessage()
-        //{
-        //    LinkTemplate template = new LinkTemplate();
-        //    template.AppId = APPID;
-        //    template.AppKey = APPKEY;
-        //    //通知栏标题
-        //    template.Title = "标题";
-        //    //通知栏内容
-        //    template.Text = "内容";
-        //    //通知栏显示本地图片
-        //    template.Logo = "";
-        //    //通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空
-        //    template.LogoURL = "#";
-        //    //打开的链接地址
-        //    template.Url = "";
-        //    //接收到消息是否响铃，true：响铃 false：不响铃
-        //    template.IsRing = true;
-        //    //接收到消息是否震动，true：震动 false：不震动
-        //    template.IsVibrate = true;
-        //    //接收到消息是否可清除，true：可清除 false：不可清除
-        //    template.IsClearable = true;
-
-        //    return template;
-        //}
-
         /// <summary>  
         /// 构造函数中传入移动客户端的CLIENTID号  
         /// </summary>  
         /// <param name="clientId">获取的clientID </param>  
         public PushHelper(string clientId)
         {
-
-
             Environment.SetEnvironmentVariable("needDetails", "true");
             CLIENTID = clientId;
         }
 
         #region  应用基本参数信息
 
-
-        //应用的AppId  
-        public String APPID = "lj3zn7lhe8AnwY2fRGkXxA";
-        //应用的AppKey                
-        public String APPKEY = "22yXZ7maL29z3H0OcCnU39";
-        //应用的MasterSecret                
-        public String MASTERSECRET = "22yXZ7maL29z3H0OcCnU39";
-        //获取的clientID       
-        public String CLIENTID = "请更换你安装了Android应用的手机clientid";
-        //OpenService接口地址  
-        public static String HOST = "http://sdk.open.api.igexin.com/apiex.htm";
-        //填写IOS系统的DeviceToken  
-        public static String DeviceToken = "";
-
+        public string APPID = "lj3zn7lhe8AnwY2fRGkXxA";
+        public string APPKEY = "22yXZ7maL29z3H0OcCnU39";
+        public string MASTERSECRET = "j6ZZuyb5wy7RUZKhIf8EKA";
+        public string CLIENTID = "请更换你安装了Android应用的手机clientid";
+        public static string HOST = "http://sdk.open.api.igexin.com/apiex.htm";
+        public static string DeviceToken = "";//填写IOS系统的DeviceToken 
 
         #endregion
 
@@ -159,10 +47,8 @@ namespace EGT_OTA.Helper
         /// <param name="endTM">客户端展示结束时间</param>  
         /// <returns></returns>  
         public string PushMessageToSingleByTransmissionTemplate(string transContent, string beginTM, string endTM)
-        {
-            // 推送主类  
+        {  
             IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
-
             TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
 
             // 单推消息模型  
@@ -223,7 +109,6 @@ namespace EGT_OTA.Helper
         {
             // 推送主类  
             IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
-
             NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
 
             // 单推消息模型  
@@ -256,9 +141,7 @@ namespace EGT_OTA.Helper
         /// <returns></returns>  
         public string PushMessageToSingleByNotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
         {
-            // 推送主类  
             IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
-
             NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
 
             // 单推消息模型  
@@ -288,9 +171,9 @@ namespace EGT_OTA.Helper
         public string PushMessageToListByTransmissionTemplate(string transContent, string beginTM, string endTM)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            ListMessage message = new ListMessage();
             TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
 
+            ListMessage message = new ListMessage();
             message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
@@ -313,7 +196,6 @@ namespace EGT_OTA.Helper
             String pushResult = push.pushMessageToList(contentId, targetList);
             return pushResult;
         }
-
 
         /// <summary>  
         /// 通知链接模板  
@@ -327,9 +209,9 @@ namespace EGT_OTA.Helper
         public string PushMessageToListByLinkTemplate(string title, string text, string logo, string logoUrl, string url)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            ListMessage message = new ListMessage();
             LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
 
+            ListMessage message = new ListMessage();
             message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
@@ -341,23 +223,17 @@ namespace EGT_OTA.Helper
             target1.appId = APPID;
             target1.clientId = CLIENTID;
 
-
             // 如需要，可以设置多个接收者  
             com.igetui.api.openservice.igetui.Target target2 = new com.igetui.api.openservice.igetui.Target();
             target2.appId = APPID;
 
-
             targetList.Add(target1);
             targetList.Add(target2);
-
 
             String contentId = push.getContentId(message, "任务组名");
             String pushResult = push.pushMessageToList(contentId, targetList);
             return pushResult;
-
-
         }
-
 
         /// <summary>  
         /// 通知透传模板  
@@ -373,15 +249,13 @@ namespace EGT_OTA.Helper
         public string PushMessageToListByNotificationTemplate(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            ListMessage message = new ListMessage();
             NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
 
-
+            ListMessage message = new ListMessage();
             message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-
 
             //设置接收者  
             List<com.igetui.api.openservice.igetui.Target> targetList = new List<com.igetui.api.openservice.igetui.Target>();
@@ -389,23 +263,17 @@ namespace EGT_OTA.Helper
             target1.appId = APPID;
             target1.clientId = CLIENTID;
 
-
             // 如需要，可以设置多个接收者  
             com.igetui.api.openservice.igetui.Target target2 = new com.igetui.api.openservice.igetui.Target();
             target2.appId = APPID;
 
-
             targetList.Add(target1);
             targetList.Add(target2);
-
 
             String contentId = push.getContentId(message, "任务组名");
             String pushResult = push.pushMessageToList(contentId, targetList);
             return pushResult;
         }
-
-
-
 
         /// <summary>  
         /// 通知弹框下载模板  
@@ -426,15 +294,13 @@ namespace EGT_OTA.Helper
         public string PushMessageToListByNotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            ListMessage message = new ListMessage();
             NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
 
-
+            ListMessage message = new ListMessage();
             message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-
 
             //设置接收者  
             List<com.igetui.api.openservice.igetui.Target> targetList = new List<com.igetui.api.openservice.igetui.Target>();
@@ -442,27 +308,21 @@ namespace EGT_OTA.Helper
             target1.appId = APPID;
             target1.clientId = CLIENTID;
 
-
             // 如需要，可以设置多个接收者  
             com.igetui.api.openservice.igetui.Target target2 = new com.igetui.api.openservice.igetui.Target();
             target2.appId = APPID;
 
-
             targetList.Add(target1);
             targetList.Add(target2);
-
 
             String contentId = push.getContentId(message, "任务组名");
             String pushResult = push.pushMessageToList(contentId, targetList);
             return pushResult;
         }
 
-
         #endregion
 
-
         #region 3、PushMessageToApp接口：对单个应用下的所有用户进行推送，可根据省份，标签，机型过滤推送
-
 
         /// <summary>  
         /// 透传模板  
@@ -474,48 +334,38 @@ namespace EGT_OTA.Helper
         public string PushMessageToAppByTransmissionTemplate(string transContent, string beginTM, string endTM)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            AppMessage message = new AppMessage();
             TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
 
-
+            AppMessage message = new AppMessage();
             message.IsOffline = false;// 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
             //message.PushNetWorkType = 0; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
             message.Speed = 1;
 
-
             List<String> appIdList = new List<string>();
             appIdList.Add(APPID);
-
 
             List<String> phoneTypeList = new List<string>();//通知接收者的手机操作系统类型  
             //phoneTypeList.Add("ANDROID");  
             //phoneTypeList.Add("IOS");  
-
 
             List<String> provinceList = new List<string>();//通知接收者所在省份  
             //provinceList.Add("浙江");  
             //provinceList.Add("上海");  
             //provinceList.Add("北京");  
 
-
             List<String> tagList = new List<string>();
             //tagList.Add("标签5");  
-
 
             message.AppIdList = appIdList;
             message.PhoneTypeList = phoneTypeList;
             message.ProvinceList = provinceList;
             message.TagList = tagList;
 
-
             String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
             return pushResult;
         }
-
-
-
 
         /// <summary>  
         /// 通知链接模板  
@@ -529,35 +379,29 @@ namespace EGT_OTA.Helper
         public string PushMessageToAppByLinkTemplate(string title, string text, string logo, string logoUrl, string url)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            AppMessage message = new AppMessage();
             LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
 
-
+            AppMessage message = new AppMessage();
             message.IsOffline = false; // 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
             message.Data = template;
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
             message.Speed = 1;
 
-
             List<String> appIdList = new List<string>();
             appIdList.Add(APPID);
-
 
             List<String> phoneTypeList = new List<string>();//通知接收者的手机操作系统类型  
             //phoneTypeList.Add("ANDROID");  
             //phoneTypeList.Add("IOS");  
-
 
             List<String> provinceList = new List<string>();//通知接收者所在省份  
             //provinceList.Add("浙江");  
             //provinceList.Add("上海");  
             //provinceList.Add("北京");  
 
-
             List<String> tagList = new List<string>();
             //tagList.Add("标签5");  
-
 
             message.AppIdList = appIdList;
             message.PhoneTypeList = phoneTypeList;
@@ -568,7 +412,6 @@ namespace EGT_OTA.Helper
             String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
             return pushResult;
         }
-
 
         /// <summary>  
         /// 通知透传模板  
@@ -584,41 +427,34 @@ namespace EGT_OTA.Helper
         public string PushMessageToAppByNotificationTemplate(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            AppMessage message = new AppMessage();
             NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
 
-
-            message.IsOffline = false;// 用户当前不在线时，是否离线存储,可选  
+            AppMessage message = new AppMessage();
+            message.IsOffline = true;// 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
             message.Speed = 1;
 
-
             List<String> appIdList = new List<string>();
             appIdList.Add(APPID);
 
-
             List<String> phoneTypeList = new List<string>();//通知接收者的手机操作系统类型  
-            //phoneTypeList.Add("ANDROID");  
+            phoneTypeList.Add("ANDROID");  
             //phoneTypeList.Add("IOS");  
-
 
             List<String> provinceList = new List<string>();//通知接收者所在省份  
             //provinceList.Add("浙江");  
             //provinceList.Add("上海");  
             //provinceList.Add("北京");  
 
-
             List<String> tagList = new List<string>();
             //tagList.Add("标签5");  
-
 
             message.AppIdList = appIdList;
             message.PhoneTypeList = phoneTypeList;
             message.ProvinceList = provinceList;
             message.TagList = tagList;
-
 
             String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
             return pushResult;
@@ -644,60 +480,49 @@ namespace EGT_OTA.Helper
         public string PushMessageToAppByNotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            AppMessage message = new AppMessage();
             NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
 
-
+            AppMessage message = new AppMessage();
             message.IsOffline = false;// 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
             //message.PushNetWorkType = 0; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
             message.Speed = 1;
 
-
             List<String> appIdList = new List<string>();
             appIdList.Add(APPID);
-
 
             List<String> phoneTypeList = new List<string>(); //通知接收者的手机操作系统类型  
             //phoneTypeList.Add("ANDROID");  
             //phoneTypeList.Add("IOS");  
-
 
             List<String> provinceList = new List<string>(); //通知接收者所在省份  
             //provinceList.Add("浙江");  
             //provinceList.Add("上海");  
             //provinceList.Add("北京");  
 
-
             List<String> tagList = new List<string>();
             //tagList.Add("标签5");  
-
 
             message.AppIdList = appIdList;
             message.PhoneTypeList = phoneTypeList;
             message.ProvinceList = provinceList;
             message.TagList = tagList;
 
-
             String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
             return pushResult;
         }
 
-
         #endregion
-
 
         #region 2、四种消息模板
 
-
         /* 
-     *  
-     * 所有推送接口均支持四个消息模板，依次为透传模板，通知透传模板，通知链接模板，通知弹框下载模板 
-     * 注：IOS离线推送需通过APN进行转发，需填写pushInfo字段，目前仅不支持通知弹框下载功能 
-     * 
-     */
-
+         *  
+         * 所有推送接口均支持四个消息模板，依次为透传模板，通知透传模板，通知链接模板，通知弹框下载模板 
+         * 注：IOS离线推送需通过APN进行转发，需填写pushInfo字段，目前仅不支持通知弹框下载功能 
+         * 
+         */
 
         /// <summary>  
         /// 通知弹框下载模板动作内容，常用于下载apk更新软件等  
@@ -725,29 +550,23 @@ namespace EGT_OTA.Helper
             template.NotyIcon = notyIcon; //通知栏显示本地图片,如icon.png  
             template.LogoURL = logoUrl; //通知栏显示网络图标，如http://www-igexin.qiniudn.com/wp-content/uploads/2013/08/logo_getui1.png  
 
-
             template.PopTitle = popTitle; //弹框显示标题  
             template.PopContent = popContent; //弹框显示内容  
             template.PopImage = popImage;  //弹框显示图片  
             template.PopButton1 = popButton1; //弹框左边按钮显示文本  
             template.PopButton2 = popButton2; //弹框右边按钮显示文本  
 
-
             template.LoadTitle = loadTitle;//通知栏显示下载标题  
             template.LoadIcon = loadIcon;//通知栏显示下载图标,可为空，如file://push.png  
             template.LoadUrl = loadUrl;//下载地址，不可为空，http://www.appchina.com/market/d/425201/cop.baidu_0/com.gexin.im.apk  
 
-
             template.IsActived = true;//应用安装完成后，是否自动启动  
             template.IsAutoInstall = true; //下载应用完成后，是否弹出安装界面，true：弹出安装界面，false：手动点击弹出安装界面  
-
-
             template.IsBelled = true;//接收到消息是否响铃，true：响铃 false：不响铃  
             template.IsVibrationed = true;//接收到消息是否震动，true：震动 false：不震动  
             template.IsCleared = true;//接收到消息是否可清除，true：可清除 false：不可清除  
             return template;
         }
-
 
         /// <summary>  
         /// 通知链接动作内容  
@@ -769,21 +588,14 @@ namespace EGT_OTA.Helper
             template.LogoURL = logoUrl;  //通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空  
             template.Url = url; //打开的链接地址,如http://www.baidu.com  
 
-
             //iOS推送需要的pushInfo字段  
             //template.setPushInfo(actionLocKey, badge, message, sound, payload, locKey, locArgs, launchImage);  
-
 
             template.IsRing = true;//接收到消息是否响铃，true：响铃 false：不响铃  
             template.IsVibrate = true;//接收到消息是否震动，true：震动 false：不震动  
             template.IsClearable = true;//接收到消息是否可清除，true：可清除 false：不可清除  
-
-
             return template;
         }
-
-
-
 
         /// <summary>  
         /// 通知透传模板动作内容  
@@ -806,27 +618,21 @@ namespace EGT_OTA.Helper
             template.Logo = logo;//通知栏显示本地图片  
             template.LogoURL = logoUrl;//通知栏显示网络图标，如https://www.baidu.com/img/bd_logo1.png  
 
-
             template.TransmissionType = "1";//应用启动类型，1：强制应用启动  2：等待应用启动  
             template.TransmissionContent = transContent;//透传内容  
             //iOS推送需要的pushInfo字段  
             //template.setPushInfo(actionLocKey, badge, message, sound, payload, locKey, locArgs, launchImage);  
-
 
             //设置客户端展示时间  
             String begin = beginTM;
             String end = endTM;
             template.setDuration(begin, end);
 
-
             template.IsRing = true; //接收到消息是否响铃，true：响铃 false：不响铃  
             template.IsVibrate = true; //接收到消息是否震动，true：震动 false：不震动  
             template.IsClearable = true; //接收到消息是否可清除，true：可清除 false：不可清除  
-
-
             return template;
         }
-
 
         /// <summary>  
         /// 透传模板动作内容  
@@ -849,17 +655,12 @@ namespace EGT_OTA.Helper
             String begin = beginTM;
             String end = endTM;
             template.setDuration(begin, end);
-
-
             return template;
         }
 
-
         #endregion
 
-
         #region 3、获取用户当前状态
-
 
         /// <summary>  
         /// 获取用户当前状态  
@@ -871,7 +672,6 @@ namespace EGT_OTA.Helper
             String ret = push.getClientIdStatus(APPID, CLIENTID);
             return ret;
         }
-
 
         #endregion
     }
