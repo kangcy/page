@@ -91,7 +91,11 @@ namespace EGT_OTA.Controllers
                 var model = db.Single<Black>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                 if (model == null)
                 {
-                    return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
+                    //更新黑名单
+                    var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
+                    user.BlackText = "," + string.Join(",", blacks) + ",";
+
+                    return Json(new { result = true, message = user.BlackText }, JsonRequestBehavior.AllowGet);
                 }
                 var result = db.Delete<Black>(model.ID) > 0;
                 if (result)
