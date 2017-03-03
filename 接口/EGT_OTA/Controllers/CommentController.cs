@@ -123,14 +123,6 @@ namespace EGT_OTA.Controllers
                 model.ArticleUserNumber = article.CreateUserNumber;
                 model.Summary = summary;
                 model.Number = BuildNumber();
-                user.Province = ZNRequest.GetString("Province");
-                user.City = ZNRequest.GetString("City");
-                user.District = ZNRequest.GetString("District");
-                user.Street = ZNRequest.GetString("Street");
-                user.DetailName = ZNRequest.GetString("DetailName");
-                user.CityCode = ZNRequest.GetString("CityCode");
-                user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
-                user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                 model.CreateDate = DateTime.Now;
                 model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;
@@ -215,7 +207,6 @@ namespace EGT_OTA.Controllers
                                {
                                    ID = l.ID,
                                    Summary = l.Summary,
-                                   City = l.City,
                                    Goods = l.Goods,
                                    Number = l.Number,
                                    CreateDateText = isNew > 0 ? FormatTime(l.CreateDate) : l.CreateDate.ToString("yyyy-MM-dd"),
@@ -354,7 +345,6 @@ namespace EGT_OTA.Controllers
                                {
                                    ID = l.ID,
                                    Summary = l.Summary,
-                                   City = l.City,
                                    Goods = l.Goods,
                                    CreateDateText = l.CreateDate.ToString("yyyy-MM-dd"),
                                    UserID = u.ID,
@@ -433,7 +423,6 @@ namespace EGT_OTA.Controllers
                                {
                                    ID = l.ID,
                                    Summary = l.Summary,
-                                   City = l.City,
                                    Goods = l.Goods,
                                    CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                    Month = l.CreateDate.ToString("yyyyMMdd") == today ? "今天" : l.CreateDate.ToString("yyyyMMdd") == yesterday ? "昨天" : l.CreateDate.Month.ToString(),

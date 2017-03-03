@@ -27,7 +27,7 @@ namespace EGT_OTA.Models
     /// 用户信息
     /// </summary>
     [Serializable]
-    public class User : AddressModelShort
+    public class User : AddressBaseModel
     {
         public User()
         {
@@ -213,6 +213,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public int ShowFan { get; set; }
 
+        /// <summary>
+        /// 启用定位
+        /// </summary>
+        public int ShowPosition { get; set; }
+
         #endregion
 
         #region  扩展字段
@@ -294,6 +299,12 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public string ShareUrl { get; set; }
+
+        /// <summary>
+        /// 距离
+        /// </summary>
+        [SubSonicIgnore]
+        public int Distance { get; set; }
 
         #endregion
     }

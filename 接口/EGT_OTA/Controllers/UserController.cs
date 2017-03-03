@@ -1228,6 +1228,74 @@ namespace EGT_OTA.Controllers
             }
         }
 
+
+        /// <summary>
+        /// 同城用户
+        /// </summary>
+        public ActionResult CityAll()
+        {
+            try
+            {
+                var number = ZNRequest.GetString("Number");
+                if (string.IsNullOrWhiteSpace(number))
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                User user = db.Single<User>(x => x.Number == number);
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                if (user.ShowPosition == 0)
+                {
+
+                }
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<User>().Where<User>(x => x.Status == Enum_Status.Approved && x.Latitude > 0 && x.Longitude > 0 && x.CityCode == user.CityCode && x.ID != user.ID);
+
+                //过滤黑名单
+                var black = db.Find<Black>(x => x.CreateUserNumber == user.Number);
+                if (black.Count > 0)
+                {
+                    var userids = black.Select(x => x.ToUserNumber).ToArray();
+                    query = query.And("CreateUserNumber").NotIn(userids);
+                }
+
+                var list = query.ExecuteTypedList<User>();
+                var recordCount = list.Count;
+                list.ForEach(x =>
+                {
+                    x.Distance = DistanceHelper.GetDistance(user.Latitude, user.Longitude, x.Latitude, x.Longitude);
+                });
+
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                list = list.OrderBy(x => x.Distance).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+                var newlist = (from l in list
+                               select new
+                               {
+                                   ID = l.ID,
+                                   NickName = l.NickName,
+                                   Signature = l.Signature,
+                                   Avatar = l.Avatar,
+                                   Number = l.Number,
+                                   Distance = l.Distance
+                               }).ToList();
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("UserController_CityAll" + ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         /// <summary>
         /// 用户详情
         /// </summary>

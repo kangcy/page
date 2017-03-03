@@ -102,7 +102,7 @@ namespace EGT_OTA.Models
     /// <summary>
     /// 定位实体类基类
     /// </summary>
-    public abstract class AddressModelShort
+    public abstract class AddressBaseModel
     {
         /// <summary>
         /// 省份名称
