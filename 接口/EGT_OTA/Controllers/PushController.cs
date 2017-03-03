@@ -43,5 +43,11 @@ namespace EGT_OTA.Controllers
             //return Content(msg1 + "</br>" + msg2 + "</br>" + msg3 + "</br>");
         }
 
+
+        public ActionResult Distance()
+        {
+            var distance = DistanceHelper.GetDistance(31.97603, 118.761916, 31.97601, 118.761916);
+            return Content(distance.ToString());
+        }
     }
 }

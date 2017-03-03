@@ -27,12 +27,12 @@ namespace EGT_OTA.Models
     /// 用户信息
     /// </summary>
     [Serializable]
-    public class User
+    public class User : AddressModelShort
     {
         public User()
         {
-            this.ProvinceName = string.Empty;
-            this.CityName = string.Empty;
+            this.Province = string.Empty;
+            this.City = string.Empty;
             this.Email = string.Empty;
             this.Phone = string.Empty;
             this.WeiXin = string.Empty;
@@ -72,18 +72,6 @@ namespace EGT_OTA.Models
         ///</summary>
         [SubSonicNullString]
         public string NickName { get; set; }
-
-        /// <summary>
-        /// 省
-        /// </summary>
-        [SubSonicStringLength(50), SubSonicNullString]
-        public string ProvinceName { get; set; }
-
-        /// <summary>
-        /// 市
-        /// </summary>
-        [SubSonicStringLength(50), SubSonicNullString]
-        public string CityName { get; set; }
 
         ///<summary>
         ///个性签名

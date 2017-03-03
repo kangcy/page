@@ -123,8 +123,14 @@ namespace EGT_OTA.Controllers
                 model.ArticleUserNumber = article.CreateUserNumber;
                 model.Summary = summary;
                 model.Number = BuildNumber();
-                model.Province = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("Province"));
-                model.City = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("City"));
+                user.Province = ZNRequest.GetString("Province");
+                user.City = ZNRequest.GetString("City");
+                user.District = ZNRequest.GetString("District");
+                user.Street = ZNRequest.GetString("Street");
+                user.DetailName = ZNRequest.GetString("DetailName");
+                user.CityCode = ZNRequest.GetString("CityCode");
+                user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
+                user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                 model.CreateDate = DateTime.Now;
                 model.CreateUserNumber = user.Number;
                 model.CreateIP = Tools.GetClientIP;

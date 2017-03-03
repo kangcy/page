@@ -199,6 +199,7 @@
     <Compile Include="Helper\ChineseLunisolar.cs" />
     <Compile Include="Helper\CommDataHelper.cs" />
     <Compile Include="Helper\Config\CommonConfig.cs" />
+    <Compile Include="Helper\DistanceHelper.cs" />
     <Compile Include="Helper\PushHelper.cs" />
     <Compile Include="Helper\Config\RewriteConfig.cs" />
     <Compile Include="Helper\Config\UploadConfig.cs" />

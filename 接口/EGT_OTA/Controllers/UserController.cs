@@ -23,8 +23,8 @@ namespace EGT_OTA.Controllers
             try
             {
                 var NickName = SqlFilter(ZNRequest.GetString("NickName").Trim());
-                var avatar = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Avatar")));
-                var openID = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("OpenID")));
+                var avatar = ZNRequest.GetString("Avatar");
+                var openID = ZNRequest.GetString("OpenID");
                 var source = ZNRequest.GetInt("Source");
 
                 User user = null;
@@ -53,8 +53,14 @@ namespace EGT_OTA.Controllers
                 if (user == null)
                 {
                     user = new User();
-                    user.ProvinceName = ZNRequest.GetString("Province");
-                    user.CityName = ZNRequest.GetString("City");
+                    user.Province = ZNRequest.GetString("Province");
+                    user.City = ZNRequest.GetString("City");
+                    user.District = ZNRequest.GetString("District");
+                    user.Street = ZNRequest.GetString("Street");
+                    user.DetailName = ZNRequest.GetString("DetailName");
+                    user.CityCode = ZNRequest.GetString("CityCode");
+                    user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
+                    user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                     user.Password = string.Empty;
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
@@ -112,7 +118,7 @@ namespace EGT_OTA.Controllers
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                     if (user.ID > 0)
                     {
-                        user.Address = user.ProvinceName + " " + user.CityName;
+                        user.Address = user.Province + " " + user.City;
                         user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
 
                         return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
@@ -120,8 +126,14 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-                    user.ProvinceName = ZNRequest.GetString("Province");
-                    user.CityName = ZNRequest.GetString("City");
+                    user.Province = ZNRequest.GetString("Province");
+                    user.City = ZNRequest.GetString("City");
+                    user.District = ZNRequest.GetString("District");
+                    user.Street = ZNRequest.GetString("Street");
+                    user.DetailName = ZNRequest.GetString("DetailName");
+                    user.CityCode = ZNRequest.GetString("CityCode");
+                    user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
+                    user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                     user.LoginTimes += 1;
                     user.LastLoginDate = DateTime.Now;
                     user.LastLoginIP = Tools.GetClientIP;
@@ -228,8 +240,14 @@ namespace EGT_OTA.Controllers
                 {
                     user.Cover = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/cover01.png";
                 }
-                user.ProvinceName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Province")));
-                user.CityName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("City")));
+                user.Province = ZNRequest.GetString("Province");
+                user.City = ZNRequest.GetString("City");
+                user.District = ZNRequest.GetString("District");
+                user.Street = ZNRequest.GetString("Street");
+                user.DetailName = ZNRequest.GetString("DetailName");
+                user.CityCode = ZNRequest.GetString("CityCode");
+                user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
+                user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                 user.Email = string.Empty;
                 user.IsEmail = 0;
                 user.Signature = string.Empty;
@@ -256,7 +274,7 @@ namespace EGT_OTA.Controllers
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
-                    user.Address = user.ProvinceName + " " + user.CityName;
+                    user.Address = user.Province + " " + user.City;
                     user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
 
                     CookieHelper.ClearCookie("SMS");
@@ -344,8 +362,8 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.ProvinceName = ZNRequest.GetString("ProvinceName");
-                user.CityName = ZNRequest.GetString("CityName");
+                user.Province = ZNRequest.GetString("Province");
+                user.City = ZNRequest.GetString("City");
                 var result = db.Update<User>(user) > 0;
                 if (result)
                 {
@@ -1215,7 +1233,7 @@ namespace EGT_OTA.Controllers
         /// </summary>
         protected User UserInfo(User user)
         {
-            user.Address = user.ProvinceName + " " + user.CityName;
+            user.Address = user.Province + " " + user.City;
             user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
 
             //打赏金额

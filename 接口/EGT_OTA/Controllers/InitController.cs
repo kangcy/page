@@ -42,8 +42,8 @@ namespace EGT_OTA.Controllers
                 Sex = 1,
                 Avatar = Server.MapPath("~/Init/UserAvatar/2.jpg"),
                 Cover = "../images/header.png",
-                ProvinceName = "江苏",
-                CityName = "南京",
+                Province = "江苏",
+                City = "南京",
                 Birthday = new DateTime(1991, 2, 15),
                 Signature = "幸福就是每天和家人分享快乐甜蜜和喜悦，就是这么简单",
                 Number = BuildNumber()
@@ -56,8 +56,8 @@ namespace EGT_OTA.Controllers
                 Sex = 1,
                 Avatar = Server.MapPath("~/Init/UserAvatar/1.jpg"),
                 Cover = "../images/header.png",
-                ProvinceName = "江苏",
-                CityName = "南京",
+                Province = "江苏",
+                City = "南京",
                 Birthday = new DateTime(1991, 2, 15),
                 Signature = "幸福就是每天和家人分享快乐甜蜜和喜悦，就是这么简单",
                 Number = BuildNumber()

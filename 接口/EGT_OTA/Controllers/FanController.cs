@@ -112,8 +112,8 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("FanID");
-                var model = db.Single<Fan>(x => x.ID == id);
+                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+                var model = db.Single<Fan>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                 if (model == null)
                 {
                     return Json(new { result = false, message = "数据不存在" }, JsonRequestBehavior.AllowGet);
@@ -122,7 +122,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = db.Delete<Fan>(id) > 0;
+                var result = db.Delete<Fan>(model.ID) > 0;
                 if (result)
                 {
                     //更新关注用户
