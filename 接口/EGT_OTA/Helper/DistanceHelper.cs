@@ -22,7 +22,7 @@ namespace EGT_OTA.Helper
         /// <param name="lat2">第二点纬度</param>
         /// <param name="lng2">第二点经度</param>
         /// <returns></returns>
-        public static int GetDistance(double lat1, double lng1, double lat2, double lng2)
+        public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
         {
             double radLat1 = Rad(lat1);
             double radLng1 = Rad(lng1);
@@ -31,7 +31,7 @@ namespace EGT_OTA.Helper
             double a = radLat1 - radLat2;
             double b = radLng1 - radLng2;
             double result = 2 * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(a / 2), 2) + Math.Cos(radLat1) * Math.Cos(radLat2) * Math.Pow(Math.Sin(b / 2), 2))) * EARTH_RADIUS;
-            return Tools.SafeInt(result);
+            return result;
         }
 
         /// <summary>

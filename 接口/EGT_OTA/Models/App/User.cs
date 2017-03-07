@@ -304,7 +304,7 @@ namespace EGT_OTA.Models
         /// 距离
         /// </summary>
         [SubSonicIgnore]
-        public int Distance { get; set; }
+        public double Distance { get; set; }
 
         #endregion
     }

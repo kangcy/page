@@ -1149,6 +1149,10 @@ namespace EGT_OTA.Controllers
                     case "ShowFan":
                         result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowFan").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
+                    //显示我的定位
+                    case "ShowPosition":
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowPosition").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
                     default:
                         break;
                 }
@@ -1159,7 +1163,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("UserController_EditAutoMusic" + ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditSecret" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -1227,7 +1231,6 @@ namespace EGT_OTA.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
-
 
         /// <summary>
         /// 同城用户
