@@ -258,6 +258,11 @@ namespace EGT_OTA.Controllers
         {
             try
             {
+                var UserNumber = ZNRequest.GetString("Number");
+                if (string.IsNullOrWhiteSpace(UserNumber))
+                {
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                }
                 var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
@@ -268,9 +273,16 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
+
                 if (model.Status == Enum_Status.DELETE)
                 {
                     return Json(new { result = false, message = "当前文章已删除，请刷新重试" }, JsonRequestBehavior.AllowGet);
+                }
+
+                //判断黑名单
+                if (db.Exists<Black>(x => x.ToUserNumber == UserNumber && x.CreateUserNumber == model.CreateUserNumber))
+                {
+                    return Json(new { result = false, message = "没有访问权限" }, JsonRequestBehavior.AllowGet);
                 }
 
                 string password = ZNRequest.GetString("ArticlePassword");
