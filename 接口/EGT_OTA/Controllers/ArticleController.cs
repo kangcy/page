@@ -392,7 +392,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var ArticleID = ZNRequest.GetInt("ArticleID");
-                var Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
+                var Cover = ZNRequest.GetString("Cover");
                 if (string.IsNullOrWhiteSpace(Cover))
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
@@ -420,8 +420,8 @@ namespace EGT_OTA.Controllers
             {
                 var ArticleID = ZNRequest.GetInt("ArticleID");
                 var MusicID = ZNRequest.GetInt("MusicID");
-                var MusicName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("MusicName")));
-                var MusicUrl = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("MusicUrl")));
+                var MusicName = ZNRequest.GetString("MusicName");
+                var MusicUrl = ZNRequest.GetString("MusicUrl");
                 var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Set("MusicName").EqualTo(MusicName).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {

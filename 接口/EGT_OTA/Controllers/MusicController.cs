@@ -105,5 +105,11 @@ namespace EGT_OTA.Controllers
         }
 
         #endregion
+
+        //http://music.163.com/#/album?id=2884361
+        //http://music.163.com/api/song/detail?id=439911239&ids=%5B439911239%5D 
+
+        //直接访问这个地址获取JSON
+        //http://music.163.com/api/song/detail?ids=%5B439911239%5D    
     }
 }
