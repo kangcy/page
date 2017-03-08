@@ -110,6 +110,8 @@ namespace EGT_OTA.Controllers
                     user.ShowArticle = 1;
                     user.ShowFollow = 1;
                     user.ShowFan = 1;
+                    user.ShowPush = 1;
+                    user.ShowPosition = 1;
                     user.Birthday = DateTime.Now;
                     user.Number = BuildNumber();
                     user.IsPay = 1;
@@ -264,6 +266,8 @@ namespace EGT_OTA.Controllers
                 user.ShowArticle = 1;
                 user.ShowFollow = 1;
                 user.ShowFan = 1;
+                user.ShowPush = 1;
+                user.ShowPosition = 1;
                 user.Status = Enum_Status.Approved;
                 user.Number = BuildNumber();
                 user.IsPay = 1;
