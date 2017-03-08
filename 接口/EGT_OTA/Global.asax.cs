@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EGT_OTA.Models;
@@ -13,44 +14,15 @@ namespace EGT_OTA
 
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
-
-        public static void RegisterRoutes(RouteCollection routes)
-        {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
-            //文章短链路由
-            routes.MapRoute(
-                name: "short",
-                url: "{number}",
-                defaults: new { controller = "Home", action = "Short" }
-            );
-
-            //用户短链路由
-            routes.MapRoute(
-                name: "ushort",
-                url: "u/{number}",
-                defaults: new { controller = "Home", action = "UserShort" }
-            );
-
-            routes.MapRoute(
-                "Default", // 路由名称
-                "{controller}/{action}/{id}", // 带有参数的 URL
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // 参数默认值
-            );
-        }
-
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-
-            RegisterGlobalFilters(GlobalFilters.Filters);
-            RegisterRoutes(RouteTable.Routes);
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             new WebApplication().Start(System.Web.HttpContext.Current);
+
             EGT_OTA.Models.Repository.UpdateDB();
         }
 

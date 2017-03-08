@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using System.IO;
 using System.Text;
 using EGT_OTA.Models;
@@ -12,10 +10,11 @@ using System.Text.RegularExpressions;
 using EGT_OTA.Helper;
 using System.Drawing;
 using EGT_OTA.Helper.Config;
+using System.Web.Http;
 
-namespace EGT_OTA.Controllers
+namespace EGT_OTA.Controllers.Api
 {
-    public class BaseController : Controller
+    public class BaseApiController : ApiController
     {
         protected readonly SimpleRepository db = Repository.GetRepo();
 

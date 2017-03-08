@@ -106,10 +106,19 @@ namespace EGT_OTA.Controllers
 
         #endregion
 
-        //http://music.163.com/#/album?id=2884361
+        //查询单曲（type:1,s:检索词）
+        //http://music.163.com/#/search/m/?id=2884361&s=%E6%88%91&type=1
         //http://music.163.com/api/song/detail?id=439911239&ids=%5B439911239%5D 
 
         //直接访问这个地址获取JSON
-        //http://music.163.com/api/song/detail?ids=%5B439911239%5D    
+        //http://music.163.com/api/song/detail?ids=%5B 439911239 %5D    
+
+
+        public ActionResult Load()
+        {
+            var name = ZNRequest.GetString("name");
+            var url = "http://music.163.com/#/search/m/?id=2884361&type=1&s=" + UrlEncode(name);
+            return Content("");
+        }
     }
 }
