@@ -212,6 +212,11 @@ namespace EGT_OTA.Models
         public int ShowFan { get; set; }
 
         /// <summary>
+        /// 显示消息推送
+        /// </summary>
+        public int ShowPush { get; set; }
+
+        /// <summary>
         /// 启用定位
         /// </summary>
         public int ShowPosition { get; set; }

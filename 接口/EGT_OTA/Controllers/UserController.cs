@@ -1161,6 +1161,10 @@ namespace EGT_OTA.Controllers
                     case "ShowFan":
                         result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowFan").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
+                    //显示消息推送
+                    case "ShowPush":
+                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowPush").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        break;
                     //显示我的定位
                     case "ShowPosition":
                         result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowPosition").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
