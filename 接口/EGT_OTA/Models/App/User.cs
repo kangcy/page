@@ -44,8 +44,6 @@ namespace EGT_OTA.Models
             this.Keeps = 0;
             this.Follows = 0;
             this.Fans = 0;
-            this.FanText = "";
-            this.KeepText = "";
             this.Status = Enum_Status.Approved;
         }
 
@@ -277,24 +275,6 @@ namespace EGT_OTA.Models
         public int Pays { get; set; }
 
         /// <summary>
-        /// 关注人
-        /// </summary>
-        [SubSonicIgnore]
-        public string FanText { get; set; }
-
-        /// <summary>
-        /// 收藏文章
-        /// </summary>
-        [SubSonicIgnore]
-        public string KeepText { get; set; }
-
-        /// <summary>
-        /// 黑名单
-        /// </summary>
-        [SubSonicIgnore]
-        public string BlackText { get; set; }
-
-        /// <summary>
         /// 分享链接
         /// </summary>
         [SubSonicIgnore]
@@ -305,6 +285,18 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public double Distance { get; set; }
+
+        /// <summary>
+        /// 是否关注
+        /// </summary>
+        [SubSonicIgnore]
+        public int IsFan { get; set; }
+
+        /// <summary>
+        /// 是否拉黑
+        /// </summary>
+        [SubSonicIgnore]
+        public int IsBlack { get; set; }
 
         #endregion
     }

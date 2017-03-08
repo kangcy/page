@@ -307,6 +307,12 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public int IsPay { get; set; }
 
+        /// <summary>
+        /// 是否收藏
+        /// </summary>
+        [SubSonicIgnore]
+        public int IsKeep { get; set; }
+
         #endregion
     }
 

@@ -49,10 +49,6 @@ namespace EGT_OTA.Controllers
                 var result = Tools.SafeInt(db.Add<Black>(model)) > 0;
                 if (result)
                 {
-                    //更新黑名单
-                    var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
-                    user.BlackText = "," + string.Join(",", blacks) + ",";
-
                     //取消关注
                     var fan = db.Single<Fan>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                     if (fan != null)
@@ -61,11 +57,9 @@ namespace EGT_OTA.Controllers
                     }
 
                     //更新关注
-                    var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
-                    user.FanText = "," + string.Join(",", fans) + ",";
-                    user.Follows = fans.Length;
+                    user.Follows = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Count;
 
-                    return Json(new { result = true, message = new { BlackText = user.BlackText, FanText = user.FanText, Follows = user.Follows } }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = user.Follows }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -91,20 +85,12 @@ namespace EGT_OTA.Controllers
                 var model = db.Single<Black>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
                 if (model == null)
                 {
-                    //更新黑名单
-                    var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
-                    user.BlackText = "," + string.Join(",", blacks) + ",";
-
-                    return Json(new { result = true, message = user.BlackText }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = string.Empty }, JsonRequestBehavior.AllowGet);
                 }
                 var result = db.Delete<Black>(model.ID) > 0;
                 if (result)
                 {
-                    //更新黑名单
-                    var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
-                    user.BlackText = "," + string.Join(",", blacks) + ",";
-
-                    return Json(new { result = true, message = user.BlackText }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = string.Empty }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)

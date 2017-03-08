@@ -93,11 +93,7 @@ namespace EGT_OTA.Controllers
                 var result = db.Delete<Keep>(model.ID) > 0;
                 if (result)
                 {
-                    //更新收藏
-                    var keeps = db.Find<Keep>(x => x.CreateUserNumber == user.Number).Select(x => x.ArticleNumber).ToArray();
-                    user.KeepText = "," + string.Join(",", keeps) + ",";
-
-                    return Json(new { result = true, message = user.KeepText }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = "" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)

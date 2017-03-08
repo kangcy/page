@@ -107,8 +107,6 @@ namespace EGT_OTA.Controllers
                     user.Articles = 0;
                     user.Comments = 0;
                     user.Zans = 0;
-                    user.FanText = "";
-                    user.KeepText = "";
                     user.ShowArticle = 1;
                     user.ShowFollow = 1;
                     user.ShowFan = 1;
@@ -263,8 +261,6 @@ namespace EGT_OTA.Controllers
                 user.Keeps = 0;
                 user.Follows = 0;
                 user.Fans = 0;
-                user.FanText = "";
-                user.KeepText = "";
                 user.ShowArticle = 1;
                 user.ShowFollow = 1;
                 user.ShowFan = 1;
@@ -749,8 +745,8 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var Number = ZNRequest.GetString("Number");
-                var CurrNumber = ZNRequest.GetString("CurrNumber");
+                var Number = ZNRequest.GetString("Number");//当前查询用户
+                var CurrNumber = ZNRequest.GetString("CurrNumber");//当前用户
                 if (string.IsNullOrWhiteSpace(Number) || string.IsNullOrWhiteSpace(CurrNumber))
                 {
                     return Json(new { result = false, message = "参数信息异常" }, JsonRequestBehavior.AllowGet);
@@ -767,7 +763,12 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "没有访问权限" }, JsonRequestBehavior.AllowGet);
                 }
 
-                return Json(new { result = true, message = UserInfo(user) }, JsonRequestBehavior.AllowGet);
+                var newuser = UserInfo(user);
+
+                newuser.IsFan = db.Exists<Fan>(x => x.CreateUserNumber == CurrNumber && x.ToUserNumber == Number) ? 1 : 0;
+                newuser.IsBlack = db.Exists<Black>(x => x.CreateUserNumber == CurrNumber && x.ToUserNumber == Number) ? 1 : 0;
+
+                return Json(new { result = true, message = newuser }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -820,6 +821,8 @@ namespace EGT_OTA.Controllers
                     list = query.Paged(1, 100).OrderDesc("ID").ExecuteTypedList<User>();
                 }
 
+                var follows = db.Find<Fan>(x => x.CreateUserNumber == Number).ToList();
+
                 var recordCount = list.Count;
                 var totalPage = 1;
                 var newlist = (from l in list
@@ -829,7 +832,8 @@ namespace EGT_OTA.Controllers
                                    NickName = l.NickName,
                                    Signature = l.Signature,
                                    Avatar = l.Avatar,
-                                   Number = l.Number
+                                   Number = l.Number,
+                                   IsFollow = follows.Exists(x => x.ToUserNumber == l.Number) ? 1 : 0
                                }).ToList();
                 var result = new
                 {
@@ -1282,6 +1286,9 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 list = list.OrderBy(x => x.Distance).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+
+                var follows = db.Find<Fan>(x => x.CreateUserNumber == number).ToList();
+
                 var newlist = (from l in list
                                select new
                                {
@@ -1290,7 +1297,8 @@ namespace EGT_OTA.Controllers
                                    Signature = l.Signature,
                                    Avatar = l.Avatar,
                                    Number = l.Number,
-                                   Distance = l.Distance
+                                   Distance = l.Distance,
+                                   IsFollow = follows.Exists(x => x.ToUserNumber == l.Number) ? 1 : 0
                                }).ToList();
                 var result = new
                 {
@@ -1341,6 +1349,9 @@ namespace EGT_OTA.Controllers
                 var recordCount = list.Count;
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 list = list.OrderBy(x => x.Distance).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+
+                var follows = db.Find<Fan>(x => x.CreateUserNumber == number).ToList();
+
                 var newlist = (from l in list
                                select new
                                {
@@ -1349,7 +1360,8 @@ namespace EGT_OTA.Controllers
                                    Signature = l.Signature,
                                    Avatar = l.Avatar,
                                    Number = l.Number,
-                                   Distance = l.Distance
+                                   Distance = l.Distance,
+                                   IsFollow = follows.Exists(x => x.ToUserNumber == l.Number) ? 1 : 0
                                }).ToList();
                 var result = new
                 {
@@ -1404,21 +1416,10 @@ namespace EGT_OTA.Controllers
             //点赞
             user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.ArticleUserNumber == user.Number && x.ZanType == Enum_ZanType.Article).GetRecordCount();
 
-            //我关注的用户
-            var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
-            user.FanText = "," + string.Join(",", fans) + ",";
-
             //我收藏的文章
-            var keeps = db.Find<Keep>(x => x.CreateUserNumber == user.Number).Select(x => x.ArticleNumber).ToArray();
-            user.KeepText = "," + string.Join(",", keeps) + ",";
-            user.Keeps = keeps.Length;
-
-            //我拉黑的用户
-            var blacks = db.Find<Black>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
-            user.BlackText = "," + string.Join(",", blacks) + ",";
+            user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             user.ShareUrl = System.Configuration.ConfigurationManager.AppSettings["share_url"] + "u/" + user.Number;
-
             return user;
         }
     }

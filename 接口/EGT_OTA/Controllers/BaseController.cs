@@ -679,7 +679,7 @@ namespace EGT_OTA.Controllers
                 model.UserNumber = x.CreateUserNumber;
                 model.Cover = x.Cover;
                 //model.CreateDate = FormatTime(x.CreateDate);
-                model.CreateDate = x.CreateDate.ToString("hh:mm yyyy-MM-dd");
+                model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd hh:mm");
                 model.TypeName = articletype == null ? "" : articletype.Name;
                 model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();
                 model.ArticlePower = x.ArticlePower;

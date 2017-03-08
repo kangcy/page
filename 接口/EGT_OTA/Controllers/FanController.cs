@@ -45,7 +45,7 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-                    return Json(new { result = true, message = "已关注" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = "exist" }, JsonRequestBehavior.AllowGet);
                 }
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
@@ -125,11 +125,7 @@ namespace EGT_OTA.Controllers
                 var result = db.Delete<Fan>(model.ID) > 0;
                 if (result)
                 {
-                    //更新关注用户
-                    var fans = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Select(x => x.ToUserNumber).ToArray();
-                    user.FanText = "," + string.Join(",", fans) + ",";
-
-                    return Json(new { result = true, message = user.FanText }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = string.Empty }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -246,6 +242,8 @@ namespace EGT_OTA.Controllers
                 var array = list.Select(x => x.CreateUserNumber).Distinct().ToList();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
 
+                var follows = db.Find<Fan>(x => x.CreateUserNumber == ToUserNumber).ToList();
+
                 var newlist = (from l in list
                                join u in users on l.CreateUserNumber equals u.Number
                                select new
@@ -256,7 +254,8 @@ namespace EGT_OTA.Controllers
                                    NickName = u.NickName,
                                    Signature = u.Signature,
                                    Avatar = u.Avatar,
-                                   Number = u.Number
+                                   Number = u.Number,
+                                   IsFollow = follows.Exists(x => x.ToUserNumber == u.Number) ? 1 : 0
                                }).ToList();
                 var result = new
                 {

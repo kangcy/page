@@ -311,6 +311,9 @@ namespace EGT_OTA.Controllers
                     model.IsPay = createUser.IsPay;
                 }
 
+                //判断是否收藏
+                model.IsKeep = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserNumber == model.CreateUserNumber && x.ArticleNumber == model.Number).GetRecordCount() == 0 ? 0 : 1;
+
                 //类型
                 ArticleType articleType = GetArticleType().FirstOrDefault<ArticleType>(x => x.ID == model.TypeID);
                 model.TypeName = articleType == null ? string.Empty : articleType.Name;
