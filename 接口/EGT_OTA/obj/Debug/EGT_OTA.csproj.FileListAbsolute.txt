@@ -167,6 +167,7 @@ F:\网站\Web\APP\my\接口\EGT_OTA\bin\StackExchange.Redis.xml
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.dll
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.pdb
+F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\Castle.Core.dll
@@ -204,6 +205,5 @@ F:\HBuider\Home\接口\EGT_OTA\bin\Ionic.Zlib.xml
 F:\HBuider\Home\接口\EGT_OTA\bin\Newtonsoft.Json.xml
 F:\HBuider\Home\接口\EGT_OTA\bin\StackExchange.Redis.xml
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Http.WebHost.xml
-F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.dll
 F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.pdb

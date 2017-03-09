@@ -39,6 +39,25 @@ namespace EGT_OTA.Controllers.Api
         }
 
         /// <summary>
+        /// Api返回结果
+        /// </summary>
+        public class ApiResult
+        {
+            public ApiResult()
+            {
+                this.result = false;
+                this.code = 0;
+                this.message = string.Empty;
+            }
+
+            public bool result { get; set; }
+
+            public int code { get; set; }
+
+            public object message { get; set; }
+        }
+
+        /// <summary>
         /// 解码
         /// </summary>
         protected string UrlDecode(string msg)

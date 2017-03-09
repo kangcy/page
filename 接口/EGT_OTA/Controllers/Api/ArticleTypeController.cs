@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using EGT_OTA.Controllers.Filter;
 using EGT_OTA.Helper;
+using EGT_OTA.Models;
 using Newtonsoft.Json;
 
 namespace EGT_OTA.Controllers.Api
@@ -16,59 +17,53 @@ namespace EGT_OTA.Controllers.Api
     {
         [DeflateCompression]
         [HttpGet]
-        [Route("api/type/all")]
-        public string Get()
+        [Route("Api/ArticleType/All")]
+        public string All()
         {
+            ApiResult result = new ApiResult();
             try
             {
                 var list = GetArticleType().OrderBy(x => x.SortID).ToList();
-                var newlist = (from l in list
-                               select new
-                               {
-                                   ID = l.ID,
-                                   Cover = GetFullUrl(l.Cover),
-                                   Name = l.Name,
-                                   Summary = l.Summary,
-                                   ParentID = l.ParentID,
-                                   ParentIDList = l.ParentIDList
-                               }).ToList();
-                var result = new
+                list.ForEach(x =>
                 {
-                    currpage = 1,
-                    records = list.Count(),
-                    totalpage = 1,
-                    list = newlist
-                };
-                return JsonConvert.SerializeObject(result);
-                //return new HttpResponseMessage { Content = new StringContent(JsonConvert.SerializeObject(result), Encoding.GetEncoding("UTF-8"), "application/json") };
+                    x.Cover = GetFullUrl(x.Cover);
+                });
+                result.result = true;
+                result.message = list;
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("ArticleTypeController_All:" + ex.Message);
-                return JsonConvert.SerializeObject(ex.Message);
-                //return new HttpResponseMessage { Content = new StringContent(null, Encoding.GetEncoding("UTF-8"), "application/json") };
+                LogHelper.ErrorLoger.Error("Api_ArticleType_All:" + ex.Message);
+                result.message = ex.Message;
             }
+            return JsonConvert.SerializeObject(result);
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
+        [DeflateCompression]
+        [HttpGet]
+        [Route("Api/ArticleType/All2")]
+        public string All2()
         {
-            return "value";
-        }
+            ApiResult result = new ApiResult();
+            try
+            {
+                var list = GetArticleType();
+                var first = list.FindAll(x => x.ParentID == 0).OrderBy(x => x.ID).ToList();
 
-        // POST api/<controller>
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
+                first.ForEach(x =>
+                {
+                    x.List = new List<ArticleType>();
+                    x.List.AddRange(list.FindAll(y => y.ParentID == x.ID).OrderBy(y => y.ID).ToList());
+                });
+                result.result = true;
+                result.message = first;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_ArticleType_All2:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
         }
     }
 }

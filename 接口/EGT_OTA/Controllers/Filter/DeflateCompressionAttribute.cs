@@ -5,47 +5,21 @@ using System.Linq;
 using System.Web;
 using System.Net.Http;
 using System.Web.Http.Filters;
+using System.Web.Http.Controllers;
 
 namespace EGT_OTA.Controllers.Filter
 {
     /// <summary>
-    /// 代码压缩
+    /// 响应压缩
     /// </summary>
     public class DeflateCompressionAttribute : ActionFilterAttribute
     {
-        public override void OnActionExecuted(HttpActionExecutedContext actContext)
+        public override void OnActionExecuting(HttpActionContext filterContext)
         {
-            var content = actContext.Response.Content;
-            var bytes = content == null ? null : content.ReadAsByteArrayAsync().Result;
-            var zlibbedContent = bytes == null ? new byte[0] :
-            CompressionHelper.DeflateByte(bytes);
-            actContext.Response.Content = new ByteArrayContent(zlibbedContent);
-            actContext.Response.Content.Headers.Remove("Content-Type");
-            actContext.Response.Content.Headers.Add("Content-encoding", "deflate");
-            actContext.Response.Content.Headers.Add("Content-Type", "application/json");
-            base.OnActionExecuted(actContext);
-        }
-    }
-
-    public class CompressionHelper
-    {
-        public static byte[] DeflateByte(byte[] str)
-        {
-            if (str == null)
-            {
-                return null;
-            }
-            using (var output = new MemoryStream())
-            {
-                using (
-                    var compressor = new Ionic.Zlib.DeflateStream(
-                    output, Ionic.Zlib.CompressionMode.Compress,
-                    Ionic.Zlib.CompressionLevel.BestSpeed))
-                {
-                    compressor.Write(str, 0, str.Length);
-                }
-                return output.ToArray();
-            }
+            HttpResponse Response = HttpContext.Current.Response;
+            Response.Filter = new System.IO.Compression.DeflateStream(Response.Filter, System.IO.Compression.CompressionMode.Compress);
+            Response.AppendHeader("Content-Encoding", "deflate");
+            Response.AppendHeader("Content-Type", "application/json");
         }
     }
 }

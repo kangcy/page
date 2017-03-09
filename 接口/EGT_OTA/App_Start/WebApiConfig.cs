@@ -15,8 +15,8 @@ namespace EGT_OTA
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "api",
-                routeTemplate: "api/{controller}/{id}",
+                name: "Api",
+                routeTemplate: "Api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
         }
