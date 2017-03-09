@@ -177,6 +177,7 @@
     <Compile Include="Controllers\Api\ArticleTypeController.cs" />
     <Compile Include="Controllers\Api\BaseApiController.cs" />
     <Compile Include="Controllers\Api\ArticleController.cs" />
+    <Compile Include="Controllers\Api\CommentController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\Filter\DeflateCompressionAttribute.cs" />

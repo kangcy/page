@@ -142,6 +142,27 @@ namespace EGT_OTA.Models
     public class CommentJson
     {
         public int ID { get; set; }
+        public string Number { get; set; }
+        public string Summary { get; set; }
+        public int Goods { get; set; }
+        public string CreateDateText { get; set; }
+        public int UserID { get; set; }
+        public string NickName { get; set; }
+        public string Avatar { get; set; }
+        public string UserNumber { get; set; }
+        public string Title { get; set; }
+        public int ArticleID { get; set; }
+        public string ArticleUserNumber { get; set; }
+        public int ArticlePower { get; set; }
+        public string ParentCommentNumber { get; set; }
+        public string ParentUserNumber { get; set; }
+        public string ParentNickName { get; set; }
+        public string ParentSummary { get; set; }
+    }
+
+    public class CommentJson2
+    {
+        public int ID { get; set; }
         public string Summary { get; set; }
         public int UserID { get; set; }
         public string UserNumber { get; set; }

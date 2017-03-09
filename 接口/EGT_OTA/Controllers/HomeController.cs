@@ -85,7 +85,7 @@ namespace EGT_OTA.Controllers
                 }
 
                 //浏览数
-                new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();
+                new SubSonic.Query.Update<Article>(provider).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();
 
                 //创建人
                 User createUser = db.Single<User>(x => x.Number == model.CreateUserNumber);
@@ -112,7 +112,7 @@ namespace EGT_OTA.Controllers
                 }
 
                 //文章部分
-                model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleNumber == model.Number).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
+                model.ArticlePart = new SubSonic.Query.Select(provider).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleNumber == model.Number).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
 
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
 

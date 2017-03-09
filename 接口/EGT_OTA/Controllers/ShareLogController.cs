@@ -32,7 +32,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var articleID = ZNRequest.GetInt("ArticleID");
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Shares", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(provider, "ID", "Shares", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
 
                 if (article == null)
                 {
@@ -51,7 +51,7 @@ namespace EGT_OTA.Controllers
                 //修改分享数
                 if (result)
                 {
-                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Shares").EqualTo(article.Shares + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
+                    result = new SubSonic.Query.Update<Article>(provider).Set("Shares").EqualTo(article.Shares + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
                 }
                 if (result)
                 {
