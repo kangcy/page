@@ -78,7 +78,7 @@ namespace EGT_OTA.Controllers.Api
                         currpage = pager.Index,
                         records = recordCount,
                         totalpage = totalPage,
-                        list = FormatCommentInfo(list, newlist)
+                        list = FormatCommentInfo(list, newlist, ArticleUserNumber)
                     };
             }
             catch (Exception ex)
@@ -109,6 +109,8 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "参数异常";
                     return JsonConvert.SerializeObject(result);
                 }
+                var UserNumber = ZNRequest.GetString("UserNumber");
+
                 var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ID != id && x.ArticleNumber == ArticleNumber);
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
@@ -156,7 +158,7 @@ namespace EGT_OTA.Controllers.Api
                     currpage = pager.Index,
                     records = recordCount,
                     totalpage = totalPage,
-                    list = FormatCommentInfo(list, newlist)
+                    list = FormatCommentInfo(list, newlist, UserNumber)
                 };
             }
             catch (Exception ex)
@@ -170,7 +172,7 @@ namespace EGT_OTA.Controllers.Api
         /// <summary>
         /// 获取父评论信息,格式化数据
         /// </summary>
-        protected List<CommentJson> FormatCommentInfo(List<Comment> list, List<CommentJson> newlist)
+        protected List<CommentJson> FormatCommentInfo(List<Comment> list, List<CommentJson> newlist, string UserNumber)
         {
             var ParentCommentNumber = new List<string>();
             var ParentUserNumber = new List<string>();
@@ -196,6 +198,13 @@ namespace EGT_OTA.Controllers.Api
                 parentUser = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(ParentUserNumber.Distinct().ToArray()).ExecuteTypedList<User>();
             }
 
+            //判断是否点赞
+            var zans = new List<Zan>();
+            if (!string.IsNullOrWhiteSpace(UserNumber))
+            {
+                zans = db.Find<Zan>(x => x.CreateUserNumber == UserNumber && x.ZanType == Enum_ZanType.Comment).ToList();
+            }
+
             newlist.ForEach(x =>
             {
                 if (!string.IsNullOrWhiteSpace(x.ParentCommentNumber))
@@ -214,6 +223,7 @@ namespace EGT_OTA.Controllers.Api
                         x.ParentNickName = user.NickName;
                     }
                 }
+                x.IsZan = zans.Count(y => y.CommentNumber == x.Number);
             });
 
             return newlist;

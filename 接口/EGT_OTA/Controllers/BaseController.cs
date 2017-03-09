@@ -635,6 +635,13 @@ namespace EGT_OTA.Controllers
                 fans = db.Find<Fan>(x => x.CreateUserNumber == usernumber).ToList();
             }
 
+            //判断是否点赞
+            var zans = new List<Zan>();
+            if (!string.IsNullOrWhiteSpace(usernumber))
+            {
+                zans = db.Find<Zan>(x => x.CreateUserNumber == usernumber && x.ZanType == Enum_ZanType.Article).ToList();
+            }
+
             var tags = GetTag();
 
             List<ArticleJson> newlist = new List<ArticleJson>();
@@ -688,6 +695,7 @@ namespace EGT_OTA.Controllers
                     });
                 }
                 model.IsFollow = fans.Count(y => y.ToUserNumber == x.CreateUserNumber);
+                model.IsZan = zans.Count(y => y.ArticleNumber == x.Number);
                 model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
                 model.UserNumber = x.CreateUserNumber;

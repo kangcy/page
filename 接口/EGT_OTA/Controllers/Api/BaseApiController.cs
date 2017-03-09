@@ -635,15 +635,6 @@ namespace EGT_OTA.Controllers.Api
                 userids.Add(x.CreateUserNumber);
             });
 
-            //list.ForEach(x =>
-            //{
-            //    x.CommentList = comments.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(3).ToList();
-            //    x.CommentList.ForEach(y =>
-            //    {
-            //        userids.Add(y.CreateUserNumber);
-            //    });
-            //});
-
             var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Signature", "Number", "IsPay").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
 
             //判断是否关注
@@ -651,6 +642,13 @@ namespace EGT_OTA.Controllers.Api
             if (!string.IsNullOrWhiteSpace(usernumber))
             {
                 fans = db.Find<Fan>(x => x.CreateUserNumber == usernumber).ToList();
+            }
+
+            //判断是否点赞
+            var zans = new List<Zan>();
+            if (!string.IsNullOrWhiteSpace(usernumber))
+            {
+                zans = db.Find<Zan>(x => x.CreateUserNumber == usernumber && x.ZanType == Enum_ZanType.Article).ToList();
             }
 
             var tags = GetTag();
@@ -673,23 +671,6 @@ namespace EGT_OTA.Controllers.Api
                 model.Goods = x.Goods;
                 model.Comments = comments.Count(y => y.ArticleNumber == x.Number);
 
-                //model.CommentList = new List<CommentJson>();
-                //x.CommentList.ForEach(y =>
-                //{
-                //    CommentJson comment = new CommentJson();
-                //    comment.ID = y.ID;
-                //    comment.Summary = y.Summary;
-                //    var commentUser = users.FirstOrDefault(z => z.Number == y.CreateUserNumber);
-                //    if (commentUser != null)
-                //    {
-                //        comment.UserID = commentUser.ID;
-                //        comment.UserNumber = commentUser.Number;
-                //        comment.UserName = commentUser.NickName;
-                //        comment.UserAvatar = commentUser.Avatar;
-                //    }
-                //    model.CommentList.Add(comment);
-                //});
-
                 //标签
                 model.TagList = new List<Tag>();
                 if (!string.IsNullOrWhiteSpace(x.Tag))
@@ -706,11 +687,11 @@ namespace EGT_OTA.Controllers.Api
                     });
                 }
                 model.IsFollow = fans.Count(y => y.ToUserNumber == x.CreateUserNumber);
+                model.IsZan = zans.Count(y => y.ArticleNumber == x.Number);
                 model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
                 model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
                 model.UserNumber = x.CreateUserNumber;
                 model.Cover = x.Cover;
-                //model.CreateDate = FormatTime(x.CreateDate);
                 model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd hh:mm");
                 model.TypeName = articletype == null ? "" : articletype.Name;
                 model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();

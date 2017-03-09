@@ -158,6 +158,7 @@ namespace EGT_OTA.Models
         public string ParentUserNumber { get; set; }
         public string ParentNickName { get; set; }
         public string ParentSummary { get; set; }
+        public int IsZan { get; set; }
     }
 
     public class CommentJson2

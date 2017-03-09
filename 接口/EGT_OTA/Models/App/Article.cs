@@ -313,6 +313,12 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public int IsKeep { get; set; }
 
+        /// <summary>
+        /// 是否点赞
+        /// </summary>
+        [SubSonicIgnore]
+        public int IsZan { get; set; }
+
         #endregion
     }
 
@@ -340,6 +346,7 @@ namespace EGT_OTA.Models
         public string Province { get; set; }
         public string City { get; set; }
         public int IsFollow { get; set; }
+        public int IsZan { get; set; }
         public List<CommentJson> CommentList { get; set; }
         public List<Tag> TagList { get; set; }
         public int IsPay { get; set; }
