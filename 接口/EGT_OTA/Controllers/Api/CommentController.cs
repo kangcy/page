@@ -39,7 +39,6 @@ namespace EGT_OTA.Controllers.Api
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
-                    result.result = true;
                     result.message = new { records = recordCount, totalpage = 1 };
                     return JsonConvert.SerializeObject(result);
                 }
@@ -111,12 +110,9 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
                 var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ID != id && x.ArticleNumber == ArticleNumber);
-
                 var recordCount = query.GetRecordCount();
-
                 if (recordCount == 0)
                 {
-                    result.result = true;
                     result.message = new { records = recordCount, totalpage = 1 };
                     return JsonConvert.SerializeObject(result);
                 }

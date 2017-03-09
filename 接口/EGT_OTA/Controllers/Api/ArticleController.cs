@@ -46,6 +46,11 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
 
+                if (model.Status == Enum_Status.Audit && model.CreateUserNumber != UserNumber)
+                {
+                    model.ArticlePower = Enum_ArticlePower.Myself;
+                }
+
                 if (model.Status == Enum_Status.DELETE)
                 {
                     result.message = "当前文章已删除";
@@ -189,18 +194,10 @@ namespace EGT_OTA.Controllers.Api
                         query = query.And("CreateUserNumber").NotIn(userids);
                     }
                 }
-
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
-                    result.result = true;
-                    result.message = new
-                    {
-                        currpage = pager.Index,
-                        records = recordCount,
-                        totalpage = 1,
-                        list = string.Empty
-                    };
+                    result.message = new { records = recordCount, totalpage = 1 };
                     return JsonConvert.SerializeObject(result);
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;

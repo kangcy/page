@@ -102,54 +102,5 @@ namespace EGT_OTA.Controllers
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
-
-        /// <summary>
-        /// 列表
-        /// </summary>
-        public ActionResult All()
-        {
-            try
-            {
-                var pager = new Pager();
-                var query = new SubSonic.Query.Select(provider).From<Keep>().Where<Keep>(x => x.ID > 0);
-                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
-                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
-                {
-                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
-                }
-                var recordCount = query.GetRecordCount();
-
-                if (recordCount == 0)
-                {
-                    return Json(new
-                    {
-                        currpage = pager.Index,
-                        records = recordCount,
-                        totalpage = 1,
-                        list = string.Empty
-                    }, JsonRequestBehavior.AllowGet);
-                }
-
-                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-                var articles = new SubSonic.Query.Select(provider, "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City", "Province").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsNotEqualTo(Enum_Status.Audit).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
-
-                List<ArticleJson> newlist = ArticleListInfo(articles, CreateUserNumber);
-
-                var result = new
-                {
-                    currpage = pager.Index,
-                    records = recordCount,
-                    totalpage = totalPage,
-                    list = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("KeepController_All:" + ex.Message);
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
-        }
     }
 }
