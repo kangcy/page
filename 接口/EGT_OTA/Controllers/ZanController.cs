@@ -35,7 +35,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserNumber", "Goods", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(provider, "ID", "CreateUserNumber", "Goods", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
                 if (article == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
@@ -69,7 +69,7 @@ namespace EGT_OTA.Controllers
                 if (result)
                 {
                     var goods = article.Goods + 1;
-                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Goods").EqualTo(goods).Where<Article>(x => x.ID == articleID).Execute() > 0;
+                    result = new SubSonic.Query.Update<Article>(provider).Set("Goods").EqualTo(goods).Where<Article>(x => x.ID == articleID).Execute() > 0;
                     if (result)
                     {
                         return Json(new { result = true, message = goods }, JsonRequestBehavior.AllowGet);
@@ -107,10 +107,10 @@ namespace EGT_OTA.Controllers
                     //修改文章点赞数
                     if (result)
                     {
-                        Article article = new SubSonic.Query.Select(Repository.GetProvider(), "Goods").From<Article>().Where<Article>(x => x.Number == model.ArticleNumber).ExecuteSingle<Article>();
+                        Article article = new SubSonic.Query.Select(provider, "Goods").From<Article>().Where<Article>(x => x.Number == model.ArticleNumber).ExecuteSingle<Article>();
                         if (article != null && article.Goods > 0)
                         {
-                            new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Goods").EqualTo(article.Goods - 1).Where<Article>(x => x.Number == model.ArticleNumber).Execute();
+                            new SubSonic.Query.Update<Article>(provider).Set("Goods").EqualTo(article.Goods - 1).Where<Article>(x => x.Number == model.ArticleNumber).Execute();
                         }
                     }
                 }
@@ -124,112 +124,6 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
-        /// 我赞过的
-        /// </summary>
-        public ActionResult All()
-        {
-            try
-            {
-                var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.ZanType == Enum_ZanType.Article);
-                var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
-                if (!string.IsNullOrWhiteSpace(CreateUserNumber))
-                {
-                    query = query.And("CreateUserNumber").IsEqualTo(CreateUserNumber);
-                }
-                var recordCount = query.GetRecordCount();
-
-                if (recordCount == 0)
-                {
-                    return Json(new
-                    {
-                        currpage = pager.Index,
-                        records = recordCount,
-                        totalpage = 1,
-                        list = string.Empty
-                    }, JsonRequestBehavior.AllowGet);
-                }
-
-                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City", "Province").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
-
-                List<ArticleJson> newlist = ArticleListInfo(articles, CreateUserNumber);
-
-                var result = new
-                {
-                    currpage = pager.Index,
-                    records = recordCount,
-                    totalpage = totalPage,
-                    list = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("ZanController_All" + ex.Message);
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        /// <summary>
-        /// 赞过我的
-        /// </summary>
-        public ActionResult All2()
-        {
-            try
-            {
-                var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.ZanType == Enum_ZanType.Article);
-                var ArticleUserNumber = ZNRequest.GetString("ArticleUserNumber");
-                if (string.IsNullOrWhiteSpace(ArticleUserNumber))
-                {
-                    query = query.And("ArticleUserNumber").IsEqualTo(ArticleUserNumber);
-                }
-                var all = query.ExecuteTypedList<Zan>();
-                var recordCount = all.Select(x => x.CreateUserNumber).Distinct().Count();
-
-                if (recordCount == 0)
-                {
-                    return Json(new
-                    {
-                        currpage = pager.Index,
-                        records = recordCount,
-                        totalpage = 1,
-                        list = string.Empty
-                    }, JsonRequestBehavior.AllowGet);
-                }
-
-                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
-                var newlist = (from u in users
-                               select new
-                                   {
-                                       UserID = u.ID,
-                                       NickName = u.NickName,
-                                       Signature = u.Signature,
-                                       Avatar = u.Avatar,
-                                       Number = u.Number
-                                   }).ToList();
-                var result = new
-                {
-                    currpage = pager.Index,
-                    records = recordCount,
-                    totalpage = totalPage,
-                    list = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("ZanController_All2" + ex.Message);
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-
-        /// <summary>
         /// 赞过我的
         /// </summary>
         public ActionResult ToMe()
@@ -238,7 +132,7 @@ namespace EGT_OTA.Controllers
             {
                 var UserNumber = ZNRequest.GetString("UserNumber");
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.ArticleUserNumber == UserNumber && x.ZanType == Enum_ZanType.Article);
+                var query = new SubSonic.Query.Select(provider).From<Zan>().Where<Zan>(x => x.ArticleUserNumber == UserNumber && x.ZanType == Enum_ZanType.Article);
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
@@ -255,10 +149,10 @@ namespace EGT_OTA.Controllers
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
 
                 var articleArray = list.Select(x => x.ArticleNumber).ToArray();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Cover", "ArticlePower", "CreateUserNumber", "Status", "Title").From<Article>().Where("Number").In(articleArray).And("Status").IsNotEqualTo(Enum_Status.Audit).And("CreateUserNumber").IsEqualTo(UserNumber).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(provider, "ID", "Number", "Cover", "ArticlePower", "CreateUserNumber", "Status", "Title").From<Article>().Where("Number").In(articleArray).And("Status").IsNotEqualTo(Enum_Status.Audit).And("CreateUserNumber").IsEqualTo(UserNumber).ExecuteTypedList<Article>();
 
                 var userArray = list.Select(x => x.CreateUserNumber).ToArray();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(userArray).ExecuteTypedList<User>();
+                var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(userArray).ExecuteTypedList<User>();
 
                 List<ZanJson> zans = new List<ZanJson>();
                 list.ForEach(x =>

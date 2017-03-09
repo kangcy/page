@@ -117,7 +117,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Status").EqualTo(Enum_Status.DELETE).Where<Article>(x => x.ID == article.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(provider).Set("Status").EqualTo(Enum_Status.DELETE).Where<Article>(x => x.ID == article.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -235,7 +235,7 @@ namespace EGT_OTA.Controllers
                             var id = x.Split('-');
                             var partid = Tools.SafeInt(id[0]);
                             var index = Tools.SafeInt(id[1]);
-                            new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider()).Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
+                            new SubSonic.Query.Update<ArticlePart>(provider).Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
                         });
                     }
                 }
@@ -252,115 +252,6 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
-        /// 详情
-        /// </summary>
-        public ActionResult Detail()
-        {
-            try
-            {
-                var UserNumber = ZNRequest.GetString("Number");
-                if (string.IsNullOrWhiteSpace(UserNumber))
-                {
-                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
-                }
-                var id = ZNRequest.GetInt("ArticleID");
-                if (id == 0)
-                {
-                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
-                }
-                Article model = db.Single<Article>(x => x.ID == id);
-                if (model == null)
-                {
-                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-                }
-
-                if (model.Status == Enum_Status.DELETE)
-                {
-                    return Json(new { result = false, message = "当前文章已删除，请刷新重试" }, JsonRequestBehavior.AllowGet);
-                }
-
-                //判断黑名单
-                if (db.Exists<Black>(x => x.ToUserNumber == UserNumber && x.CreateUserNumber == model.CreateUserNumber))
-                {
-                    return Json(new { result = false, message = "没有访问权限" }, JsonRequestBehavior.AllowGet);
-                }
-
-                string password = ZNRequest.GetString("ArticlePassword");
-
-                //浏览数
-                new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();
-
-                //打赏数
-                model.Pays = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.ToArticleNumber == model.Number && x.Status == Enum_Status.Approved).GetRecordCount();
-
-                //收藏数
-                model.Keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.ArticleNumber == model.Number).GetRecordCount();
-
-                //评论数
-                model.Comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.ArticleNumber == model.Number).GetRecordCount();
-
-                //创建人
-                User createUser = db.Single<User>(x => x.Number == model.CreateUserNumber);
-                if (createUser != null)
-                {
-                    model.UserID = createUser.ID;
-                    model.NickName = createUser.NickName;
-                    model.Avatar = createUser.Avatar;
-                    model.AutoMusic = createUser.AutoMusic;
-                    model.ShareNick = createUser.ShareNick;
-                    model.IsPay = createUser.IsPay;
-                }
-
-                //判断是否收藏
-                model.IsKeep = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserNumber == model.CreateUserNumber && x.ArticleNumber == model.Number).GetRecordCount() == 0 ? 0 : 1;
-
-                //类型
-                ArticleType articleType = GetArticleType().FirstOrDefault<ArticleType>(x => x.ID == model.TypeID);
-                model.TypeName = articleType == null ? string.Empty : articleType.Name;
-
-                //音乐
-                if (model.MusicID > 0)
-                {
-                    List<Music> musics = new List<Music>();
-                    List<MusicJson> list = GetMusic();
-                    list.ForEach(x =>
-                    {
-                        musics.AddRange(x.Music);
-                    });
-                    Music music = musics.FirstOrDefault<Music>(x => x.ID == model.MusicID);
-                    model.MusicUrl = music == null ? "" : music.FileUrl;
-                    model.MusicName = music == null ? "" : music.Name;
-                }
-
-                //文章部分
-                model.ArticlePart = db.Find<ArticlePart>(x => x.ArticleNumber == model.Number).OrderBy(x => x.SortID).ToList();
-
-                model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
-                model.ShareUrl = System.Configuration.ConfigurationManager.AppSettings["share_url"] + model.Number;
-
-                //模板配置
-                if (model.Template > 0)
-                {
-                    model.TemplateJson = GetArticleTemp().FirstOrDefault(x => x.ID == model.Template);
-                    if (model.TemplateJson == null)
-                    {
-                        model.TemplateJson = new Template();
-                    }
-                }
-                else
-                {
-                    model.TemplateJson = new Template();
-                }
-                return Json(new { result = true, message = model }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("ArticleController_Detail:" + ex.Message);
-            }
-            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
         /// 编辑模板
         /// </summary>
         [ArticlePower]
@@ -370,7 +261,7 @@ namespace EGT_OTA.Controllers
             {
                 var ArticleID = ZNRequest.GetInt("ArticleID");
                 var Template = ZNRequest.GetInt("Template");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Template").EqualTo(Template).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(provider).Set("Template").EqualTo(Template).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -397,7 +288,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Cover").EqualTo(Cover).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(provider).Set("Cover").EqualTo(Cover).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -422,7 +313,7 @@ namespace EGT_OTA.Controllers
                 var MusicID = ZNRequest.GetInt("MusicID");
                 var MusicName = ZNRequest.GetString("MusicName");
                 var MusicUrl = ZNRequest.GetString("MusicUrl");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Set("MusicName").EqualTo(MusicName).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(provider).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Set("MusicName").EqualTo(MusicName).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -446,12 +337,12 @@ namespace EGT_OTA.Controllers
                 var ArticleID = ZNRequest.GetInt("ArticleID");
                 Article article = db.Single<Article>(x => x.ID == ArticleID);
                 var ArticlePower = ZNRequest.GetInt("ArticlePower", Enum_ArticlePower.Myself);
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("ArticlePower").EqualTo(ArticlePower).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(provider).Set("ArticlePower").EqualTo(ArticlePower).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     //用户相册是否展示
                     var status = ArticlePower == Enum_ArticlePower.Public ? Enum_Status.Approved : Enum_Status.Audit;
-                    new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider()).Set("Status").EqualTo(status).Where<ArticlePart>(x => x.ArticleNumber == article.Number).Execute();
+                    new SubSonic.Query.Update<ArticlePart>(provider).Set("Status").EqualTo(status).Where<ArticlePart>(x => x.ArticleNumber == article.Number).Execute();
 
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
@@ -482,7 +373,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "不存在当前类型" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("TypeID").EqualTo(TypeID).Set("TypeIDList").EqualTo(articleType.ParentIDList).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(provider).Set("TypeID").EqualTo(TypeID).Set("TypeIDList").EqualTo(articleType.ParentIDList).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -505,7 +396,7 @@ namespace EGT_OTA.Controllers
             {
                 var ArticleID = ZNRequest.GetInt("ArticleID");
                 var background = ZNRequest.GetInt("Background");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Background").EqualTo(background).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(provider).Set("Background").EqualTo(background).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -544,6 +435,7 @@ namespace EGT_OTA.Controllers
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
+
         /// <summary>
         /// 列表
         /// </summary>
@@ -553,7 +445,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //昵称
                 var title = ZNRequest.GetString("Title");
@@ -639,7 +531,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //昵称
                 var title = ZNRequest.GetString("Title");

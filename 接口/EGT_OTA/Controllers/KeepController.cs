@@ -36,7 +36,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserNumber", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                Article article = new SubSonic.Query.Select(provider, "ID", "CreateUserNumber", "Number").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
                 if (article == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
@@ -111,7 +111,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.ID > 0);
+                var query = new SubSonic.Query.Select(provider).From<Keep>().Where<Keep>(x => x.ID > 0);
                 var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
                 if (!string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
@@ -132,7 +132,7 @@ namespace EGT_OTA.Controllers
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City", "Province").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsNotEqualTo(Enum_Status.Audit).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(provider, "ID", "Number", "Title", "TypeID", "Cover", "Views", "Goods", "CreateUserNumber", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Recommend", "City", "Province").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("Status").IsNotEqualTo(Enum_Status.Audit).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
 
                 List<ArticleJson> newlist = ArticleListInfo(articles, CreateUserNumber);
 

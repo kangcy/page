@@ -12,12 +12,14 @@ using System.Text.RegularExpressions;
 using EGT_OTA.Helper;
 using System.Drawing;
 using EGT_OTA.Helper.Config;
+using SubSonic.DataProviders;
 
 namespace EGT_OTA.Controllers
 {
     public class BaseController : Controller
     {
         protected readonly SimpleRepository db = Repository.GetRepo();
+        protected readonly IDataProvider provider = Repository.GetProvider();
 
         //默认管理员账号
         protected readonly string Admin_Name = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_name"];
@@ -215,7 +217,7 @@ namespace EGT_OTA.Controllers
             else
             {
                 string str = string.Empty;
-                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/banner.config");
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/banner.config");
                 if (System.IO.File.Exists(filePath))
                 {
                     StreamReader sr = new StreamReader(filePath, Encoding.Default);
@@ -241,7 +243,7 @@ namespace EGT_OTA.Controllers
             else
             {
                 string str = string.Empty;
-                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/music.config");
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/music.config");
                 if (System.IO.File.Exists(filePath))
                 {
                     StreamReader sr = new StreamReader(filePath, Encoding.Default);
@@ -267,7 +269,7 @@ namespace EGT_OTA.Controllers
             else
             {
                 string str = string.Empty;
-                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletype.config");
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/articletype.config");
                 if (System.IO.File.Exists(filePath))
                 {
                     StreamReader sr = new StreamReader(filePath, Encoding.Default);
@@ -293,7 +295,7 @@ namespace EGT_OTA.Controllers
             else
             {
                 string str = string.Empty;
-                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/template.config");
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/template.config");
                 if (System.IO.File.Exists(filePath))
                 {
                     StreamReader sr = new StreamReader(filePath, Encoding.Default);
@@ -325,7 +327,7 @@ namespace EGT_OTA.Controllers
             else
             {
                 string str = string.Empty;
-                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/dirtyword.config");
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/dirtyword.config");
                 if (System.IO.File.Exists(filePath))
                 {
                     StreamReader sr = new StreamReader(filePath, Encoding.Default);
@@ -603,11 +605,11 @@ namespace EGT_OTA.Controllers
             var array = list.Select(x => x.Number).ToArray();
             var articletypes = GetArticleType();
 
-            var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic).And("ArticleNumber").In(array).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
+            var parts = new SubSonic.Query.Select(provider).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic).And("ArticleNumber").In(array).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
 
-            var orders = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved).And("ToArticleNumber").In(array).ExecuteTypedList<Order>();
-            var keeps = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where("ArticleNumber").In(array).ExecuteTypedList<Keep>();
-            var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ArticleNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+            var orders = new SubSonic.Query.Select(provider).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved).And("ToArticleNumber").In(array).ExecuteTypedList<Order>();
+            var keeps = new SubSonic.Query.Select(provider).From<Keep>().Where("ArticleNumber").In(array).ExecuteTypedList<Keep>();
+            var comments = new SubSonic.Query.Select(provider).From<Comment>().Where("ArticleNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
 
             List<string> userids = new List<string>();
             list.ForEach(x =>
@@ -624,7 +626,7 @@ namespace EGT_OTA.Controllers
             //    });
             //});
 
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number", "IsPay").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Signature", "Number", "IsPay").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
 
             //判断是否关注
             var fans = new List<Fan>();

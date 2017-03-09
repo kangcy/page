@@ -27,7 +27,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(provider).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved);
                 var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
                 var ToUserNumber = ZNRequest.GetString("ToUserNumber");
                 if (!string.IsNullOrWhiteSpace(CreateUserNumber))
@@ -57,7 +57,7 @@ namespace EGT_OTA.Controllers
                 var fromarray = list.Select(x => x.CreateUserNumber).Distinct().ToList();
                 var toarray = list.Select(x => x.ToUserNumber).Distinct().ToList();
                 fromarray.AddRange(toarray);
-                var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
+                var allusers = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
 
                 List<OrderJson> newlist = new List<OrderJson>();
                 list.ForEach(x =>

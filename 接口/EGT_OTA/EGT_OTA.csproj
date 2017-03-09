@@ -176,13 +176,13 @@
     <Compile Include="ConstKeys\ConstKeys.cs" />
     <Compile Include="Controllers\Api\ArticleTypeController.cs" />
     <Compile Include="Controllers\Api\BaseApiController.cs" />
+    <Compile Include="Controllers\Api\ArticleController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\Filter\DeflateCompressionAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InitController.cs" />
     <Compile Include="Controllers\MusicController.cs" />
-    <Compile Include="Controllers\ArticleTypeController.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
     <Compile Include="Controllers\PushController.cs" />
     <Compile Include="Controllers\RedisController.cs" />

@@ -143,7 +143,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().Where<Fan>(x => x.ID > 0);
+                var query = new SubSonic.Query.Select(provider).From<Fan>().Where<Fan>(x => x.ID > 0);
 
                 var CreateUserNumber = ZNRequest.GetString("CreateUserNumber");
                 if (string.IsNullOrWhiteSpace(CreateUserNumber))
@@ -172,7 +172,7 @@ namespace EGT_OTA.Controllers
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
                 var array = list.Select(x => x.ToUserNumber).Distinct().ToList();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
+                var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
 
                 var newlist = (from l in list
                                join u in users on l.ToUserNumber equals u.Number
@@ -210,7 +210,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().Where<Fan>(x => x.ID > 0);
+                var query = new SubSonic.Query.Select(provider).From<Fan>().Where<Fan>(x => x.ID > 0);
 
                 var ToUserNumber = ZNRequest.GetString("ToUserNumber");
                 if (string.IsNullOrWhiteSpace(ToUserNumber))
@@ -240,7 +240,7 @@ namespace EGT_OTA.Controllers
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
                 var array = list.Select(x => x.CreateUserNumber).Distinct().ToList();
-                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
+                var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
 
                 var follows = db.Find<Fan>(x => x.CreateUserNumber == ToUserNumber).ToList();
 
@@ -284,7 +284,7 @@ namespace EGT_OTA.Controllers
                 var UserNumber = ZNRequest.GetString("UserNumber");
                 var fans = db.Find<Fan>(x => x.CreateUserNumber == UserNumber).ToList();
 
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //未关注，显示推荐关注用户
                 if (fans.Count == 0)

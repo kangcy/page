@@ -307,7 +307,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请上传头像" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Avatar").EqualTo(avatar).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Avatar").EqualTo(avatar).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -337,7 +337,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请上传背景图片" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Cover").EqualTo(cover).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Cover").EqualTo(cover).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -389,7 +389,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Sex").EqualTo(ZNRequest.GetInt("Sex")).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Sex").EqualTo(ZNRequest.GetInt("Sex")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -414,7 +414,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("UseDraw").EqualTo(ZNRequest.GetInt("UseDraw")).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("UseDraw").EqualTo(ZNRequest.GetInt("UseDraw")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -439,7 +439,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("IsPay").EqualTo(ZNRequest.GetInt("IsPay")).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("IsPay").EqualTo(ZNRequest.GetInt("IsPay")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -464,7 +464,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Birthday").EqualTo(ZNRequest.GetDateTime("Birthday")).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Birthday").EqualTo(ZNRequest.GetDateTime("Birthday")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -498,7 +498,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "您输入的昵称含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("NickName").EqualTo(NickName).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("NickName").EqualTo(NickName).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -538,7 +538,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "您输入的签名含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Signature").EqualTo(Signature).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Signature").EqualTo(Signature).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -578,7 +578,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "新密码与原密码相同" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Password").EqualTo(newpassword).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Password").EqualTo(newpassword).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = newpassword }, JsonRequestBehavior.AllowGet);
@@ -603,7 +603,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShareNick").EqualTo(ZNRequest.GetInt("ShareNick")).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("ShareNick").EqualTo(ZNRequest.GetInt("ShareNick")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -628,7 +628,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("AutoMusic").EqualTo(ZNRequest.GetInt("AutoMusic")).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("AutoMusic").EqualTo(ZNRequest.GetInt("AutoMusic")).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -790,7 +790,7 @@ namespace EGT_OTA.Controllers
             {
                 var pager = new Pager();
                 var nickname = ZNRequest.GetString("NickName");
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<User>().Where<User>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(provider).From<User>().Where<User>(x => x.Status == Enum_Status.Approved);
                 if (!string.IsNullOrWhiteSpace(nickname))
                 {
                     query.And("NickName").IsNotNull().And("NickName").Like("%" + nickname + "%");
@@ -890,7 +890,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "该手机号码已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Phone").EqualTo(phone).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Phone").EqualTo(phone).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     CookieHelper.ClearCookie("SMS");
@@ -922,7 +922,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "该微信账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("WeiXin").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("WeiXin").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -952,7 +952,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "该微博账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Weibo").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("Weibo").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -982,7 +982,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("QQ").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                var result = new SubSonic.Query.Update<User>(provider).Set("QQ").EqualTo(key).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -1031,13 +1031,13 @@ namespace EGT_OTA.Controllers
                 switch (source)
                 {
                     case 1:
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("WeiXin").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("WeiXin").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     case 2:
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("QQ").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("QQ").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     case 3:
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("Weibo").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("Weibo").EqualTo(string.Empty).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     default:
                         break;
@@ -1064,7 +1064,7 @@ namespace EGT_OTA.Controllers
                 var Number = ZNRequest.GetString("Number");
                 var UserNumber = ZNRequest.GetString("UserNumber");
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic && x.Status != Enum_Status.DELETE);
+                var query = new SubSonic.Query.Select(provider).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic && x.Status != Enum_Status.DELETE);
                 if (Number != UserNumber)
                 {
                     query = query.And("Status").IsEqualTo(Enum_Status.Approved);
@@ -1123,7 +1123,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
-                var result = new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider()).Set("Status").EqualTo(Enum_Status.DELETE).Where<ArticlePart>(x => x.ID == id).Execute() > 0;
+                var result = new SubSonic.Query.Update<ArticlePart>(provider).Set("Status").EqualTo(Enum_Status.DELETE).Where<ArticlePart>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -1155,23 +1155,23 @@ namespace EGT_OTA.Controllers
                 {
                     //显示我喜欢的文章
                     case "ShowArticle":
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowArticle").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("ShowArticle").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     //显示我的关注
                     case "ShowFollow":
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowFollow").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("ShowFollow").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     //显示我的粉丝
                     case "ShowFan":
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowFan").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("ShowFan").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     //显示消息推送
                     case "ShowPush":
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowPush").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("ShowPush").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     //显示我的定位
                     case "ShowPosition":
-                        result = new SubSonic.Query.Update<User>(Repository.GetProvider()).Set("ShowPosition").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
+                        result = new SubSonic.Query.Update<User>(provider).Set("ShowPosition").EqualTo(show).Where<User>(x => x.ID == user.ID).Execute() > 0;
                         break;
                     default:
                         break;
@@ -1199,7 +1199,7 @@ namespace EGT_OTA.Controllers
                 var UserNumber = ZNRequest.GetString("UserNumber");
                 var CurrUserNumber = ZNRequest.GetString("CurrUserNumber");
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Number", "CreateUserNumber", "Cover", "ArticlePower", "Status", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved && x.CreateUserNumber == UserNumber);
+                var query = new SubSonic.Query.Select(provider, "ID", "Number", "CreateUserNumber", "Cover", "ArticlePower", "Status", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved && x.CreateUserNumber == UserNumber);
 
 
                 if (UserNumber != CurrUserNumber)
@@ -1275,7 +1275,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<User>().Where<User>(x => x.Status == Enum_Status.Approved && x.Latitude > 0 && x.Longitude > 0 && x.CityCode == CityCode && x.ID != user.ID);
+                var query = new SubSonic.Query.Select(provider).From<User>().Where<User>(x => x.Status == Enum_Status.Approved && x.Latitude > 0 && x.Longitude > 0 && x.CityCode == CityCode && x.ID != user.ID);
 
                 //过滤黑名单
                 var black = db.Find<Black>(x => x.CreateUserNumber == user.Number);
@@ -1343,7 +1343,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<User>().Where<User>(x => x.Status == Enum_Status.Approved && x.IsRecommend == 1 && x.ID != user.ID);
+                var query = new SubSonic.Query.Select(provider).From<User>().Where<User>(x => x.Status == Enum_Status.Approved && x.IsRecommend == 1 && x.ID != user.ID);
 
                 //过滤黑名单
                 var black = db.Find<Black>(x => x.CreateUserNumber == user.Number);
@@ -1410,22 +1410,22 @@ namespace EGT_OTA.Controllers
             }
 
             //关注
-            user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.CreateUserNumber == user.Number).GetRecordCount();
+            user.Follows = new SubSonic.Query.Select(provider, "ID").From<Fan>().Where<Fan>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             //粉丝
-            user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserNumber == user.Number).GetRecordCount();
+            user.Fans = new SubSonic.Query.Select(provider, "ID").From<Fan>().Where<Fan>(x => x.ToUserNumber == user.Number).GetRecordCount();
 
             //我的
-            user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserNumber == user.Number && x.Status != Enum_Status.DELETE).GetRecordCount();
+            user.Articles = new SubSonic.Query.Select(provider, "ID").From<Article>().Where<Article>(x => x.CreateUserNumber == user.Number && x.Status != Enum_Status.DELETE).GetRecordCount();
 
             //评论
-            user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserNumber == user.Number).GetRecordCount();
+            user.Comments = new SubSonic.Query.Select(provider, "ID").From<Comment>().Where<Comment>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             //点赞
-            user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.ArticleUserNumber == user.Number && x.ZanType == Enum_ZanType.Article).GetRecordCount();
+            user.Zans = new SubSonic.Query.Select(provider, "ID").From<Zan>().Where<Zan>(x => x.ArticleUserNumber == user.Number && x.ZanType == Enum_ZanType.Article).GetRecordCount();
 
             //我收藏的文章
-            user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserNumber == user.Number).GetRecordCount();
+            user.Keeps = new SubSonic.Query.Select(provider, "ID").From<Keep>().Where<Keep>(x => x.CreateUserNumber == user.Number).GetRecordCount();
 
             user.ShareUrl = System.Configuration.ConfigurationManager.AppSettings["share_url"] + "u/" + user.Number;
             return user;
