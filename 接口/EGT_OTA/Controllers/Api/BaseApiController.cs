@@ -622,12 +622,7 @@ namespace EGT_OTA.Controllers.Api
             //文章编号集合
             var array = list.Select(x => x.Number).ToArray();
             var articletypes = GetArticleType();
-
             var parts = new SubSonic.Query.Select(provider).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic).And("ArticleNumber").In(array).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
-
-            var orders = new SubSonic.Query.Select(provider).From<Order>().Where<Order>(x => x.Status == Enum_Status.Approved).And("ToArticleNumber").In(array).ExecuteTypedList<Order>();
-            var keeps = new SubSonic.Query.Select(provider).From<Keep>().Where("ArticleNumber").In(array).ExecuteTypedList<Keep>();
-            var comments = new SubSonic.Query.Select(provider).From<Comment>().Where("ArticleNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
 
             List<string> userids = new List<string>();
             list.ForEach(x =>
@@ -656,50 +651,50 @@ namespace EGT_OTA.Controllers.Api
             List<ArticleJson> newlist = new List<ArticleJson>();
             list.ForEach(x =>
             {
-                ArticleJson model = new ArticleJson();
                 var user = users.FirstOrDefault(y => y.Number == x.CreateUserNumber);
-                var articletype = articletypes.FirstOrDefault(y => y.ID == x.TypeID);
-                model.UserID = user == null ? 0 : user.ID;
-                model.NickName = user == null ? "" : user.NickName;
-                model.Avatar = user == null ? "" : user.Avatar;
-                model.Signature = user == null ? "" : user.Signature;
-                model.IsPay = user == null ? 0 : user.IsPay;
-                model.ArticleID = x.ID;
-                model.ArticleNumber = x.Number;
-                model.Title = x.Title;
-                model.Views = x.Views;
-                model.Goods = x.Goods;
-                model.Comments = comments.Count(y => y.ArticleNumber == x.Number);
-
-                //标签
-                model.TagList = new List<Tag>();
-                if (!string.IsNullOrWhiteSpace(x.Tag))
+                if (user != null)
                 {
-                    var tag = x.Tag.Split(',').ToList();
-                    tag.ForEach(y =>
+                    ArticleJson model = new ArticleJson();
+                    var articletype = articletypes.FirstOrDefault(y => y.ID == x.TypeID);
+                    model.UserID = user.ID;
+                    model.NickName = user.NickName;
+                    model.Avatar = user.Avatar;
+                    model.Signature = user.Signature;
+                    model.IsPay = user.IsPay;
+                    model.ArticleID = x.ID;
+                    model.ArticleNumber = x.Number;
+                    model.Title = x.Title;
+                    model.Views = x.Views;
+                    model.Goods = x.Goods;
+
+                    //标签
+                    model.TagList = new List<Tag>();
+                    if (!string.IsNullOrWhiteSpace(x.Tag))
                     {
-                        var id = Tools.SafeInt(y);
-                        var item = tags.FirstOrDefault(z => z.ID == id);
-                        if (item != null)
+                        var tag = x.Tag.Split(',').ToList();
+                        tag.ForEach(y =>
                         {
-                            model.TagList.Add(item);
-                        }
-                    });
+                            var id = Tools.SafeInt(y);
+                            var item = tags.FirstOrDefault(z => z.ID == id);
+                            if (item != null)
+                            {
+                                model.TagList.Add(item);
+                            }
+                        });
+                    }
+                    model.IsFollow = fans.Count(y => y.ToUserNumber == x.CreateUserNumber);
+                    model.IsZan = zans.Count(y => y.ArticleNumber == x.Number);
+                    model.UserNumber = x.CreateUserNumber;
+                    model.Cover = x.Cover;
+                    model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd hh:mm");
+                    model.TypeName = articletype == null ? "" : articletype.Name;
+                    model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();
+                    model.ArticlePower = x.ArticlePower;
+                    model.Recommend = x.Recommend;
+                    model.Province = x.Province;
+                    model.City = x.City;
+                    newlist.Add(model);
                 }
-                model.IsFollow = fans.Count(y => y.ToUserNumber == x.CreateUserNumber);
-                model.IsZan = zans.Count(y => y.ArticleNumber == x.Number);
-                model.Keeps = keeps.Count(y => y.ArticleNumber == x.Number);
-                model.Pays = orders.Count(y => y.ToArticleNumber == x.Number);
-                model.UserNumber = x.CreateUserNumber;
-                model.Cover = x.Cover;
-                model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd hh:mm");
-                model.TypeName = articletype == null ? "" : articletype.Name;
-                model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();
-                model.ArticlePower = x.ArticlePower;
-                model.Recommend = x.Recommend;
-                model.Province = x.Province;
-                model.City = x.City;
-                newlist.Add(model);
             });
 
             return newlist;

@@ -334,9 +334,6 @@ namespace EGT_OTA.Models
         public string Title { get; set; }
         public int Views { get; set; }
         public int Goods { get; set; }
-        public int Comments { get; set; }
-        public int Keeps { get; set; }
-        public int Pays { get; set; }
         public string Cover { get; set; }
         public string CreateDate { get; set; }
         public string TypeName { get; set; }
@@ -347,7 +344,6 @@ namespace EGT_OTA.Models
         public string City { get; set; }
         public int IsFollow { get; set; }
         public int IsZan { get; set; }
-        public List<CommentJson> CommentList { get; set; }
         public List<Tag> TagList { get; set; }
         public int IsPay { get; set; }
     }
