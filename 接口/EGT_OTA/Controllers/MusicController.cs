@@ -12,6 +12,7 @@ using System.Web.Security;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Net;
+using HtmlAgilityPack;
 
 namespace EGT_OTA.Controllers
 {
@@ -114,11 +115,37 @@ namespace EGT_OTA.Controllers
         //http://music.163.com/api/song/detail?ids=%5B 439911239 %5D    
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>
+        /// {songs: [ ],equalizers: { },code: 200}
+        /// </returns>
         public ActionResult Load()
         {
-            var name = ZNRequest.GetString("name");
-            var url = "http://music.163.com/#/search/m/?id=2884361&type=1&s=" + UrlEncode(name);
-            return Content("");
+            var result = string.Empty;
+            try
+            {
+                var id = ZNRequest.GetInt("id", 439911239);
+                var json = HttpHelper.Get("http://music.163.com/api/song/detail?ids=%5B" + id + "%5D");
+                JArray array = JArray.Parse(JObject.Parse(json)["songs"].ToString());
+                JObject model = JObject.Parse(array[0].ToString());
+                var musicId = model["id"];
+                var musicName = model["name"];
+                var musicUrl = model["mp3Url"];
+                var artistsArray = JArray.Parse(model["artists"].ToString());
+                var artists = JObject.Parse(artistsArray[0].ToString());
+                var artistsName = artists["name"];
+                var album = JObject.Parse(model["album"].ToString());
+                var albumName = album["name"];
+                var musicPicUrl = album["picUrl"];
+                return Content(musicId + "," + musicName + "," + musicUrl + "," + artistsName + "," + albumName + "," + musicPicUrl);
+            }
+            catch (Exception ex)
+            {
+                result = ex.Message;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -54,6 +54,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlSanitizationLibrary, Version=4.0.0.0, Culture=neutral, PublicKeyToken=d127efab8a9c114f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\HtmlSanitizationLibrary.1.0.0\lib\HtmlSanitizationLibrary.dll</HintPath>
@@ -285,6 +289,7 @@
     <Content Include="DLL\Castle.Core.dll" />
     <Content Include="DLL\GetuiServerApiSDK.dll" />
     <Content Include="DLL\Google.ProtocolBuffers.dll" />
+    <Content Include="DLL\HtmlAgilityPack.dll" />
     <Content Include="DLL\HtmlSanitizationLibrary.dll" />
     <Content Include="DLL\HtmlSanitizationLibrary.xml" />
     <Content Include="DLL\Ionic.Zlib.dll" />

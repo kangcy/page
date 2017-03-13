@@ -172,6 +172,7 @@ F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\Castle.Core.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\GetuiServerApiSDK.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\Google.ProtocolBuffers.dll
+F:\HBuider\Home\接口\EGT_OTA\bin\HtmlAgilityPack.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\HtmlSanitizationLibrary.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\Ionic.Zlib.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\IPay.dll
