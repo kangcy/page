@@ -678,14 +678,14 @@ namespace EGT_OTA.Controllers
                 string body = @"<strong>这是发给您的邮箱认证的邮件，有效期24小时</strong><p>此为系统邮件，请勿直接回复此邮件。</p> <br />
                                 请点击下面的链接完成邮箱验证，如果链接无法转向，请复制一下链接到浏览器的地址栏中直接访问。 <br />
                                <a href='" + url + "' target='_blank'>请点击此处链接</a> <br />如果链接无法转向，请复制此连接" + url + "到浏览器的地址栏中直接访问<br />";
-                FromUserModel fromUserModel = new FromUserModel
-                {
-                    UserID = "kangcy@axon.com.cn",
-                    UserPwd = "YXhvbjEyMzQ=",
-                    UserName = "少侠网",
-                    ToUserArray = new ToUserModel[] { new ToUserModel { UserID = email, UserName = user.NickName } }
-                };
-                MailHelper.SendMail("少侠网", body, fromUserModel);
+                //FromUserModel fromUserModel = new FromUserModel
+                //{
+                //    UserID = "kangcy@axon.com.cn",
+                //    UserPwd = "YXhvbjEyMzQ=",
+                //    UserName = "少侠网",
+                //    ToUserArray = new ToUserModel[] { new ToUserModel { UserID = email, UserName = user.NickName } }
+                //};
+                //MailHelper.SendMail("少侠网", body, fromUserModel);
                 user.Email = email;
                 result = db.Update<User>(user) > 0;
                 return Json(new { result = result, message = "发送邮箱验证成功" }, JsonRequestBehavior.AllowGet);

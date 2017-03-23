@@ -225,6 +225,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\AntiXssChineseString.cs" />
+    <Compile Include="Helper\ApiHelper.cs" />
     <Compile Include="Helper\AppLog.cs" />
     <Compile Include="Helper\BaseHelper.cs" />
     <Compile Include="Helper\CacheHelper.cs" />
@@ -529,6 +530,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="AutoMusic\" />
     <Folder Include="bin\zh-Hans\" />
     <Folder Include="Upload\" />
   </ItemGroup>

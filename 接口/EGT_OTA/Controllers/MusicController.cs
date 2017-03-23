@@ -147,5 +147,10 @@ namespace EGT_OTA.Controllers
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Init()
+        {
+            return View();
+        }
     }
 }
