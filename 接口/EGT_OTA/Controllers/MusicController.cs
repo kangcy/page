@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Net;
 using HtmlAgilityPack;
+using System.Threading;
 
 namespace EGT_OTA.Controllers
 {
@@ -148,9 +149,21 @@ namespace EGT_OTA.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        public static int num = 0;
         public ActionResult Init()
         {
+            ThreadPool.SetMaxThreads(5, 5);//最多5个线程
+            for (var i = 0; i < 5; i++)
+            {
+                ThreadPool.QueueUserWorkItem(A, 5000);
+            }
+            Thread.Sleep(1000);//休眠1秒
             return View();
+        }
+
+        private void A(object my)
+        {
+            num += 1;
         }
     }
 }
