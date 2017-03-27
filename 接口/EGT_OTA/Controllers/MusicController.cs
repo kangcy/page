@@ -212,9 +212,11 @@ namespace EGT_OTA.Controllers
                 //        thread.Start();
                 //    }
 
+                var musicIndex = Tools.SafeInt(System.Web.Configuration.WebConfigurationManager.AppSettings["MusicIndex"]);
+
                 Thread thread = new Thread(new ThreadStart(delegate
                        {
-                           for (var id = 450001211; id < 500000000; id++)
+                           for (var id = musicIndex; id < 500000000; id++)
                            {
                                try
                                {
