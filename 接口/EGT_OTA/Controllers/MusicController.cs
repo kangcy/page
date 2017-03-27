@@ -165,5 +165,76 @@ namespace EGT_OTA.Controllers
         {
             num += 1;
         }
+
+        [HttpGet]
+        public ActionResult InitMusic()
+        {
+            try
+            {
+                //1万-5000万
+                //5000万-10000万
+                //10000万-15000万
+                //15000万-20000万
+                //20000万-25000万
+                //25000万-30000万
+                //30000万-35000万
+                //35000万-40000万
+                //40000万-45000万
+                //45000万-50000万
+                for (var i = 0; i < 10; i++)
+                {
+                    Thread thread = new Thread(new ThreadStart(delegate
+                    {
+                        for (var id = 10000 * i; id < 50000 * i; id++)
+                        {
+                            try
+                            {
+                                LoadMusic(id);
+                            }
+                            catch (Exception ex)
+                            {
+                                LogHelper.ErrorLoger.Error("InitMusic:" + ex.Message);
+                            }
+                            Thread.Sleep(1000);
+                        }
+                    }));
+                    thread.Name = "同步音乐接口线程" + i;
+                    thread.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+            return Content("成功");
+        }
+
+        public void LoadMusic(int id)
+        {
+            var json = HttpHelper.Get("http://music.163.com/api/song/detail?ids=%5B" + id + "%5D");
+
+            JArray array = JArray.Parse(JObject.Parse(json)["songs"].ToString());
+            if (array.Count > 0)
+            {
+                JObject model = JObject.Parse(array[0].ToString());
+                var musicId = model["id"].ToString();
+                var musicName = model["name"].ToString();
+                var musicUrl = model["mp3Url"].ToString();
+                var artistsArray = JArray.Parse(model["artists"].ToString());
+                var artists = JObject.Parse(artistsArray[0].ToString());
+                var artistsName = artists["name"].ToString();
+                var album = JObject.Parse(model["album"].ToString());
+                var albumName = album["name"].ToString();
+                var musicPicUrl = album["picUrl"].ToString();
+
+                Music music = new Music();
+                music.Author = artistsName;
+                music.Cover = musicPicUrl;
+                music.FileUrl = musicUrl;
+                music.Name = musicName;
+                music.Number = musicId;
+                db.Add<Music>(music);
+            }
+        }
     }
 }
