@@ -186,31 +186,49 @@ namespace EGT_OTA.Controllers
             var str = "";
             try
             {
-                var step = 50000000;
-                for (var i = 0; i < 10; i++)
-                {
-                    var index = step * i + 1;
+                //    var step = 50000000;
+                //    for (var i = 0; i < 10; i++)
+                //    {
+                //        var index = step * i + 1;
 
-                    str += "线程：" + i + ",初始化：" + index;
+                //        str += "线程：" + i + ",初始化：" + index;
 
-                    Thread thread = new Thread(new ThreadStart(delegate
-                    {
-                        for (var id = index; id < index + step; id++)
-                        {
-                            try
-                            {
-                                LoadMusic(id);
-                            }
-                            catch (Exception ex)
-                            {
-                                LogHelper.ErrorLoger.Error("InitMusic:" + ex.Message);
-                            }
-                            Thread.Sleep(1000);
-                        }
-                    }));
-                    thread.Name = "同步音乐接口线程" + i;
-                    thread.Start();
-                }
+                //        Thread thread = new Thread(new ThreadStart(delegate
+                //        {
+                //            for (var id = index; id < index + step; id++)
+                //            {
+                //                try
+                //                {
+                //                    LoadMusic(id);
+                //                }
+                //                catch (Exception ex)
+                //                {
+                //                    LogHelper.ErrorLoger.Error("InitMusic:" + ex.Message);
+                //                }
+                //                Thread.Sleep(1000);
+                //            }
+                //        }));
+                //        thread.Name = "同步音乐接口线程" + i;
+                //        thread.Start();
+                //    }
+
+                Thread thread = new Thread(new ThreadStart(delegate
+                       {
+                           for (var id = 450001211; id < 500000000; id++)
+                           {
+                               try
+                               {
+                                   LoadMusic(id);
+                               }
+                               catch (Exception ex)
+                               {
+                                   LogHelper.ErrorLoger.Error("InitMusic:" + ex.Message);
+                               }
+                               Thread.Sleep(1000);
+                           }
+                       }));
+                thread.Name = "同步音乐接口线程";
+                thread.Start();
             }
             catch (Exception ex)
             {
@@ -229,21 +247,24 @@ namespace EGT_OTA.Controllers
                 JObject model = JObject.Parse(array[0].ToString());
                 var musicId = model["id"].ToString();
                 var musicName = model["name"].ToString();
-                var musicUrl = model["mp3Url"].ToString();
-                var artistsArray = JArray.Parse(model["artists"].ToString());
-                var artists = JObject.Parse(artistsArray[0].ToString());
-                var artistsName = artists["name"].ToString();
-                var album = JObject.Parse(model["album"].ToString());
-                var albumName = album["name"].ToString();
-                var musicPicUrl = album["picUrl"].ToString();
+                if (!string.IsNullOrWhiteSpace(musicName))
+                {
+                    var musicUrl = model["mp3Url"].ToString();
+                    var artistsArray = JArray.Parse(model["artists"].ToString());
+                    var artists = JObject.Parse(artistsArray[0].ToString());
+                    var artistsName = artists["name"].ToString();
+                    var album = JObject.Parse(model["album"].ToString());
+                    var albumName = album["name"].ToString();
+                    var musicPicUrl = album["picUrl"].ToString();
 
-                Music music = new Music();
-                music.Author = artistsName;
-                music.Cover = musicPicUrl;
-                music.FileUrl = musicUrl;
-                music.Name = musicName;
-                music.Number = musicId;
-                db.Add<Music>(music);
+                    Music music = new Music();
+                    music.Author = artistsName;
+                    music.Cover = musicPicUrl;
+                    music.FileUrl = musicUrl;
+                    music.Name = musicName;
+                    music.Number = musicId;
+                    db.Add<Music>(music);
+                }
             }
         }
     }
