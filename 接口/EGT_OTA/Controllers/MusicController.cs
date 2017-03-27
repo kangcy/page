@@ -166,26 +166,36 @@ namespace EGT_OTA.Controllers
             num += 1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// 1万-5000万
+        /// 5000万-10000万
+        /// 10000万-15000万
+        /// 15000万-20000万
+        /// 20000万-25000万
+        /// 25000万-30000万
+        /// 30000万-35000万
+        /// 35000万-40000万
+        /// 40000万-45000万
+        /// 45000万-50000万
+        /// <returns></returns>
         [HttpGet]
         public ActionResult InitMusic()
         {
+            var str = "";
             try
             {
-                //1万-5000万
-                //5000万-10000万
-                //10000万-15000万
-                //15000万-20000万
-                //20000万-25000万
-                //25000万-30000万
-                //30000万-35000万
-                //35000万-40000万
-                //40000万-45000万
-                //45000万-50000万
+                var step = 50000000;
                 for (var i = 0; i < 10; i++)
                 {
+                    var index = step * i + 1;
+
+                    str += "线程：" + i + ",初始化：" + index;
+
                     Thread thread = new Thread(new ThreadStart(delegate
                     {
-                        for (var id = 10000 * i; id < 50000 * i; id++)
+                        for (var id = index; id < index + step; id++)
                         {
                             try
                             {
@@ -204,9 +214,9 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                return Content(ex.Message);
+                return Content(ex.Message + "," + str);
             }
-            return Content("成功");
+            return Content("成功," + str);
         }
 
         public void LoadMusic(int id)
