@@ -142,7 +142,14 @@ namespace EGT_OTA.Controllers
                 order.PayType = 2;
                 order.Status = Enum_Status.Audit;
                 order.Summary = "我的微篇-打赏";
-                order.Price = ZNRequest.GetInt("Money", 1);//单位：分
+                order.Price = Tools.SafeInt("Money", 0) * 100;//单位：分
+
+                LogHelper.InfoLoger.Info("金额：" + order.Price);
+
+                if (order.Price == 0)
+                {
+                    order.Price = 1;
+                }
                 order.Anony = ZNRequest.GetInt("Anony", 0);
                 order.CreateUserNumber = ZNRequest.GetString("UserNumber");
                 order.ToArticleNumber = ZNRequest.GetString("ArticleNumber");

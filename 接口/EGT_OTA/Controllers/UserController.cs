@@ -1404,7 +1404,7 @@ namespace EGT_OTA.Controllers
             //提现金额
             var applyMoney = db.Find<Order>(x => x.ToUserNumber == user.Number && x.Status == Enum_Status.Approved).Sum(x => x.Price);
 
-            //赏金
+            //剩余赏金
             user.Pays = orderMoney - applyMoney * Tools.SafeInt(System.Configuration.ConfigurationManager.AppSettings["applymoney"]) * 100;
             if (user.Pays < 0)
             {
