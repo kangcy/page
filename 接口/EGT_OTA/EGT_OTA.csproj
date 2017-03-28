@@ -186,12 +186,12 @@
     <Compile Include="Controllers\Api\ZanController.cs" />
     <Compile Include="Controllers\Api\BlackController.cs" />
     <Compile Include="Controllers\Api\FanController.cs" />
+    <Compile Include="Controllers\Api\MusicController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\Filter\DeflateCompressionAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InitController.cs" />
-    <Compile Include="Controllers\MusicController.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
     <Compile Include="Controllers\PushController.cs" />
     <Compile Include="Controllers\RedisController.cs" />

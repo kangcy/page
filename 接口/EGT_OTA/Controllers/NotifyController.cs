@@ -141,7 +141,7 @@ namespace EGT_OTA.Controllers
                 order.CreateDate = DateTime.Now;
                 order.PayType = 2;
                 order.Status = Enum_Status.Audit;
-                order.Summary = "我的GO-打赏";
+                order.Summary = "我的微篇-打赏";
                 order.Price = ZNRequest.GetInt("Money", 1);//单位：分
                 order.Anony = ZNRequest.GetInt("Anony", 0);
                 order.CreateUserNumber = ZNRequest.GetString("UserNumber");

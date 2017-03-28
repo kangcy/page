@@ -27,6 +27,8 @@ namespace EGT_OTA.Controllers
                 var openID = ZNRequest.GetString("OpenID");
                 var source = ZNRequest.GetInt("Source");
 
+                LogHelper.InfoLoger.Info("用户：" + NickName + "," + openID + ",登录");
+
                 User user = null;
                 if (string.IsNullOrWhiteSpace(openID))
                 {
