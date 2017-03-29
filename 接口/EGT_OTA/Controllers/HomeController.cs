@@ -97,20 +97,6 @@ namespace EGT_OTA.Controllers
                     model.ShareNick = createUser.ShareNick;
                 }
 
-                //音乐
-                if (model.MusicID > 0)
-                {
-                    List<Music> musics = new List<Music>();
-                    List<MusicJson> list = GetMusic();
-                    list.ForEach(x =>
-                    {
-                        musics.AddRange(x.Music);
-                    });
-                    Music music = musics.FirstOrDefault<Music>(x => x.ID == model.MusicID);
-                    model.MusicUrl = music == null ? "" : music.FileUrl;
-                    model.MusicName = music == null ? "" : music.Name;
-                }
-
                 //文章部分
                 model.ArticlePart = new SubSonic.Query.Select(provider).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleNumber == model.Number).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
 

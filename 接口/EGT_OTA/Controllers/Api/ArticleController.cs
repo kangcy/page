@@ -94,20 +94,6 @@ namespace EGT_OTA.Controllers.Api
                 ArticleType articleType = GetArticleType().FirstOrDefault<ArticleType>(x => x.ID == model.TypeID);
                 model.TypeName = articleType == null ? string.Empty : articleType.Name;
 
-                //音乐
-                if (model.MusicID > 0)
-                {
-                    List<Music> musics = new List<Music>();
-                    List<MusicJson> list = GetMusic();
-                    list.ForEach(x =>
-                    {
-                        musics.AddRange(x.Music);
-                    });
-                    Music music = musics.FirstOrDefault<Music>(x => x.ID == model.MusicID);
-                    model.MusicUrl = music == null ? "" : music.FileUrl;
-                    model.MusicName = music == null ? "" : music.Name;
-                }
-
                 //文章部分
                 model.ArticlePart = db.Find<ArticlePart>(x => x.ArticleNumber == model.Number).OrderBy(x => x.SortID).ToList();
 

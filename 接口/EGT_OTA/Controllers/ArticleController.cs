@@ -159,8 +159,8 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "您输入的标题含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
                 }
                 model.MusicID = ZNRequest.GetInt("MusicID");
-                model.MusicName = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("MusicName"));
-                model.MusicUrl = AntiXssChineseString.ChineseStringSanitize(ZNRequest.GetString("MusicUrl"));
+                model.MusicName = ZNRequest.GetString("MusicName");
+                model.MusicUrl = ZNRequest.GetString("MusicUrl");
                 model.Province = ZNRequest.GetString("Province");
                 model.City = ZNRequest.GetString("City");
                 model.District = ZNRequest.GetString("District");
