@@ -269,6 +269,13 @@ namespace EGT_OTA.Controllers.Api
                     sr.Close();
                 }
                 list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MusicJson>>(str);
+                list.ForEach(x =>
+                {
+                    x.Music.ForEach(y =>
+                    {
+                        y.FileUrl = Base_Url + y.FileUrl;
+                    });
+                });
                 CacheHelper.Insert("Music", list);
             }
             return list.FindAll(x => x.Status == Enum_Status.Approved);
