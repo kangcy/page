@@ -182,7 +182,7 @@ namespace EGT_OTA.Controllers
             return Json(new
             {
                 result = false,
-                message = error
+                message = ""
             }, JsonRequestBehavior.AllowGet);
         }
     }
