@@ -177,7 +177,7 @@
 
 	//获取用户信息
 	function LoadUserInfo(key) {
-		mui.getJSON(RootUrl + "User/Detail", {
+		mui.getJSON(RootUrl + "User/Info", {
 			Number: key
 		}, function(data) {
 
@@ -187,9 +187,8 @@
 				data = data.message;
 
 				document.title = data.NickName + "的专栏";
-
-				document.getElementById("bg").style.background = "url(" + data.Cover + ") center center";
-				document.getElementById("bg").style.backgroundSize = "100% 100%";
+				document.getElementById("bg").style.background = "url(" + ShowThumb(data.Cover, 1) + ") center center no-repeat";
+				document.getElementById("bg").style.backgroundSize = "cover";
 				document.getElementById("avatar").setAttribute("src", ShowThumb(data.Avatar, 2));
 				document.getElementById("avatar").classList.remove("hide");
 				document.getElementById("nickname").innerHTML = data.NickName;

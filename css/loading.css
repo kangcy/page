@@ -247,36 +247,6 @@
 	animation: ball-scale 1s 0s ease-in-out infinite;
 }
 
-@-webkit-keyframes rotate {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-	50% {
-		-webkit-transform: rotate(180deg);
-		transform: rotate(180deg);
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
-}
-
-@keyframes rotate {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-	}
-	50% {
-		-webkit-transform: rotate(180deg);
-		transform: rotate(180deg);
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-	}
-}
-
 .ball-rotate {
 	position: relative;
 }
@@ -319,21 +289,6 @@
 	left: 25px;
 }
 
-@keyframes rotate {
-	0% {
-		-webkit-transform: rotate(0deg) scale(1);
-		transform: rotate(0deg) scale(1);
-	}
-	50% {
-		-webkit-transform: rotate(180deg) scale(0.6);
-		transform: rotate(180deg) scale(0.6);
-	}
-	100% {
-		-webkit-transform: rotate(360deg) scale(1);
-		transform: rotate(360deg) scale(1);
-	}
-}
-
 .ball-clip-rotate> div {
 	background-color: #ed5565;
 	width: 15px;
@@ -350,21 +305,6 @@
 	display: inline-block;
 	-webkit-animation: rotate 0.75s 0s linear infinite;
 	animation: rotate 0.75s 0s linear infinite;
-}
-
-@keyframes rotate {
-	0% {
-		-webkit-transform: rotate(0deg) scale(1);
-		transform: rotate(0deg) scale(1);
-	}
-	50% {
-		-webkit-transform: rotate(180deg) scale(0.6);
-		transform: rotate(180deg) scale(0.6);
-	}
-	100% {
-		-webkit-transform: rotate(360deg) scale(1);
-		transform: rotate(360deg) scale(1);
-	}
 }
 
 @keyframes scale {
@@ -416,21 +356,6 @@
 	animation: rotate 1s 0s cubic-bezier(.09, .57, .49, .9) infinite;
 	-webkit-animation-duration: 1s;
 	animation-duration: 1s;
-}
-
-@keyframes rotate {
-	0% {
-		-webkit-transform: rotate(0deg) scale(1);
-		transform: rotate(0deg) scale(1);
-	}
-	50% {
-		-webkit-transform: rotate(180deg) scale(0.6);
-		transform: rotate(180deg) scale(0.6);
-	}
-	100% {
-		-webkit-transform: rotate(360deg) scale(1);
-		transform: rotate(360deg) scale(1);
-	}
 }
 
 .ball-clip-rotate-multiple {

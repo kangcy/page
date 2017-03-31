@@ -39,7 +39,7 @@
 	display: inline-block;
 	height: 40px;
 	line-height: 40px;
-	background-image: url(../images/article/pen.png);
+	background-image: url(../images/img/pen.png);
 	background-repeat: no-repeat;
 	background-position: 25% center;
 	background-size: 20px;
@@ -161,11 +161,11 @@
 }
 
 .music[play=on] i {
-	background-image: url("../images/article/on.png");
+	background-image: url("../img/on.png");
 }
 
 .music[play=stop] i {
-	background-image: url("../images/article/off.png");
+	background-image: url("../img/off.png");
 }
 
 .music i {

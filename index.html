@@ -304,12 +304,31 @@
 					$("#wrapper").css("background-color", data.TemplateJson.Background);
 				}
 			}
+			var CurrTemplate = data.Template;
+			if(CurrTemplate == 1) {
+				TemplateType = 1;
+			}
+
+			var $bg = $("#bg");
+			if(CurrTemplate > 0) {
+				if(CurrTemplate == 1) {
+					$("#bg").css({
+						"background": "none",
+					});
+					$bg = $("#wrapper");
+				} else {
+					$("#wrapper").css({
+						"background-image": "none",
+					});
+					$bg = $("#bg");
+				}
+			}
 
 			//纯白背景
 			if(data.Template == 0) {
-				$("#bg").css("background", "#fff");
+				$bg.css("background", "#fff");
 			} else if(data.Template > 1) {
-				$("#bg").css({
+				$bg.css({
 					"background": "url(" + CurrCover + ") no-repeat top",
 					"background-size": "100% auto"
 				});
@@ -317,23 +336,23 @@
 				switch(data.Background) {
 					case 0:
 						//全屏
-						$("#bg").css({
+						$bg.css({
 							"background": "url(" + CurrCover + ") no-repeat",
-							"background-size": "100% 100%"
+							"background-size": "100% 100%",
 						});
 						break;
 					case 1:
 						//居顶
-						$("#bg").css({
-							"background": "url(" + CurrCover + ") no-repeat top",
+						$bg.css({
+							"background": "url(" + CurrCover + ") no-repeat top center",
 							"background-size": "100% auto"
 						});
 						break;
 					case 2:
-						//平铺
-						$("#bg").css({
-							"background": "url(" + CurrCover + ") top left repeat",
-							"background-size": "auto auto"
+						//居底
+						$bg.css({
+							"background": "url(" + CurrCover + ") bottom center repeat",
+							"background-size": "100% auto"
 						});
 						break;
 					default:
@@ -372,7 +391,7 @@
 				$("#music" + TemplateType).addClass("hide");
 			}
 
-			switch(TemplateType) {
+			/*switch(TemplateType) {
 				case 0:
 					$("#musicname0").html(data.MusicName);
 					break;
@@ -382,7 +401,10 @@
 					break;
 				default:
 					break;
-			}
+			}*/
+
+			$("#main0,#main0").addClass("hide");
+			$("#main" + TemplateType).removeClass("hide");
 
 			$("#bottom").removeClass("hide");
 
@@ -400,15 +422,19 @@
 			ArticleNumber: ArticleNumber,
 			New: 1
 		}
-		mui.getJSON(RootUrl + "Comment/ArticleComment", data, function(data) {
+		mui.getJSON(RootUrl + "Api/Comment/ArticleComment", data, function(data) {
+			data = JSON.parse(data);
 			if(data != null) {
-				var length = data.records;
-				if(length > 0) {
-					document.getElementById('commentlist').classList.remove("hide");
-					var table = document.getElementById('commentlist');
-					for(var i = 0, len = data.list.length; i < len; i++) {
-						var div = appendStr(data.list[i]);
-						table.appendChild(div);
+				if(data.result) {
+					data = data.message;
+					var length = data.records;
+					if(length > 0) {
+						document.getElementById('commentlist').classList.remove("hide");
+						var table = document.getElementById('commentlist');
+						for(var i = 0, len = data.list.length; i < len; i++) {
+							var div = appendStr(data.list[i]);
+							table.appendChild(div);
+						}
 					}
 				}
 			}
