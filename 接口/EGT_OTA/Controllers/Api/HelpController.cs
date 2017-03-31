@@ -20,7 +20,7 @@ namespace EGT_OTA.Controllers.Api
         /// 帮助类型
         /// </summary>
         [HttpGet]
-        [Route("Api/Keep/HelpType")]
+        [Route("Api/Help/HelpType")]
         public string HelpType()
         {
             ApiResult result = new ApiResult();

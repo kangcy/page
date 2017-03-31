@@ -580,18 +580,15 @@ namespace EGT_OTA.Controllers
 
             var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Signature", "Number", "IsPay").From<User>().Where("Number").In(userids.ToArray()).ExecuteTypedList<User>();
 
-            //判断是否关注
+            //判断是否关注、判断是否点赞、判断是否收藏
             var fans = new List<Fan>();
+            var zans = new List<Zan>();
+            var keeps = new List<Keep>();
             if (!string.IsNullOrWhiteSpace(usernumber))
             {
                 fans = db.Find<Fan>(x => x.CreateUserNumber == usernumber).ToList();
-            }
-
-            //判断是否点赞
-            var zans = new List<Zan>();
-            if (!string.IsNullOrWhiteSpace(usernumber))
-            {
                 zans = db.Find<Zan>(x => x.CreateUserNumber == usernumber && x.ZanType == Enum_ZanType.Article).ToList();
+                keeps = db.Find<Keep>(x => x.CreateUserNumber == usernumber).ToList();
             }
 
             var tags = GetTag();
@@ -632,6 +629,7 @@ namespace EGT_OTA.Controllers
                     }
                     model.IsFollow = fans.Count(y => y.ToUserNumber == x.CreateUserNumber);
                     model.IsZan = zans.Count(y => y.ArticleNumber == x.Number);
+                    model.IsKeep = keeps.Count(y => y.ArticleNumber == x.Number);
                     model.UserNumber = x.CreateUserNumber;
                     model.Cover = x.Cover;
                     model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd hh:mm");

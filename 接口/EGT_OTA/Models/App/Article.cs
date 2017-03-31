@@ -344,6 +344,7 @@ namespace EGT_OTA.Models
         public string City { get; set; }
         public int IsFollow { get; set; }
         public int IsZan { get; set; }
+        public int IsKeep { get; set; }
         public List<Tag> TagList { get; set; }
         public int IsPay { get; set; }
     }
