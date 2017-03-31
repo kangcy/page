@@ -784,6 +784,33 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 用户详情
+        /// </summary>
+        public ActionResult Info()
+        {
+            try
+            {
+                var Number = ZNRequest.GetString("Number");//当前查询用户
+                if (string.IsNullOrWhiteSpace(Number))
+                {
+                    return Json(new { result = false, message = "参数信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                User user = db.Single<User>(x => x.Number == Number);
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用戶信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                var newuser = UserInfo(user);
+                return Json(new { result = true, message = newuser }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("UserController_Info" + ex.Message, ex);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 列表
         /// </summary>
         public ActionResult All()

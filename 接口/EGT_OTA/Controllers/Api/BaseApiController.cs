@@ -156,6 +156,10 @@ namespace EGT_OTA.Controllers.Api
         protected string FormatTime(DateTime date)
         {
             var totalSeconds = Convert.ToInt32((DateTime.Now - date).TotalSeconds);
+            if (totalSeconds < 0)
+            {
+                return "刚刚";
+            }
             var hour = (totalSeconds / 3600);
             var year = 24 * 365;
             if (hour > year)
@@ -179,7 +183,10 @@ namespace EGT_OTA.Controllers.Api
                 }
                 else
                 {
-                    return totalSeconds + "秒前";
+                    if (totalSeconds > 0)
+                        return totalSeconds + "秒前";
+                    else
+                        return "刚刚";
                 }
             }
         }
@@ -693,7 +700,8 @@ namespace EGT_OTA.Controllers.Api
                     model.IsZan = zans.Count(y => y.ArticleNumber == x.Number);
                     model.UserNumber = x.CreateUserNumber;
                     model.Cover = x.Cover;
-                    model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd hh:mm");
+                    //model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd hh:mm");
+                    model.CreateDate = FormatTime(x.CreateDate);
                     model.TypeName = articletype == null ? "" : articletype.Name;
                     model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();
                     model.ArticlePower = x.ArticlePower;
