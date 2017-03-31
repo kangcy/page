@@ -57,7 +57,7 @@ namespace EGT_OTA.Controllers.Api
                                    Number = l.Number,
                                    Summary = l.Summary,
                                    Goods = l.Goods,
-                                   CreateDateText = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   CreateDateText = FormatTime(l.CreateDate),
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Avatar = u.Avatar,

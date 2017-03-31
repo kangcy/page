@@ -42,7 +42,7 @@ namespace EGT_OTA.Controllers.Api
         /// </summary>
         [DeflateCompression]
         [HttpGet]
-        [Route("Api/Keep/All")]
+        [Route("Api/Help/All")]
         public string All()
         {
             ApiResult result = new ApiResult();

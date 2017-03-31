@@ -137,7 +137,7 @@ namespace EGT_OTA.Controllers.Api
         }
 
         /// <summary>
-        /// 粉丝列表
+        /// 关注用户文章
         /// </summary>
         [DeflateCompression]
         [HttpGet]
@@ -147,14 +147,27 @@ namespace EGT_OTA.Controllers.Api
             ApiResult result = new ApiResult();
             try
             {
-                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
-                if (string.IsNullOrWhiteSpace(ToUserNumber))
+                var UserNumber = ZNRequest.GetString("UserNumber");
+                if (string.IsNullOrWhiteSpace(UserNumber))
                 {
                     result.message = "参数异常";
                     return JsonConvert.SerializeObject(result);
                 }
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(provider).From<Fan>().Where<Fan>(x => x.ToUserNumber == ToUserNumber);
+
+                var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var fans = db.Find<Fan>(x => x.CreateUserNumber == UserNumber).ToList();
+                //未关注，显示推荐关注用户
+                if (fans.Count == 0)
+                {
+                    var users = db.Find<User>(x => x.IsRecommend == 1);
+                    query.And("CreateUserNumber").In(users.Select(x => x.Number).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+                }
+                else
+                {
+                    query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+                }
+
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
@@ -162,24 +175,8 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
-                var array = list.Select(x => x.CreateUserNumber).Distinct().ToList();
-                var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Signature", "Number").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("Number").In(array.ToArray()).ExecuteTypedList<User>();
-                var follows = db.Find<Fan>(x => x.CreateUserNumber == ToUserNumber).ToList();
-
-                var newlist = (from l in list
-                               join u in users on l.CreateUserNumber equals u.Number
-                               select new
-                               {
-                                   ID = l.ID,
-                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
-                                   UserID = u.ID,
-                                   NickName = u.NickName,
-                                   Signature = u.Signature,
-                                   Avatar = u.Avatar,
-                                   Number = u.Number,
-                                   IsFollow = follows.Exists(x => x.ToUserNumber == u.Number) ? 1 : 0
-                               }).ToList();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+                List<ArticleJson> newlist = ArticleListInfo(list, UserNumber);
                 result.result = true;
                 result.message = new
                 {
@@ -191,7 +188,7 @@ namespace EGT_OTA.Controllers.Api
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("Api_Fan_FansAll:" + ex.Message);
+                LogHelper.ErrorLoger.Error("Api_Fan_Article:" + ex.Message);
                 result.message = ex.Message;
             }
             return JsonConvert.SerializeObject(result);

@@ -134,58 +134,5 @@ namespace EGT_OTA.Controllers
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
-
-        /// <summary>
-        /// 关注用户文章
-        /// </summary>
-        public ActionResult Article()
-        {
-            try
-            {
-                var pager = new Pager();
-                var UserNumber = ZNRequest.GetString("UserNumber");
-                var fans = db.Find<Fan>(x => x.CreateUserNumber == UserNumber).ToList();
-
-                var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
-
-                //未关注，显示推荐关注用户
-                if (fans.Count == 0)
-                {
-                    var users = db.Find<User>(x => x.IsRecommend == 1);
-                    query.And("CreateUserNumber").In(users.Select(x => x.Number).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
-                }
-                else
-                {
-                    query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
-                }
-                var recordCount = query.GetRecordCount();
-                if (recordCount == 0)
-                {
-                    return Json(new
-                    {
-                        currpage = pager.Index,
-                        records = recordCount,
-                        totalpage = 1,
-                        list = string.Empty
-                    }, JsonRequestBehavior.AllowGet);
-                }
-                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
-                List<ArticleJson> newlist = ArticleListInfo(list, UserNumber);
-                var result = new
-                {
-                    currpage = pager.Index,
-                    records = recordCount,
-                    totalpage = totalPage,
-                    list = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("FanController_Article:" + ex.Message);
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
-        }
     }
 }
