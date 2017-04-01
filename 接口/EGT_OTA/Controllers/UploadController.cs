@@ -152,7 +152,6 @@ namespace EGT_OTA.Controllers
                                 Graphics g = Graphics.FromImage(returnBmp);
                                 g.DrawImage(Origninal, 0, 0, Origninal.Width, Origninal.Height);
                                 g.Dispose();
-                                ms.Close();
                                 MakeThumbnail((Image)returnBmp, mode.Mode, mode.Width, mode.Height, isDraw, strFile + "\\" + random + "_" + i.ToString() + ".jpg");
                             }
 
