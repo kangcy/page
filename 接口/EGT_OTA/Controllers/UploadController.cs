@@ -137,16 +137,27 @@ namespace EGT_OTA.Controllers
                         {
                             Directory.CreateDirectory(strFile);
                         }
-                        Image image = Image.FromStream(ms, true);
+                        //Image image = Image.FromStream(ms, true);
                         ///生成缩略图（多种规格的）
                         int i = 0;
                         foreach (UploadConfig.ThumbMode mode in config.ModeList)
                         {
                             ///保存缩略图地址
                             i++;
-                            MakeThumbnail(image, mode.Mode, mode.Width, mode.Height, isDraw, strFile + "\\" + random + "_" + i.ToString() + ".jpg");
+                            //MakeThumbnail(image, mode.Mode, mode.Width, mode.Height, isDraw, strFile + "\\" + random + "_" + i.ToString() + ".jpg");
+
+                            using (Bitmap Origninal = new Bitmap(ms))
+                            {
+                                Bitmap returnBmp = new Bitmap(Origninal.Width, Origninal.Height);
+                                Graphics g = Graphics.FromImage(returnBmp);
+                                g.DrawImage(Origninal, 0, 0, Origninal.Width, Origninal.Height);
+                                g.Dispose();
+                                ms.Close();
+                                MakeThumbnail((Image)returnBmp, mode.Mode, mode.Width, mode.Height, isDraw, strFile + "\\" + random + "_" + i.ToString() + ".jpg");
+                            }
+
                         }
-                        image.Dispose();
+                        //image.Dispose();
                     }
                 }
 
@@ -167,6 +178,7 @@ namespace EGT_OTA.Controllers
                 }
                 image2.Save(savePath, System.Drawing.Imaging.ImageFormat.Jpeg);
                 image2.Dispose();
+                ms.Close();
 
                 return Json(new
                 {
@@ -181,7 +193,7 @@ namespace EGT_OTA.Controllers
             }
             return Json(new
             {
-                result = false,
+                result = true,
                 message = ""
             }, JsonRequestBehavior.AllowGet);
         }
