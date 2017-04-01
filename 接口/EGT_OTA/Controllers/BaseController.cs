@@ -482,7 +482,7 @@ namespace EGT_OTA.Controllers
                     bitmap = WaterMark(bitmap);
                 }
                 //以jpg格式保存缩略图  
-                bitmap.Save(thumbnailPath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                bitmap.Save(thumbnailPath, System.Drawing.Imaging.ImageFormat.Png);
             }
             catch (System.Exception e)
             {

@@ -67,6 +67,7 @@ namespace EGT_OTA.Models
             repo.Single<Tag>(x => x.ID == 0);//标签
             repo.Single<Order>(x => x.ID == 0);//订单
             repo.Single<Music>(x => x.ID == 0);//音乐
+            repo.Single<UserLog>(x => x.ID == 0);//登录日志
         }
     }
 }

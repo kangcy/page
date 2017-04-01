@@ -64,7 +64,7 @@ namespace EGT_OTA.Controllers
                     user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
                     user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                     user.Password = string.Empty;
-                    user.NickName = NickName;
+                    user.NickName = UrlDecode(NickName);
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                     user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
                     if (string.IsNullOrWhiteSpace(user.Cover))
@@ -150,7 +150,7 @@ namespace EGT_OTA.Controllers
             {
                 LogHelper.ErrorLoger.Error("UserController_LoginThird" + ex.Message, ex);
             }
-            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "登录失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "当前账号已注册" }, JsonRequestBehavior.AllowGet);
                 }
                 User user = new User();
-                user.NickName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("NickName")));
+                user.NickName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(UrlDecode(ZNRequest.GetString("NickName"))));
                 if (string.IsNullOrWhiteSpace(user.NickName))
                 {
                     return Json(new { result = false, message = "昵称不能为空" }, JsonRequestBehavior.AllowGet);

@@ -188,6 +188,7 @@
     <Compile Include="Controllers\Api\FanController.cs" />
     <Compile Include="Controllers\Api\MusicController.cs" />
     <Compile Include="Controllers\Api\HelpController.cs" />
+    <Compile Include="Controllers\Api\UserLogController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\Filter\DeflateCompressionAttribute.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="Models\App\Black.cs" />
     <Compile Include="Models\App\Tag.cs" />
     <Compile Include="Models\App\Banner.cs" />
+    <Compile Include="Models\App\UserLog.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\Repository.cs" />
     <Compile Include="Models\Base\WebApplication.cs" />

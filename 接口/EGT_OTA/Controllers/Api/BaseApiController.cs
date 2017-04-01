@@ -710,7 +710,7 @@ namespace EGT_OTA.Controllers.Api
                     model.Cover = x.Cover;
                     model.CreateDate = FormatTime(x.CreateDate);
                     model.TypeName = articletype == null ? "" : articletype.Name;
-                    model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(4).ToList();
+                    model.ArticlePart = parts.Where(y => y.ArticleNumber == x.Number).OrderBy(y => y.ID).Take(3).ToList();
                     model.ArticlePower = x.ArticlePower;
                     model.Recommend = x.Recommend;
                     model.Province = x.Province;

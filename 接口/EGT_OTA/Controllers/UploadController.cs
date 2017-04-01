@@ -152,7 +152,7 @@ namespace EGT_OTA.Controllers
                                 Graphics g = Graphics.FromImage(returnBmp);
                                 g.DrawImage(Origninal, 0, 0, Origninal.Width, Origninal.Height);
                                 g.Dispose();
-                                MakeThumbnail((Image)returnBmp, mode.Mode, mode.Width, mode.Height, isDraw, strFile + "\\" + random + "_" + i.ToString() + ".jpg");
+                                MakeThumbnail((Image)returnBmp, mode.Mode, mode.Width, mode.Height, isDraw, strFile + "\\" + random + "_" + i.ToString() + ".png");
                             }
 
                         }
@@ -168,21 +168,21 @@ namespace EGT_OTA.Controllers
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                savePath = savePath + "\\" + random + "_0" + ".jpg";
+                savePath = savePath + "\\" + random + "_0" + ".png";
                 Image image2 = Image.FromStream(ms, true);
                 //添加水印
                 if (isDraw == 1)
                 {
                     image2 = WaterMark(image2);
                 }
-                image2.Save(savePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                image2.Save(savePath, System.Drawing.Imaging.ImageFormat.Png);
                 image2.Dispose();
                 ms.Close();
 
                 return Json(new
                 {
                     result = true,
-                    message = ("Upload/Images/" + standards + "/" + DateTime.Now.ToString("yyyyMMdd") + "/" + random + "_0" + ".jpg")
+                    message = ("Upload/Images/" + standards + "/" + DateTime.Now.ToString("yyyyMMdd") + "/" + random + "_0" + ".png")
                 }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
