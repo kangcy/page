@@ -31,7 +31,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var summary = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Summary")));
+                var summary = SqlFilter(ZNRequest.GetString("Summary"));
                 if (string.IsNullOrWhiteSpace(summary))
                 {
                     return Json(new { result = false, message = "请填写反馈信息" }, JsonRequestBehavior.AllowGet);

@@ -16,18 +16,6 @@ namespace EGT_OTA.Controllers
     /// </summary>
     public class UserController : BaseController
     {
-
-        private bool isEmojiCharacter(char codePoint)
-        {
-            return !((codePoint == 0x0) ||
-                    (codePoint == 0x9) ||
-                    (codePoint == 0xA) ||
-                    (codePoint == 0xD) ||
-                    ((codePoint >= 0x20) && (codePoint <= 0xD7FF)) ||
-                    ((codePoint >= 0xE000) && (codePoint <= 0xFFFD)) ||
-                    ((codePoint >= 0x10000) && (codePoint <= 0x10FFFF)));
-        }
-
         /// <summary>
         /// 第三方登录
         /// </summary>
@@ -39,38 +27,6 @@ namespace EGT_OTA.Controllers
                 var avatar = ZNRequest.GetString("Avatar");
                 var openID = ZNRequest.GetString("OpenID");
                 var source = ZNRequest.GetInt("Source");
-
-                StringBuilder sbr = new StringBuilder();
-                var newNickName = UnicodeHelper.ToUnicode(NickName).Split('\\').ToList();
-                var index = 0;
-                foreach (char c in NickName)
-                {
-                    index++;
-                    var isEmoji = isEmojiCharacter(c);
-                    LogHelper.InfoLoger.Info("字节长度：" + c.ToString() + "," + isEmoji + "," + newNickName[index]);
-                    if (isEmoji)
-                    {
-                        sbr.Append(@"\" + newNickName[index]);
-                    }
-                    else
-                    {
-                        sbr.Append(c.ToString());
-                    }
-                }
-
-                NickName = sbr.ToString();
-
-
-
-                //
-
-                //NickName = NickName.Replace(@"\", @"\\");
-
-                LogHelper.InfoLoger.Info("用户：" + NickName + "," + openID + ",登录");
-
-                //NickName = UnicodeHelper.ToGB2312(NickName);
-
-                //LogHelper.InfoLoger.Info("用户：" + NickName + "," + openID + ",登录");
 
                 User user = null;
                 if (string.IsNullOrWhiteSpace(openID))
@@ -107,10 +63,9 @@ namespace EGT_OTA.Controllers
                     user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
                     user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                     user.Password = string.Empty;
-
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
-                    user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
+                    user.Cover = SqlFilter(ZNRequest.GetString("Cover"));
                     if (string.IsNullOrWhiteSpace(user.Cover))
                     {
                         user.Cover = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/cover01.png";
@@ -270,7 +225,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "当前账号已注册" }, JsonRequestBehavior.AllowGet);
                 }
                 User user = new User();
-                user.NickName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(UrlDecode(ZNRequest.GetString("NickName"))));
+                user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
                 if (string.IsNullOrWhiteSpace(user.NickName))
                 {
                     return Json(new { result = false, message = "昵称不能为空" }, JsonRequestBehavior.AllowGet);
@@ -281,7 +236,7 @@ namespace EGT_OTA.Controllers
                 }
                 user.Password = DesEncryptHelper.Encrypt(password);
                 user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
-                user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
+                user.Cover = SqlFilter(ZNRequest.GetString("Cover"));
                 if (string.IsNullOrWhiteSpace(user.Cover))
                 {
                     user.Cover = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"].ToString() + "Images/User/cover01.png";
@@ -535,7 +490,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var NickName = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("NickName").Trim()));
+                var NickName = SqlFilter(ZNRequest.GetString("NickName").Trim());
                 if (string.IsNullOrEmpty(NickName))
                 {
                     return Json(new { result = false, message = "请填写昵称信息" }, JsonRequestBehavior.AllowGet);
@@ -573,11 +528,6 @@ namespace EGT_OTA.Controllers
                 if (string.IsNullOrEmpty(Signature))
                 {
                     return Json(new { result = false, message = "请填写签名信息" }, JsonRequestBehavior.AllowGet);
-                }
-                Signature = AntiXssChineseString.ChineseStringSanitize(Signature);
-                if (string.IsNullOrEmpty(Signature))
-                {
-                    return Json(new { result = false, message = "XSS攻击" }, JsonRequestBehavior.AllowGet);
                 }
                 Signature = CutString(Signature, 200);
                 if (HasDirtyWord(Signature))

@@ -62,7 +62,7 @@ namespace EGT_OTA.Controllers.Api
             ApiResult result = new ApiResult();
             try
             {
-                var name = ZNRequest.GetString("name");
+                var name = SqlFilter(ZNRequest.GetString("name"));
                 var page = ZNRequest.GetInt("page", 1);
                 var size = ZNRequest.GetInt("rows", 15);
 

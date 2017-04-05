@@ -140,7 +140,7 @@ namespace EGT_OTA.Controllers.Api
                 var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //昵称
-                var title = ZNRequest.GetString("Title");
+                var title = SqlFilter(ZNRequest.GetString("Title"));
                 if (!string.IsNullOrWhiteSpace(title))
                 {
                     query.And("Title").Like("%" + title + "%");

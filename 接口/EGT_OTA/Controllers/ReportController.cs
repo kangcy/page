@@ -32,8 +32,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var ArticleNumber = ZNRequest.GetString("ArticleNumber");
-                var summary = ZNRequest.GetString("Summary");
-                summary = AntiXssChineseString.ChineseStringSanitize(summary);
+                var summary = SqlFilter(ZNRequest.GetString("Summary"));
                 if (string.IsNullOrWhiteSpace(ArticleNumber) || string.IsNullOrEmpty(summary))
                 {
                     return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);

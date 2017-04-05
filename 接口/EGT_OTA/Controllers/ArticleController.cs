@@ -152,7 +152,7 @@ namespace EGT_OTA.Controllers
                         model = new Article();
                     }
                 }
-                model.Title = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Title")));
+                model.Title = SqlFilter(ZNRequest.GetString("Title"));
                 model.Title = CutString(model.Title, 60);
                 if (HasDirtyWord(model.Title))
                 {

@@ -91,7 +91,7 @@ namespace EGT_OTA.Controllers
             {
                 LogHelper.ErrorLoger.Error("SQL注入", ex);
             }
-            return inputString;
+            return AntiXssChineseString.ChineseStringSanitize(EmotionHelper.EmotionFilter(inputString));
         }
 
         /// <summary>
