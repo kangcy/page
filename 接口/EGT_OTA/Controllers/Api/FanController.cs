@@ -156,6 +156,7 @@ namespace EGT_OTA.Controllers.Api
                 var pager = new Pager();
 
                 var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                query = query.And("ArticlePower").In(new int[] { Enum_ArticlePower.Public, Enum_ArticlePower.Password });
                 var fans = db.Find<Fan>(x => x.CreateUserNumber == UserNumber).ToList();
                 //未关注，显示推荐关注用户
                 if (fans.Count == 0)

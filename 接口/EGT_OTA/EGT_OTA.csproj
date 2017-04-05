@@ -234,6 +234,7 @@
     <Compile Include="Helper\CommDataHelper.cs" />
     <Compile Include="Helper\Config\CommonConfig.cs" />
     <Compile Include="Helper\DistanceHelper.cs" />
+    <Compile Include="Helper\EmotionHelper.cs" />
     <Compile Include="Helper\PushHelper.cs" />
     <Compile Include="Helper\Config\RewriteConfig.cs" />
     <Compile Include="Helper\Config\UploadConfig.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Helper\SessionHelper.cs" />
     <Compile Include="Helper\SQLiteHelper.cs" />
     <Compile Include="Helper\TicketTool.cs" />
+    <Compile Include="Helper\UnicodeHelper.cs" />
     <Compile Include="Helper\UnixTimeHelper.cs" />
     <Compile Include="Helper\ValidateCodeHelper.cs" />
     <Compile Include="Helper\XmlHelper.cs" />

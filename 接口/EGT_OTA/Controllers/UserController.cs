@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CommonTools;
@@ -15,6 +16,18 @@ namespace EGT_OTA.Controllers
     /// </summary>
     public class UserController : BaseController
     {
+
+        private bool isEmojiCharacter(char codePoint)
+        {
+            return !((codePoint == 0x0) ||
+                    (codePoint == 0x9) ||
+                    (codePoint == 0xA) ||
+                    (codePoint == 0xD) ||
+                    ((codePoint >= 0x20) && (codePoint <= 0xD7FF)) ||
+                    ((codePoint >= 0xE000) && (codePoint <= 0xFFFD)) ||
+                    ((codePoint >= 0x10000) && (codePoint <= 0x10FFFF)));
+        }
+
         /// <summary>
         /// 第三方登录
         /// </summary>
@@ -27,7 +40,37 @@ namespace EGT_OTA.Controllers
                 var openID = ZNRequest.GetString("OpenID");
                 var source = ZNRequest.GetInt("Source");
 
+                StringBuilder sbr = new StringBuilder();
+                var newNickName = UnicodeHelper.ToUnicode(NickName).Split('\\').ToList();
+                var index = 0;
+                foreach (char c in NickName)
+                {
+                    index++;
+                    var isEmoji = isEmojiCharacter(c);
+                    LogHelper.InfoLoger.Info("字节长度：" + c.ToString() + "," + isEmoji + "," + newNickName[index]);
+                    if (isEmoji)
+                    {
+                        sbr.Append(@"\" + newNickName[index]);
+                    }
+                    else
+                    {
+                        sbr.Append(c.ToString());
+                    }
+                }
+
+                NickName = sbr.ToString();
+
+
+
+                //
+
+                //NickName = NickName.Replace(@"\", @"\\");
+
                 LogHelper.InfoLoger.Info("用户：" + NickName + "," + openID + ",登录");
+
+                //NickName = UnicodeHelper.ToGB2312(NickName);
+
+                //LogHelper.InfoLoger.Info("用户：" + NickName + "," + openID + ",登录");
 
                 User user = null;
                 if (string.IsNullOrWhiteSpace(openID))
@@ -64,7 +107,8 @@ namespace EGT_OTA.Controllers
                     user.Latitude = Tools.SafeDouble(ZNRequest.GetString("Latitude"));
                     user.Longitude = Tools.SafeDouble(ZNRequest.GetString("Longitude"));
                     user.Password = string.Empty;
-                    user.NickName = UrlDecode(NickName);
+
+                    user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                     user.Cover = AntiXssChineseString.ChineseStringSanitize(SqlFilter(ZNRequest.GetString("Cover")));
                     if (string.IsNullOrWhiteSpace(user.Cover))
@@ -773,6 +817,8 @@ namespace EGT_OTA.Controllers
 
                 newuser.IsFan = db.Exists<Fan>(x => x.CreateUserNumber == CurrNumber && x.ToUserNumber == Number) ? 1 : 0;
                 newuser.IsBlack = db.Exists<Black>(x => x.CreateUserNumber == CurrNumber && x.ToUserNumber == Number) ? 1 : 0;
+
+                newuser.NickName = newuser.NickName.Replace(@"\\", @"\");
 
                 return Json(new { result = true, message = newuser }, JsonRequestBehavior.AllowGet);
             }

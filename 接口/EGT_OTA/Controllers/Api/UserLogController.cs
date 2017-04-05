@@ -26,7 +26,14 @@ namespace EGT_OTA.Controllers.Api
             ApiResult result = new ApiResult();
             try
             {
-                var info = UrlDecode(ZNRequest.GetString("info"));
+                var info = ZNRequest.GetString("info");
+
+                //LogHelper.InfoLoger.Info("用户：" + info);
+
+                info = UnicodeHelper.ToGB2312(ZNRequest.GetString("info"));
+
+                //LogHelper.InfoLoger.Info("用户：" + info);
+
                 if (!string.IsNullOrWhiteSpace(info))
                 {
                     UserLog log = new UserLog();
