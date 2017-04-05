@@ -56,7 +56,7 @@ namespace EGT_OTA.Controllers
                     model.SortID = 0;
                     model.CreateDate = DateTime.Now;
                 }
-                model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"), false);
+                model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"), false, false);
 
                 if (string.IsNullOrWhiteSpace(model.Introduction))
                 {
