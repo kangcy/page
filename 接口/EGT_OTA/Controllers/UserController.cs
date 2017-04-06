@@ -1144,15 +1144,16 @@ namespace EGT_OTA.Controllers
                 var id = ids.Split(',').ToList();
                 id.ForEach(x =>
                 {
-                    var result = new SubSonic.Query.Update<ArticlePart>(provider).Set("Status").EqualTo(Enum_Status.DELETE).Where<ArticlePart>(y => y.ID == Tools.SafeInt(id) && y.CreateUserNumber == user.Number).Execute() > 0;
+                    var partid = Tools.SafeInt(x);
+                    var result = new SubSonic.Query.Update<ArticlePart>(provider).Set("Status").EqualTo(Enum_Status.DELETE).Where<ArticlePart>(y => y.ID == partid && y.CreateUserNumber == user.Number).Execute() > 0;
                 });
-                return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = true, message = "刪除成功" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("UserController_PicDelete:" + ex.Message);
             }
-            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "刪除失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

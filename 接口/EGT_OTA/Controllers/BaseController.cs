@@ -13,6 +13,7 @@ using EGT_OTA.Helper;
 using System.Drawing;
 using EGT_OTA.Helper.Config;
 using SubSonic.DataProviders;
+using System.Drawing.Imaging;
 
 namespace EGT_OTA.Controllers
 {
@@ -480,7 +481,7 @@ namespace EGT_OTA.Controllers
 
             Image bitmap = new Bitmap(towidth, toheight);//新建一个bmp图片  
             Graphics g = Graphics.FromImage(bitmap);//新建一个画板  
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;//设置高质量插值法  
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;//设置高质量插值法  
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;//设置高质量,低速度呈现平滑程度  
             g.Clear(Color.Transparent);//清空画布并以透明背景色填充  
             g.DrawImage(originalImage, new Rectangle(0, 0, towidth, toheight), new Rectangle(x, y, ow, oh), GraphicsUnit.Pixel);//在指定位置并且按指定大小绘制原图片的指定部分  
@@ -492,7 +493,19 @@ namespace EGT_OTA.Controllers
                     bitmap = WaterMark(bitmap);
                 }
                 //以jpg格式保存缩略图  
-                bitmap.Save(thumbnailPath, System.Drawing.Imaging.ImageFormat.Png);
+
+                //#region  高质量
+
+                //var myImageCodecInfo = GetEncoderInfo("image/jpeg");
+                //var myEncoder = System.Drawing.Imaging.Encoder.Quality;
+                //var myEncoderParameters = new EncoderParameters(1);
+                //var myEncoderParameter = new EncoderParameter(myEncoder, 100L);
+                //myEncoderParameters.Param[0] = myEncoderParameter;
+                //bitmap.Save(thumbnailPath, myImageCodecInfo, myEncoderParameters);
+
+                //#endregion
+
+                bitmap.Save(thumbnailPath, System.Drawing.Imaging.ImageFormat.Jpeg);
             }
             catch (System.Exception e)
             {
@@ -504,7 +517,21 @@ namespace EGT_OTA.Controllers
                 g.Dispose();
             }
         }
+
         #endregion
+
+        private static ImageCodecInfo GetEncoderInfo(String mimeType)
+        {
+            int j;
+            ImageCodecInfo[] encoders;
+            encoders = ImageCodecInfo.GetImageEncoders();
+            for (j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
+        }
 
         #region 水印
 
