@@ -36,7 +36,12 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 内容
         /// </summary>
-        [SubSonicStringLength(1000), SubSonicNullString]
+        [SubSonicStringLength(2000), SubSonicNullString]
         public string Summary { get; set; }
+
+        /// <summary>
+        /// 处理状态
+        /// </summary>
+        public int Status { get; set; }
     }
 }

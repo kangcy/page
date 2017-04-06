@@ -37,7 +37,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                if (db.Exists<Report>(x => x.ArticleNumber == ArticleNumber && x.CreateUserNumber == user.Number))
+                if (db.Exists<Report>(x => x.ArticleNumber == ArticleNumber && x.CreateUserNumber == user.Number && x.Status == Enum_Status.Audit))
                 {
                     return Json(new { result = false, message = "正在处理中" }, JsonRequestBehavior.AllowGet);
                 }
@@ -47,6 +47,7 @@ namespace EGT_OTA.Controllers
                 model.CreateIP = Tools.GetClientIP;
                 model.ArticleNumber = ArticleNumber;
                 model.Summary = summary;
+                model.Status = Enum_Status.Audit;
                 var result = false;
 
                 result = Tools.SafeInt(db.Add<Report>(model)) > 0;
