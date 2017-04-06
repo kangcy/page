@@ -26,6 +26,9 @@ namespace EGT_OTA.Controllers
         protected readonly string Admin_Password = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_password"];
         protected readonly string Base_Url = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"];
 
+        //提现金额
+        protected readonly int Apply_Money = Tools.SafeInt(System.Configuration.ConfigurationManager.AppSettings["applymoney"]);
+
         /// <summary>
         /// 分页基础类
         /// </summary>

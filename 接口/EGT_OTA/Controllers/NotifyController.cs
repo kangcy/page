@@ -142,13 +142,7 @@ namespace EGT_OTA.Controllers
                 order.PayType = 2;
                 order.Status = Enum_Status.Audit;
                 order.Summary = "我的微篇-打赏";
-
-                LogHelper.InfoLoger.Info("金额：" + order.Price);
-
                 order.Price = ZNRequest.GetInt("Money", 0);//单位：分
-
-                LogHelper.InfoLoger.Info("金额：" + order.Price);
-
                 if (order.Price == 0)
                 {
                     order.Price = 1;

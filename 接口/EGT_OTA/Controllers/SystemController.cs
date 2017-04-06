@@ -73,21 +73,38 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                if (user.Money < 100)
-                {
-                    return Json(new { result = false, message = "账户余额不足100元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
-                }
                 if (db.Exists<ApplyMoney>(x => x.CreateUserNumber == user.Number && x.Status == Enum_Status.Audit))
                 {
                     return Json(new { result = false, message = "已申请，申请后5个工作日内发放完毕" }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+
+                //打赏金额
+                var orderMoney = db.Find<Order>(x => x.ToUserNumber == user.Number && x.Status == Enum_Status.Approved).Sum(x => x.Price);
+
+                //提现次数
+                var applyCount = db.Find<ApplyMoney>(x => x.CreateUserNumber == user.Number && x.Status == Enum_Status.Approved).Count;
+
+                //剩余赏金
+                user.Money = orderMoney - applyCount * Apply_Money * 100;
+                if (user.Money < 0)
+                {
+                    user.Money = 0;
+                }
+                else
+                {
+                    user.Money = user.Money / 100;
+                }
+                if (user.Money < Apply_Money)
+                {
+                    return Json(new { result = false, message = "账户余额不足" + Apply_Money + "元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { result = true, message = "申请成功" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "申请失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -102,13 +119,31 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                if (user.Money < 100)
-                {
-                    return Json(new { result = false, message = "账户余额不足100元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
-                }
                 if (db.Exists<ApplyMoney>(x => x.CreateUserNumber == user.Number && x.Status == Enum_Status.Audit))
                 {
                     return Json(new { result = false, message = "已申请，申请后5个工作日内发放完毕" }, JsonRequestBehavior.AllowGet);
+                }
+
+                //打赏金额
+                var orderMoney = db.Find<Order>(x => x.ToUserNumber == user.Number && x.Status == Enum_Status.Approved).Sum(x => x.Price);
+
+                //提现次数
+                var applyCount = db.Find<ApplyMoney>(x => x.CreateUserNumber == user.Number && x.Status == Enum_Status.Approved).Count;
+
+                //剩余赏金
+                user.Money = orderMoney - applyCount * Apply_Money * 100;
+                if (user.Money < 0)
+                {
+                    user.Money = 0;
+                }
+                else
+                {
+                    user.Money = user.Money / 100;
+                }
+
+                if (user.Money < Apply_Money)
+                {
+                    return Json(new { result = false, message = "账户余额不足" + Apply_Money + "元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
                 }
 
                 var name = ZNRequest.GetString("Name");
@@ -123,14 +158,14 @@ namespace EGT_OTA.Controllers
                 var result = Tools.SafeInt(db.Add<ApplyMoney>(model)) > 0;
                 if (result)
                 {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = "申请成功，5个工作日内发放完毕" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("SystemController_ApplyMoney:" + ex.Message);
             }
-            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "申请失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -148,23 +183,7 @@ namespace EGT_OTA.Controllers
                     var result = db.Update<ApplyMoney>(model);
                     if (result > 0)
                     {
-                        var user = db.Single<User>(x => x.Number == model.CreateUserNumber);
-                        if (user != null)
-                        {
-                            if (user.Money >= 100)
-                            {
-                                user.Money -= 100;
-                            }
-                            else
-                            {
-                                user.Money = 0;
-                            }
-                            result = db.Update<User>(user);
-                            if (result > 0)
-                            {
-                                return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                            }
-                        }
+                        return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 else

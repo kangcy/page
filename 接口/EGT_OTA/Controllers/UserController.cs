@@ -768,8 +768,6 @@ namespace EGT_OTA.Controllers
                 newuser.IsFan = db.Exists<Fan>(x => x.CreateUserNumber == CurrNumber && x.ToUserNumber == Number) ? 1 : 0;
                 newuser.IsBlack = db.Exists<Black>(x => x.CreateUserNumber == CurrNumber && x.ToUserNumber == Number) ? 1 : 0;
 
-                newuser.NickName = newuser.NickName.Replace(@"\\", @"\");
-
                 return Json(new { result = true, message = newuser }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -1421,17 +1419,24 @@ namespace EGT_OTA.Controllers
             user.Address = user.Province + " " + user.City;
             user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
 
-            //打赏金额
-            var orderMoney = db.Find<Order>(x => x.ToUserNumber == user.Number && x.Status == Enum_Status.Approved).Sum(x => x.Price);
+            var order = db.Find<Order>(x => x.ToUserNumber == user.Number && x.Status == Enum_Status.Approved);
+            user.Pays = order.Count;
 
-            //提现金额
-            var applyMoney = db.Find<Order>(x => x.ToUserNumber == user.Number && x.Status == Enum_Status.Approved).Sum(x => x.Price);
+            //打赏金额
+            var orderMoney = order.Sum(x => x.Price);
+
+            //提现次数
+            var applyCount = db.Find<ApplyMoney>(x => x.CreateUserNumber == user.Number && x.Status == Enum_Status.Approved).Count;
 
             //剩余赏金
-            user.Pays = orderMoney - applyMoney * Tools.SafeInt(System.Configuration.ConfigurationManager.AppSettings["applymoney"]) * 100;
-            if (user.Pays < 0)
+            user.Money = orderMoney - applyCount * Apply_Money * 100;
+            if (user.Money < 0)
             {
-                user.Pays = 0;
+                user.Money = 0;
+            }
+            else
+            {
+                user.Money = user.Money / 100;
             }
 
             //关注

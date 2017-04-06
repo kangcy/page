@@ -68,13 +68,13 @@ namespace EGT_OTA.Models
         ///<summary>
         ///用户昵称
         ///</summary>
-        [SubSonicNullString]
+        [SubSonicStringLength(1000), SubSonicNullString]
         public string NickName { get; set; }
 
         ///<summary>
         ///个性签名
         ///</summary>
-        [SubSonicStringLength(500), SubSonicNullString]
+        [SubSonicStringLength(3000), SubSonicNullString]
         public string Signature { get; set; }
 
         /// <summary>
@@ -168,11 +168,6 @@ namespace EGT_OTA.Models
         /// 是否启用打赏
         /// </summary>
         public int IsPay { get; set; }
-
-        /// <summary>
-        /// 账户余额
-        /// </summary>
-        public int Money { get; set; }
 
         /// <summary>
         /// 用户编号
@@ -302,6 +297,12 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public int IsBlack { get; set; }
+
+        /// <summary>
+        /// 账户余额
+        /// </summary>
+        [SubSonicIgnore]
+        public int Money { get; set; }
 
         #endregion
     }
