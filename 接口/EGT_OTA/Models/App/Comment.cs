@@ -136,6 +136,9 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public string CreateDateText { get; set; }
 
+        [SubSonicIgnore]
+        public int IsZan { get; set; }
+
         #endregion
     }
 

@@ -181,6 +181,9 @@ namespace EGT_OTA.Controllers
 
                     model.Title = article == null ? "" : article.Title;
                 }
+
+                model.IsZan = 0;
+
                 return Json(new { result = true, message = model }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

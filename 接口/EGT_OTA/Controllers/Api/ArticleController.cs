@@ -190,7 +190,14 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+
+                var sort = new string[] { "Recommend", "ID" };
+                if (CreateUserNumber == CurrUserNumber)
+                {
+                    sort = new string[] { "ID" };
+                }
+
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc(sort).ExecuteTypedList<Article>();
                 List<ArticleJson> newlist = ArticleListInfo(list, Number);
                 result.result = true;
                 result.message = new
