@@ -142,3 +142,17 @@ function CheckPowerPwd(articleid, pwd, callback) {
 		mui.toast("校验失败");
 	});
 }
+
+/**
+ * js Unicode编码
+ */
+function UnicodeText(str) {
+	return escape(str).toLocaleLowerCase().replace(/%u/gi, '\\u');
+}
+
+/**
+ * js Unicode解码
+ */
+function UnUnicodeText(str) {
+	return unescape(str.replace(/\\u/gi, '%u'));
+}

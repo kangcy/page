@@ -251,7 +251,7 @@
 			}
 			data = data.message;
 			ArticleID = data.ID;
-			document.title = data.Title;
+			document.title = UnUnicodeText(data.Title);
 
 			//是否删除
 			if(data.Status == 2) {
@@ -367,11 +367,11 @@
 				"src": ShowThumb(data.Avatar, 1),
 				"userid": data.CreateUserNumber
 			});
-			$("#title0,#title1").html(data.Title);
-			$("#nickname0,#nickname1").html(data.NickName).attr("userid", data.CreateUserNumber);
+			$("#title0,#title1").html(UnUnicodeText(data.Title));
+			$("#nickname0,#nickname1").html(UnUnicodeText(data.NickName)).attr("userid", data.CreateUserNumber);
 			$("#createdate0,#createdate1").html(data.CreateDateText);
 			$("#views0,#views1").html("阅读  " + data.Views);
-			$("#desc").html(html.join(""));
+			$("#desc").html(UnUnicodeText(html.join("")));
 
 			//实例化播放器
 			$(".youku_player").each(function() {
