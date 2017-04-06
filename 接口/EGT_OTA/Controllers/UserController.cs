@@ -1136,21 +1136,17 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("PartID");
-                ArticlePart part = db.Single<ArticlePart>(x => x.ID == id);
-                if (part == null)
+                var ids = ZNRequest.GetString("PartID");
+                if (string.IsNullOrWhiteSpace(ids))
                 {
-                    return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
-                if (part.CreateUserNumber != user.Number)
+                var id = ids.Split(',').ToList();
+                id.ForEach(x =>
                 {
-                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
-                }
-                var result = new SubSonic.Query.Update<ArticlePart>(provider).Set("Status").EqualTo(Enum_Status.DELETE).Where<ArticlePart>(x => x.ID == id).Execute() > 0;
-                if (result)
-                {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                }
+                    var result = new SubSonic.Query.Update<ArticlePart>(provider).Set("Status").EqualTo(Enum_Status.DELETE).Where<ArticlePart>(y => y.ID == Tools.SafeInt(id) && y.CreateUserNumber == user.Number).Execute() > 0;
+                });
+                return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

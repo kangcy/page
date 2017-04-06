@@ -141,7 +141,7 @@ namespace EGT_OTA.Controllers.Api
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("Api_Zan_All:" + ex.Message);
+                LogHelper.ErrorLoger.Error("Api_Zan_ToMe:" + ex.Message);
                 result.message = ex.Message;
             }
             return JsonConvert.SerializeObject(result);
