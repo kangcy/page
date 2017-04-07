@@ -1077,6 +1077,22 @@ namespace EGT_OTA.Controllers
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
+        public class PersonCompar : System.Collections.Generic.IEqualityComparer<ArticlePart>
+        {
+            public bool Equals(ArticlePart x, ArticlePart y)
+            {
+                if (x == null)
+                    return y == null;
+                return x.Introduction == y.Introduction;
+            }
+            public int GetHashCode(ArticlePart obj)
+            {
+                if (obj == null)
+                    return 0;
+                return obj.ID.GetHashCode();
+            }
+        }
+
         /// <summary>
         /// 相册
         /// </summary>
@@ -1104,9 +1120,25 @@ namespace EGT_OTA.Controllers
                 }
 
                 query = query.And("CreateUserNumber").IsEqualTo(UserNumber);
+
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<ArticlePart>();
+
+
+                //var list = query.ExecuteTypedList<ArticlePart>();
+                //var newlist = new List<ArticlePart>();
+                //list.GroupBy(x => x.Introduction).ToList().ForEach(x =>
+                //{
+                //    newlist.Add(x.FirstOrDefault());
+                //});
+                //newlist = newlist.OrderByDescending(x => x.ID).ToList();
+
+                //var recordCount = newlist.Count;
+                //var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                //newlist = newlist.Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+
+
                 var result = new
                 {
                     currpage = pager.Index,

@@ -419,10 +419,11 @@ namespace EGT_OTA.Controllers
             {
                 return false;
             }
+            content = content.Trim();
             var list = GetDirtyWord();
             for (var i = 0; i < list.Count; i++)
             {
-                if (list[i].Name.Contains(content))
+                if (list[i].Name == content)
                 {
                     return true;
                 }
