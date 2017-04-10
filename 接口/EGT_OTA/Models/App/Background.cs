@@ -84,5 +84,10 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(255), SubSonicNullString]
         public string Url { get; set; }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public int IsUsed { get; set; }
     }
 }

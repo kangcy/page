@@ -39,37 +39,28 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "信息异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                Background model = db.Single<Background>(x => x.ArticleNumber == number);
-                if (model == null)
-                {
-                    model = new Background();
-                    model.Number = BuildNumber();
-                    model.ArticleNumber = number;
-                    model.CreateUserNumber = user.Number;
-                }
-                else
-                {
-                    if (user.Number != model.CreateUserNumber)
-                    {
-                        result.message = "没有权限";
-                        return JsonConvert.SerializeObject(result);
-                    }
-                }
+                Background model = new Background();
+                model.Number = BuildNumber();
+                model.ArticleNumber = number;
+                model.CreateUserNumber = user.Number;
                 model.Full = ZNRequest.GetInt("Full");
                 model.High = ZNRequest.GetInt("High");
                 model.Transparency = ZNRequest.GetInt("Transparency");
                 model.Url = url;
-                var success = true;
-                if (model.ID == 0)
-                {
-                    success = Tools.SafeInt(db.Add<Background>(model)) > 0;
-                }
-                else
-                {
-                    success = db.Update<Background>(model) > 0;
-                }
+                model.IsUsed = Enum_Used.Approved;
+                var success = Tools.SafeInt(db.Add<Background>(model)) > 0;
                 if (success)
                 {
+                    //取消启用
+                    var list = db.Find<Background>(x => x.CreateUserNumber == user.Number && x.Number != model.Number && x.IsUsed == Enum_Used.Approved).ToList();
+                    if (list.Count > 0)
+                    {
+                        list.ForEach(x =>
+                        {
+                            x.IsUsed = Enum_Used.Audit;
+                        });
+                        db.UpdateMany<Background>(list);
+                    }
                     result.result = true;
                     result.message = model.Number;
                 }
@@ -98,7 +89,7 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "信息异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                Background model = db.Single<Background>(x => x.ArticleNumber == number);
+                Background model = db.Single<Background>(x => x.Number == number);
                 if (model == null)
                 {
                     model = new Background();
@@ -110,6 +101,75 @@ namespace EGT_OTA.Controllers.Api
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("Api_Background_Info" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Background/Delete")]
+        public string Delete()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result.message = "用户信息验证失败";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var number = ZNRequest.GetString("Number");
+                var model = db.Single<Background>(x => x.Number == number);
+                if (model == null)
+                {
+                    result.message = "背景信息验证失败";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var success = db.Delete<Background>(model.ID) > 0;
+                if (success)
+                {
+                    result.result = true;
+                    result.message = model;
+                }
+                else
+                {
+                    result.message = "删除失败";
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Background_Delete:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Background/All")]
+        public string All()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                var list = new List<Background>();
+                var number = ZNRequest.GetString("UserNumber");
+                if (!string.IsNullOrWhiteSpace(number))
+                {
+                    list = db.Find<Background>(x => x.CreateUserNumber == number).ToList();
+                }
+                result.result = true;
+                result.message = list;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Background_All:" + ex.Message);
                 result.message = ex.Message;
             }
             return JsonConvert.SerializeObject(result);
