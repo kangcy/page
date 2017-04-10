@@ -162,7 +162,7 @@ namespace EGT_OTA.Controllers.Api
                 var number = ZNRequest.GetString("UserNumber");
                 if (!string.IsNullOrWhiteSpace(number))
                 {
-                    list = db.Find<Background>(x => x.CreateUserNumber == number).ToList();
+                    list = db.Find<Background>(x => x.CreateUserNumber == number).OrderByDescending(x => x.IsUsed).ToList();
                 }
                 result.result = true;
                 result.message = list;
