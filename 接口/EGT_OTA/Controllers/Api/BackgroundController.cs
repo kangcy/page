@@ -33,9 +33,10 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
                 var number = ZNRequest.GetString("ArticleNumber");
-                if (string.IsNullOrWhiteSpace(number))
+                var url = ZNRequest.GetString("Url");
+                if (string.IsNullOrWhiteSpace(number) || string.IsNullOrWhiteSpace(url))
                 {
-                    result.message = "文章信息异常";
+                    result.message = "信息异常";
                     return JsonConvert.SerializeObject(result);
                 }
                 Background model = db.Single<Background>(x => x.ArticleNumber == number);
@@ -44,6 +45,7 @@ namespace EGT_OTA.Controllers.Api
                     model = new Background();
                     model.Number = BuildNumber();
                     model.ArticleNumber = number;
+                    model.CreateUserNumber = user.Number;
                 }
                 else
                 {
@@ -56,6 +58,7 @@ namespace EGT_OTA.Controllers.Api
                 model.Full = ZNRequest.GetInt("Full");
                 model.High = ZNRequest.GetInt("Hign");
                 model.Transparency = ZNRequest.GetInt("Transparency");
+                model.Url = url;
                 var success = true;
                 if (model.ID == 0)
                 {

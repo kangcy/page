@@ -78,5 +78,11 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string CreateUserNumber { get; set; }
+
+        /// <summary>
+        /// 图片地址
+        /// </summary>
+        [SubSonicStringLength(255), SubSonicNullString]
+        public string Url { get; set; }
     }
 }
