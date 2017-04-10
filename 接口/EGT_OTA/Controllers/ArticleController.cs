@@ -395,7 +395,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var ArticleID = ZNRequest.GetInt("ArticleID");
-                var background = ZNRequest.GetInt("Background");
+                var background = ZNRequest.GetString("Background");
                 var result = new SubSonic.Query.Update<Article>(provider).Set("Background").EqualTo(background).Where<Article>(x => x.ID == ArticleID).Execute() > 0;
                 if (result)
                 {

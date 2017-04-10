@@ -167,6 +167,7 @@ F:\网站\Web\APP\my\接口\EGT_OTA\bin\StackExchange.Redis.xml
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.dll
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.pdb
+F:\HBuider\Home\接口\EGT_OTA\bin\IRedis.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\Castle.Core.dll
@@ -198,7 +199,6 @@ F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.WebPages.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.WebPages.Razor.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\Tools.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\IPay.pdb
-F:\HBuider\Home\接口\EGT_OTA\bin\IRedis.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\HtmlSanitizationLibrary.xml
 F:\HBuider\Home\接口\EGT_OTA\bin\Ionic.Zlib.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\Ionic.Zlib.xml

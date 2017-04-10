@@ -45,7 +45,7 @@ namespace EGT_OTA.Models
             this.Pays = 0;
             this.TypeID = 10000;
             this.TypeIDList = "-10000-";
-            this.Background = 0;
+            this.Background = "";
             this.Template = 0;
             this.ArticlePower = Enum_ArticlePower.Public;
             this.Status = Enum_Status.Approved;
@@ -139,12 +139,12 @@ namespace EGT_OTA.Models
         public string Number { get; set; }
 
         /// <summary>
-        /// 背景展示方式（0:全屏,1:居顶,2:平铺）
+        /// 背景展示方式
         /// </summary>
-        public int Background { get; set; }
+        public string Background { get; set; }
 
         /// <summary>
-        /// 模板
+        /// 模板（0:纯白、1:自定义、2:模板）
         /// </summary>
         public int Template { get; set; }
 
@@ -318,6 +318,12 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public int IsZan { get; set; }
+
+        /// <summary>
+        /// 背景设置
+        /// </summary>
+        [SubSonicIgnore]
+        public Background BackgroundJson { get; set; }
 
         #endregion
     }
