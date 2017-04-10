@@ -97,18 +97,16 @@ namespace EGT_OTA.Controllers
                     model.ShareNick = createUser.ShareNick;
                 }
 
-                //自定义背景
-                if (model.Template == 1 && !string.IsNullOrWhiteSpace(model.Background))
-                {
-                    model.BackgroundJson = db.Single<Background>(x => x.Number == model.Background);
-                }
-
                 //文章部分
                 model.ArticlePart = new SubSonic.Query.Select(provider).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleNumber == model.Number).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
 
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
 
                 //模板配置
+                if (model.Template == 1)
+                {
+                    model.BackgroundJson = db.Single<Background>(x => x.ArticleNumber == model.Number);
+                }
                 if (model.Template > 0)
                 {
                     model.TemplateJson = GetArticleTemp().FirstOrDefault(x => x.ID == model.Template);

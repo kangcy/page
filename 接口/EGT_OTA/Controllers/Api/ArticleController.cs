@@ -84,11 +84,6 @@ namespace EGT_OTA.Controllers.Api
                     model.IsPay = createUser.IsPay;
                 }
 
-                //自定义背景
-                if (model.Template == 1 && !string.IsNullOrWhiteSpace(model.Background))
-                {
-                    model.BackgroundJson = db.Single<Background>(x => x.Number == model.Background);
-                }
 
                 //是否收藏
                 model.IsKeep = new SubSonic.Query.Select(provider, "ID").From<Keep>().Where<Keep>(x => x.CreateUserNumber == model.CreateUserNumber && x.ArticleNumber == model.Number).GetRecordCount() == 0 ? 0 : 1;
@@ -107,17 +102,18 @@ namespace EGT_OTA.Controllers.Api
                 model.ShareUrl = System.Configuration.ConfigurationManager.AppSettings["share_url"] + model.Number;
 
                 //模板配置
-                if (model.Template > 0)
+                if (model.Template == 1)
+                {
+                    //自定义背景
+                    model.BackgroundJson = db.Single<Background>(x => x.ArticleNumber == model.Number);
+                }
+                if (model.Template > 1)
                 {
                     model.TemplateJson = GetArticleTemp().FirstOrDefault(x => x.ID == model.Template);
                     if (model.TemplateJson == null)
                     {
                         model.TemplateJson = new Template();
                     }
-                }
-                else
-                {
-                    model.TemplateJson = new Template();
                 }
                 result.result = true;
                 result.message = model;

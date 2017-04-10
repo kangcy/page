@@ -56,7 +56,7 @@ namespace EGT_OTA.Controllers.Api
                     }
                 }
                 model.Full = ZNRequest.GetInt("Full");
-                model.High = ZNRequest.GetInt("Hign");
+                model.High = ZNRequest.GetInt("High");
                 model.Transparency = ZNRequest.GetInt("Transparency");
                 model.Url = url;
                 var success = true;

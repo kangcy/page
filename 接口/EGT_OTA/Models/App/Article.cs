@@ -45,7 +45,6 @@ namespace EGT_OTA.Models
             this.Pays = 0;
             this.TypeID = 10000;
             this.TypeIDList = "-10000-";
-            this.Background = "";
             this.Template = 0;
             this.ArticlePower = Enum_ArticlePower.Public;
             this.Status = Enum_Status.Approved;
@@ -137,11 +136,6 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(32), SubSonicNullString]
         public string Number { get; set; }
-
-        /// <summary>
-        /// 背景展示方式
-        /// </summary>
-        public string Background { get; set; }
 
         /// <summary>
         /// 模板（0:纯白、1:自定义、2:模板）
