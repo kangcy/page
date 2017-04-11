@@ -20,6 +20,6 @@ namespace EGT_OTA.Models
         /// 不启用
         /// </summary>
         [EnumAttribute("不启用")]
-        public const int Audit = 2;
+        public const int Audit = 0;
     }
 }

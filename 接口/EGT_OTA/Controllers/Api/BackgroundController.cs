@@ -175,22 +175,14 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "参数异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                var item = db.Single<Background>(x => x.Number == number);
-                if (item == null)
+                var model = db.Single<Background>(x => x.Number == number);
+                if (model == null)
                 {
                     result.message = "信息异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                Background model = new Background();
-                model.Number = BuildNumber();
-                model.ArticleNumber = item.ArticleNumber;
-                model.CreateUserNumber = user.Number;
-                model.Full = item.Full;
-                model.High = item.High;
-                model.Transparency = item.Transparency;
-                model.Url = item.Url;
                 model.IsUsed = Enum_Used.Approved;
-                var success = Tools.SafeInt(db.Add<Background>(model)) > 0;
+                var success = db.Update<Background>(model) > 0;
                 if (success)
                 {
                     //取消启用

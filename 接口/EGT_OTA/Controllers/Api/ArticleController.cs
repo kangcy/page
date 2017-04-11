@@ -105,7 +105,7 @@ namespace EGT_OTA.Controllers.Api
                 if (model.Template == 1)
                 {
                     //自定义背景
-                    model.BackgroundJson = db.Single<Background>(x => x.ArticleNumber == model.Number);
+                    model.BackgroundJson = db.Single<Background>(x => x.ArticleNumber == model.Number && x.IsUsed == Enum_Used.Approved);
                 }
                 if (model.Template > 1)
                 {
