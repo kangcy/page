@@ -103,10 +103,7 @@ namespace EGT_OTA.Controllers
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
 
                 //模板配置
-                if (model.Template == 1)
-                {
-                    model.BackgroundJson = db.Single<Background>(x => x.ArticleNumber == model.Number && x.IsUsed == Enum_Used.Approved);
-                }
+                model.BackgroundJson = db.Single<Background>(x => x.ArticleNumber == model.Number && x.IsUsed == Enum_Used.Approved);
                 if (model.Template > 0)
                 {
                     model.TemplateJson = GetArticleTemp().FirstOrDefault(x => x.ID == model.Template);

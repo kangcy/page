@@ -156,7 +156,7 @@ namespace EGT_OTA.Controllers.Api
         /// <summary>
         /// 使用
         /// </summary>
-        [HttpPost]
+        [HttpGet]
         [Route("Api/Background/Used")]
         public string Used()
         {
