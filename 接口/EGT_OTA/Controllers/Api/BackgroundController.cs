@@ -52,7 +52,7 @@ namespace EGT_OTA.Controllers.Api
                 if (success)
                 {
                     //取消启用
-                    var list = db.Find<Background>(x => x.CreateUserNumber == user.Number && x.Number != model.Number && x.IsUsed == Enum_Used.Approved).ToList();
+                    var list = db.Find<Background>(x => x.ArticleNumber == number && x.Number != model.Number && x.IsUsed == Enum_Used.Approved).ToList();
                     if (list.Count > 0)
                     {
                         list.ForEach(x =>
@@ -129,6 +129,11 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "背景信息验证失败";
                     return JsonConvert.SerializeObject(result);
                 }
+                if (model.CreateUserNumber != user.Number)
+                {
+                    result.message = "没有权限";
+                    return JsonConvert.SerializeObject(result);
+                }
                 var success = db.Delete<Background>(model.ID) > 0;
                 if (success)
                 {
@@ -149,6 +154,68 @@ namespace EGT_OTA.Controllers.Api
         }
 
         /// <summary>
+        /// 使用
+        /// </summary>
+        [HttpPost]
+        [Route("Api/Background/Used")]
+        public string Used()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result.message = "用户信息验证失败";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var number = ZNRequest.GetString("Number");
+                if (string.IsNullOrWhiteSpace(number))
+                {
+                    result.message = "参数异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var item = db.Single<Background>(x => x.Number == number);
+                if (item == null)
+                {
+                    result.message = "信息异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                Background model = new Background();
+                model.Number = BuildNumber();
+                model.ArticleNumber = item.ArticleNumber;
+                model.CreateUserNumber = user.Number;
+                model.Full = item.Full;
+                model.High = item.High;
+                model.Transparency = item.Transparency;
+                model.Url = item.Url;
+                model.IsUsed = Enum_Used.Approved;
+                var success = Tools.SafeInt(db.Add<Background>(model)) > 0;
+                if (success)
+                {
+                    //取消启用
+                    var list = db.Find<Background>(x => x.ArticleNumber == model.ArticleNumber && x.Number != model.Number && x.IsUsed == Enum_Used.Approved).ToList();
+                    if (list.Count > 0)
+                    {
+                        list.ForEach(x =>
+                        {
+                            x.IsUsed = Enum_Used.Audit;
+                        });
+                        db.UpdateMany<Background>(list);
+                    }
+                    result.result = true;
+                    result.message = model.Number;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Background_Edit" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
         /// 列表
         /// </summary>
         [HttpGet]
@@ -159,10 +226,10 @@ namespace EGT_OTA.Controllers.Api
             try
             {
                 var list = new List<Background>();
-                var number = ZNRequest.GetString("UserNumber");
+                var number = ZNRequest.GetString("ArticleNumber");
                 if (!string.IsNullOrWhiteSpace(number))
                 {
-                    list = db.Find<Background>(x => x.CreateUserNumber == number).OrderByDescending(x => x.IsUsed).ToList();
+                    list = db.Find<Background>(x => x.ArticleNumber == number).OrderByDescending(x => x.IsUsed).ToList();
                 }
                 result.result = true;
                 result.message = list;
