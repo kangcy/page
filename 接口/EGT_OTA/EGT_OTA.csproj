@@ -190,6 +190,7 @@
     <Compile Include="Controllers\Api\HelpController.cs" />
     <Compile Include="Controllers\Api\UserLogController.cs" />
     <Compile Include="Controllers\Api\BackgroundController.cs" />
+    <Compile Include="Controllers\Api\ArticlePartController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\Filter\DeflateCompressionAttribute.cs" />

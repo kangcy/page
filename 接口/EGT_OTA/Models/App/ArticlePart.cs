@@ -99,4 +99,18 @@ namespace EGT_OTA.Models
 
         //#endregion
     }
+
+    public class ArticlePartJson
+    {
+        public ArticlePartJson() { }
+        public ArticlePartJson(int id, string url)
+        {
+            this.ID = id;
+            this.Url = url;
+        }
+
+        public int ID { get; set; }
+
+        public string Url { get; set; }
+    }
 }
