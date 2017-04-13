@@ -662,6 +662,10 @@
     <Content Include="packages\Modernizr.2.5.3\Modernizr.2.5.3.nupkg" />
     <Content Include="packages\repositories.config" />
     <None Include="Properties\PublishProfiles\egt.pubxml" />
+    <None Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\nugetexample.js" />
     <Content Include="System\Video\1.png" />
     <Content Include="System\Video\2.png" />
     <Content Include="System\Video\3.png" />
@@ -678,6 +682,7 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="Properties\PublishProfiles\interface.pubxml" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

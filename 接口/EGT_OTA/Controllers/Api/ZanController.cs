@@ -44,7 +44,7 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "文章信息异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                if (db.Exists<Zan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number))
+                if (db.Exists<Zan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number && x.ZanType == Enum_ZanType.Article))
                 {
                     result.message = "已赞";
                     result.code = 1;
