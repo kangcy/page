@@ -52,38 +52,6 @@
 
 var RootUrl = "http://www.ishaoxia.com/";
 
-function IsNullOrEmpty(str) {
-	if(!str) {
-		return true;
-	}
-	return false;
-}
-
-/**
- * 格式化缩略图显示
- */
-function ShowThumb(url, thumb) {
-	if(IsNullOrEmpty(url)) {
-		return "img/logo.png";
-	}
-	if(url.indexOf('_0') < 0) {
-		return url;
-	}
-	return url.replace("_0", "_" + thumb);
-}
-
-/**
- * 格式化滚动条
- */
-function InitScroll() {
-	var deceleration = mui.os.ios ? 0.003 : 0.0009; // 阻尼系数
-	mui('.mui-scroll-wrapper').scroll({
-		bounce: false,
-		indicators: false, // 是否显示滚动条
-		deceleration: deceleration
-	});
-}
-
 /*获取html的参数**********************************************/
 function GetParameter(param) {
 	var query = window.location.search;
@@ -155,4 +123,49 @@ function UnicodeText(str) {
  */
 function UnUnicodeText(str) {
 	return unescape(str.replace(/\\u/gi, '%u'));
+}
+
+var base = new function() {
+	/**
+	 * 初始化滚动条
+	 **/
+	this.InitScroll = function(isbounce) {
+		var deceleration = mui.os.ios ? 0.003 : 0.0009; // 阻尼系数
+		mui('.mui-scroll-wrapper').scroll({
+			bounce: isbounce ? isbounce : false,
+			indicators: false, // 是否显示滚动条
+			deceleration: deceleration
+		});
+	}
+
+	/**
+	 * 获取对象
+	 */
+	this.Get = function(name) {
+		if(name.indexOf('.') < 0) {
+			return mui("#" + name)[0];
+		} else {
+			return mui(name);
+		}
+	}
+
+	/**
+	 * 格式化缩略图显示
+	 */
+	this.ShowThumb = function(url, thumb) {
+		if(base.IsNullOrEmpty(url)) {
+			return "img/logo.png";
+		}
+		if(url.indexOf('_0') < 0) {
+			return url;
+		}
+		return url.replace("_0", "_" + thumb);
+	}
+
+	this.IsNullOrEmpty = function(str) {
+		if(!str) {
+			return true;
+		}
+		return false;
+	}
 }

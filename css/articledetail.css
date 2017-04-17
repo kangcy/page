@@ -1,15 +1,15 @@
 .detail {
-	width: 94%;
-	margin: 0% 3%;
-	padding: 0% 3%;
+	width: 100%;
+	margin: 0%;
+	padding: 3%;
 	line-height: 1.5625rem;
 	display: inline-block;
 }
 
 .detail2 {
-	width: 94%;
-	margin: 0% 3%;
-	padding: 0% 3%;
+	width: 100%;
+	margin: 0%;
+	padding: 0%;
 	line-height: 1.5625rem;
 	display: inline-block;
 }
@@ -100,31 +100,24 @@
 }
 
 #useravatar1 {
-	width: 25%;
+	width: 20%;
 	border-radius: 50%;
 	border: 2px solid #fff;
 }
 
+#title1 {
+	line-height: 1.5625rem;
+	padding: 0.8rem 0px 0px;
+}
+
+#desc {
+	padding: 0px 3% 3% 3%;
+}
+
 .cover {
-	background: RGBA(255, 255, 255, 0.6);
+	background: RGBA(255, 255, 255, 1);
 	height: 100%;
 	z-index: -1;
-	border-radius: 10px;
-}
-
-.cover1 {
-	border-radius: 10px 10px 0px 0px !important;
-}
-
-.cover2 {
-	border-radius: 0px 0px 10px 10px !important;
-}
-
-.bg {
-	width: 100%;
-	/*position: relative;*/
-	z-index: 1;
-	min-height: 100%;
 }
 
 .fa-music {
@@ -161,11 +154,11 @@
 }
 
 .music[play=on] i {
-	background-image: url("../img/on.png");
+	background-image: url("../images/article/on.png");
 }
 
 .music[play=stop] i {
-	background-image: url("../img/off.png");
+	background-image: url("../images/article/off.png");
 }
 
 .music i {

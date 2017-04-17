@@ -113,17 +113,19 @@
 				<span class="circles-loader"></span>
 			</div>
 		</div>
+		<i id="music1" class="fa fa-music f13 hide" onclick="switchsound()" style="position:fixed;right:10px;top:60px;z-index:999;"></i>
+		<div id="wrapper2"></div>
 		<div class="mui-content mui-scroll-wrapper hide" id="wrapper">
 			<div class="mui-scroll" id="bg">
 				<!--通用样式-->
-				<div id="main0" class="f13 tl mt20 hide">
+				<div id="main0" class="f13 tl mt10 mb10 hide">
 					<div class="detail">
 						<div class="full tl">
 							<p class="f16 c000" id="title0"></p>
 							<span class="mt0 mb0 csubtitle f13" id="createdate0"></span>
 							<span class="mb0 ml10 user mt5 blue" userid="0" id="nickname0"></span>
 							<span class="mt0 mb0 ml10 csubtitle f13" id="views0"></span>
-							<p id="music0" play="on" class="music mb10" onclick="switchsound()">
+							<p id="music0" play="on" class="music" onclick="switchsound()">
 								<i></i>
 								<span id="musicname0"></span>
 							</p>
@@ -131,29 +133,28 @@
 					</div>
 				</div>
 				<!--排版1-->
-				<div id="main1" class="f13 tc hide">
-					<div class="full">
-						<div class="full" style="position:relative;">
-							<img id="useravatar1" class="user mt30" userid="0" />
-							<p class="full user mt10 textshadow f15 cfff" userid="0" id="nickname1"></p>
-							<i id="music1" class="fa fa-music f13" onclick="switchsound()" style="position:absolute;right:10px;top:10px"></i>
+				<div id="main1" class="f13 tc hide" style="position:relative;">
+					<div class="detail full fl" id="detail1">
+						<div class="fl" style="width:23%;display:inline-block;">
+							<img id="useravatar1" class="full fl" />
 						</div>
-					</div>
-					<div class="detail cover cover1 fl">
-						<div class="full">
-							<p class="mt10 f16 c333" id="title1"></p>
-							<p class="mt5 mb0 full csubtitle f13">
-								<span id="createdate1" class="mr15"></span>
+						<div class="fr tl" style="width:77%;display:inline-block;">
+							<p class="user ml10 mt10 mb0 textshadow f15 cfff fl full bold" userid="0" id="nickname1"></p>
+							<p class="ml10 mb0 mt10 cfff textshadow f13 full">
+								<span id="createdate1" class="mr10"></span>
 								<span class="ml15" id="views1"></span>
 							</p>
 						</div>
 					</div>
 				</div>
-				<!--内容-->
-				<div class="detail2 cover cover2 fl tl mb20">
-					<div class="c000 full" id="desc">
+				<div class="detail2 cover fl tl">
+					<p class="f16 c333 tc hide" id="title1"></p>
+					<div class="c333 full" id="desc">
 
 					</div>
+				</div>
+				<!--内容-->
+				<div class="detail2 cover cover2 fl tl mb20">
 					<div class="full fl hide" id="bottom">
 						<!--评论-->
 						<div class="comment fl hide" id="comment">
@@ -183,6 +184,7 @@
 	var MusicID = 0;
 	var MusicUrl = "";
 	var ArticleID = 0;
+	var CurrTemplate = 0;
 	var isLoading = false;
 
 	mui.init({
@@ -194,10 +196,20 @@
 
 	mui.ready(function() {
 
-		InitScroll();
+		$("#wrapper2").css({
+			"width": window.innerWidth + "px",
+			"height": (window.innerHeight - 50) + "px",
+			"position": "fixed",
+			"z-index": -1
+		});
+		$("#wrapper1").css("min-height", (window.innerHeight - 50) + "px")
+		$("#detail1").css("margin-top", (window.innerHeight - 50) * 0.3 + "px");
+		$(".cover").css("min-height", (window.innerHeight - 50) * 0.526 + "px");
+
+		base.InitScroll();
 
 		var key = GetParameter("key");
-		if(IsNullOrEmpty("key")) {
+		if(base.IsNullOrEmpty(key)) {
 			return mui.toast("参数异常");
 		}
 
@@ -212,11 +224,11 @@
 		//解锁
 		document.getElementById('submit').addEventListener('tap', function(event) {
 			var pwd = document.getElementById("pwd").value;
-			if(IsNullOrEmpty(pwd)) {
+			if(base.IsNullOrEmpty(pwd)) {
 				return mui.toast("请填写解锁密码");
 			}
 			if(isLoading) {
-				return false;
+				return false; 
 			}
 			isLoading = true;
 			mui.getJSON(RootUrl + "Article/CheckPowerPwd", {
@@ -283,7 +295,7 @@
 					var part = parts[i];
 					if(part.Types == 1) {
 						//图片
-						html.push('<div class="full f13 mt10"><img src="' + ShowThumb(part.Introduction, 1) + '" class="full" /></div>');
+						html.push('<div class="full f13 mt10"><img src="' + base.ShowThumb(part.Introduction, 1) + '" class="full" /></div>');
 					} else if(part.Types == 2) {
 						//文本
 						html.push('<div class="full f13 mt10">' + part.Introduction + '</div>');
@@ -296,75 +308,25 @@
 
 			//排版
 			var CurrCover = data.Cover;
-			var TemplateType = 0;
+			var mainIndex = 0;
+			CurrTemplate = data.Template;
+			if(CurrTemplate == 1) {
+				mainIndex = 1;
+			}
 			if(data.TemplateJson != null) {
 				if(data.TemplateJson.ID > 0) {
-					TemplateType = data.TemplateJson.TemplateType;
+					mainIndex = data.TemplateJson.TemplateType;
 					CurrCover = data.TemplateJson.Cover;
 					$("#wrapper").css("background-color", data.TemplateJson.Background);
 				}
 			}
-			var CurrTemplate = data.Template;
-			if(CurrTemplate == 1) {
-				TemplateType = 1;
-			}
+			CurrBackground = data.BackgroundJson;
 
-			var $bg = $("#bg");
-			if(CurrTemplate > 0) {
-				if(CurrTemplate == 1) {
-					$("#bg").css({
-						"background": "none",
-					});
-					$bg = $("#wrapper");
-				} else {
-					$("#wrapper").css({
-						"background-image": "none",
-					});
-					$bg = $("#bg");
-				}
-			}
-
-			//纯白背景
-			if(data.Template == 0) {
-				$bg.css("background", "#fff");
-			} else if(data.Template > 1) {
-				$bg.css({
-					"background": "url(" + CurrCover + ") no-repeat top",
-					"background-size": "100% auto"
-				});
-			} else {
-				switch(data.Background) {
-					case 0:
-						//全屏
-						$bg.css({
-							"background": "url(" + CurrCover + ") no-repeat",
-							"background-size": "100% 100%",
-						});
-						break;
-					case 1:
-						//居顶
-						$bg.css({
-							"background": "url(" + CurrCover + ") no-repeat top center",
-							"background-size": "100% auto"
-						});
-						break;
-					case 2:
-						//居底
-						$bg.css({
-							"background": "url(" + CurrCover + ") bottom center repeat",
-							"background-size": "100% auto"
-						});
-						break;
-					default:
-						break;
-				}
-			}
-
-			document.getElementById("loader").classList.add("hide");
+			ChangeBg();
 
 			$("#musicname0,#musicname1").html(data.MusicName);
 			$("#useravatar0,#useravatar1").attr({
-				"src": ShowThumb(data.Avatar, 1),
+				"src": base.ShowThumb(data.Avatar, 1),
 				"userid": data.CreateUserNumber
 			});
 			$("#title0,#title1").html(UnUnicodeText(data.Title));
@@ -373,43 +335,118 @@
 			$("#views0,#views1").html("阅读  " + data.Views);
 			$("#desc").html(UnUnicodeText(html.join("")));
 
+			ChangeMusic(mainIndex);
+
+			document.getElementById("loader").classList.add("hide");
+
 			//实例化播放器
 			$(".youku_player").each(function() {
 				var $this = $(this);
 				ShowVideo($this.attr("id"), $this.attr("sid"));
 			});
 
-			//音乐
-			MusicID = "music" + TemplateType;
-			MusicUrl = data.MusicUrl;
-			if(!IsNullOrEmpty(MusicUrl)) {
-				if(data.AutoMusic == "1") {
-					document.addEventListener('touchstart', startsound);
-				}
-				$("#music" + TemplateType).removeClass("hide");
-			} else {
-				$("#music" + TemplateType).addClass("hide");
-			}
-
-			/*switch(TemplateType) {
-				case 0:
-					$("#musicname0").html(data.MusicName);
-					break;
-				case 1:
-					$("#useravatar1").attr("src", data.Avatar);
-					$("#main1").removeClass("hide");
-					break;
-				default:
-					break;
-			}*/
-
-			$("#main0,#main0").addClass("hide");
-			$("#main" + TemplateType).removeClass("hide");
+			$("#main0,#main1").addClass("hide");
+			$("#main" + mainIndex).removeClass("hide");
 
 			$("#bottom").removeClass("hide");
 
 			isLoading = false;
 		});
+	}
+
+	//背景状态切换
+	function ChangeBg() {
+		if(CurrTemplate == 0) {
+			base.Get("scroll-wrapper").style.top = "45px";
+		} else {
+			base.Get("scroll-wrapper").style.top = "0px";
+		}
+
+		if(CurrTemplate > 0) {
+			$("#title1").removeClass("hide");
+		} else {
+			$("#title1").addClass("hide");
+		}
+		if(CurrTemplate == 0) {
+			$("#header").find("span").removeClass("cfff").addClass("c333");
+			$("#header").find("h1").removeClass("cfff").addClass("c333");
+		} else {
+			//背景色渐变
+			$header.style.backgroundColor = 'rgba(255,255,255,' + scrolly / 100 + ')';
+			var success = scrolly > 100;
+			mui.each(document.querySelectorAll(".headericon"), function() {
+				if(success) {
+					this.classList.remove("cfff");
+					this.classList.remove("c333");
+				} else {
+					this.classList.remove("c333");
+					this.classList.add("cfff");
+				}
+			});
+		}
+
+		//纯白背景
+		if(CurrTemplate == 0) {
+			$("#wrapper").css("background-color", "transparent");
+			$("#wrapper1").css("background", "none");
+			$("#wrapper2").css("background", "#fff");
+			$(".cover").css("background", "RGBA(255, 255, 255, 1");
+		} else if(CurrTemplate > 1) {
+			$("#wrapper2").css("background", "none");
+			$("#wrapper1").css({
+				"background": "url(" + CurrCover + ") top center no-repeat",
+				"background-size": "100% auto"
+			});
+			$(".cover").css("background", "RGBA(255, 255, 255, 0.5");
+		} else {
+			$("#wrapper").css("background-color", "transparent");
+			$("#wrapper1").css("background", "none");
+			if(CurrBackground == null) {
+				//全屏
+				$("#wrapper2").css("background", "#fff");
+			} else {
+				//背景透明度
+				$(".cover").css("background", "RGBA(255, 255, 255, " + (100 - CurrBackground.Transparency) / 100 + ")");
+
+				var url = CurrBackground.Url;
+				if(CurrBackground.High == 0) {
+					url = base.ShowThumb(url, 1);
+				} else {
+					url = base.ShowThumb(url, 0);
+				}
+				switch(CurrBackground.Full) {
+					case 0:
+						//居顶 
+						$("#wrapper2").css({
+							"background": "url(" + url + ") no-repeat top center",
+							"background-size": "100% auto"
+						});
+						break;
+					case 1:
+						//全屏
+						$("#wrapper2").css({
+							"background": "url(" + url + ") center center no-repeat",
+							"background-size": "100% auto",
+						});
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+
+	//切换音乐
+	function ChangeMusic(index) {
+		MusicID = "music" + index;
+		if(!base.IsNullOrEmpty(MusicUrl)) {
+			if(Article.AutoMusic == 1) {
+				document.addEventListener('touchstart', startsound);
+			}
+			$("#music" + index).removeClass("hide");
+		} else {
+			$("#music0,#music1").addClass("hide");
+		}
 	}
 
 	/**
@@ -449,7 +486,7 @@
 		div.className = 'mui-table-view-cell';
 		var model = [];
 		model.push('<div class="mui-slider-cell mt10 mb10"><div class="oa-contact-cell mui-table">');
-		model.push('<div class="mui-table-cell oa-contact-avatar"><img src="' + ShowThumb(item.Avatar, 1) + '" class="user" userid="' + item.UserNumber + '" /></div>');
+		model.push('<div class="mui-table-cell oa-contact-avatar"><img src="' + base.ShowThumb(item.Avatar, 1) + '" class="user" userid="' + item.UserNumber + '" /></div>');
 		model.push('<div class="mui-table-cell pb0">');
 		model.push('<p class="f12 user c999" userid="' + item.UserNumber + '">' + item.NickName + '<span class="fr c999 f11">' + item.CreateDate + '</span></p>');
 		model.push('<p class="f12 c333 mt5 mb5" style="line-height:1.3rem;">' + item.Summary + '</p>');

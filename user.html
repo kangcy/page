@@ -130,12 +130,12 @@
 	mui.ready(function() {
 
 		var key = GetParameter("key");
-		if(IsNullOrEmpty("key")) {
+		if(base.IsNullOrEmpty("key")) {
 			mui.alert("参数异常");
 			return false;
 		}
 
-		InitScroll();
+		base.InitScroll();
 
 		LoadUserInfo(key);
 		LoadArticle(key);
@@ -147,11 +147,11 @@
 			UserNumber: key
 		}
 		mui.getJSON(RootUrl + "User/Article", data, function(data) {
-			var table = document.getElementById('a_list');
+			var table = base.Get('a_list');
 			if(data != null) {
 				var length = data.records;
 				if(length > 0) {
-					document.getElementById("a_title").innerHTML = data.records + "篇文章";
+					base.Get("a_title").innerHTML = data.records + "篇文章";
 
 					for(var i = 0; i < data.list.length; i++) {
 						var html = [];
@@ -165,7 +165,7 @@
 						var html = [];
 						for(var y = 0; y < data.list[i].List.length; y++) {
 							var item = data.list[i].List[y];
-							html.push('<img src="' + ShowThumb(item.Cover, 2) + '" class="article" articleid="' + item.ID + '" articleNumber="' + item.Number + '" userid="' + item.CreateUserNumber + '" power="' + item.ArticlePower + '" />');
+							html.push('<img src="' + base.ShowThumb(item.Cover, 2) + '" class="article" articleid="' + item.ID + '" articleNumber="' + item.Number + '" userid="' + item.CreateUserNumber + '" power="' + item.ArticlePower + '" />');
 						}
 						div2.innerHTML = html.join('');
 						table.appendChild(div2);
@@ -181,36 +181,36 @@
 			Number: key
 		}, function(data) {
 
-			document.getElementById("loader").classList.add("hide");
+			base.Get("loader").classList.add("hide");
 
 			if(data.result) {
 				data = data.message;
 
 				document.title = data.NickName + "的专栏";
-				document.getElementById("bg").style.background = "url(" + ShowThumb(data.Cover, 1) + ") center center no-repeat";
-				document.getElementById("bg").style.backgroundSize = "cover";
-				document.getElementById("avatar").setAttribute("src", ShowThumb(data.Avatar, 2));
-				document.getElementById("avatar").classList.remove("hide");
-				document.getElementById("nickname").innerHTML = UnUnicodeText(data.NickName);
-				document.getElementById("signature").innerHTML = UnUnicodeText(data.Signature);
+				base.Get("bg").style.background = "url(" + base.ShowThumb(data.Cover, 1) + ") center center no-repeat";
+				base.Get("bg").style.backgroundSize = "cover";
+				base.Get("avatar").setAttribute("src", base.ShowThumb(data.Avatar, 2));
+				base.Get("avatar").classList.remove("hide");
+				base.Get("nickname").innerHTML = UnUnicodeText(data.NickName);
+				base.Get("signature").innerHTML = UnUnicodeText(data.Signature);
 
 				if(data.ShowArticle == 1) {
-					document.getElementById("showArticleNum").innerHTML = data.Keeps;
-					document.getElementById("showArticle").classList.remove("hide");
+					base.Get("showArticleNum").innerHTML = data.Keeps;
+					base.Get("showArticle").classList.remove("hide");
 				}
 				if(data.ShowFollow == 1) {
-					document.getElementById("showFollowNum").innerHTML = data.Follows;
-					document.getElementById("showFollow").classList.remove("hide");
+					base.Get("showFollowNum").innerHTML = data.Follows;
+					base.Get("showFollow").classList.remove("hide");
 				}
 				if(data.ShowFan == 1) {
-					document.getElementById("showFanNum").innerHTML = data.Fans;
-					document.getElementById("showFan").classList.remove("hide");
+					base.Get("showFanNum").innerHTML = data.Fans;
+					base.Get("showFan").classList.remove("hide");
 				}
 			} else {
 				mui.toast(data.message);
 			}
-			document.getElementById("article").classList.remove("hide");
-			document.getElementById("download").classList.remove("hide");
+			base.Get("article").classList.remove("hide");
+			base.Get("download").classList.remove("hide");
 		});
 	}
 </script>
