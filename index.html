@@ -33,7 +33,7 @@
 			
 			#bottom {
 				background: #fff;
-				margin: 10px 0px;
+				margin: 0px;
 			}
 			
 			.download {
@@ -113,61 +113,65 @@
 				<span class="circles-loader"></span>
 			</div>
 		</div>
-		<i id="music1" class="fa fa-music f13 hide" onclick="switchsound()" style="position:fixed;right:10px;top:60px;z-index:999;"></i>
+		<i id="music1" class="fa fa-music f13 hide" onclick="switchsound()" style="position:fixed;right:10px;top:10px;z-index:999;"></i>
 		<div id="wrapper2"></div>
-		<div class="mui-content mui-scroll-wrapper hide" id="wrapper">
-			<div class="mui-scroll" id="bg">
-				<!--通用样式-->
-				<div id="main0" class="f13 tl mt10 mb10 hide">
-					<div class="detail">
-						<div class="full tl">
-							<p class="f16 c000" id="title0"></p>
-							<span class="mt0 mb0 csubtitle f13" id="createdate0"></span>
-							<span class="mb0 ml10 user mt5 blue" userid="0" id="nickname0"></span>
-							<span class="mt0 mb0 ml10 csubtitle f13" id="views0"></span>
-							<p id="music0" play="on" class="music" onclick="switchsound()">
-								<i></i>
-								<span id="musicname0"></span>
-							</p>
-						</div>
-					</div>
-				</div>
-				<!--排版1-->
-				<div id="main1" class="f13 tc hide" style="position:relative;">
-					<div class="detail full fl" id="detail1">
-						<div class="fl" style="width:23%;display:inline-block;">
-							<img id="useravatar1" class="full fl" />
-						</div>
-						<div class="fr tl" style="width:77%;display:inline-block;">
-							<p class="user ml10 mt10 mb0 textshadow f15 cfff fl full bold" userid="0" id="nickname1"></p>
-							<p class="ml10 mb0 mt10 cfff textshadow f13 full">
-								<span id="createdate1" class="mr10"></span>
-								<span class="ml15" id="views1"></span>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="detail2 cover fl tl">
-					<p class="f16 c333 tc hide" id="title1"></p>
-					<div class="c333 full" id="desc">
-
-					</div>
-				</div>
-				<!--内容-->
-				<div class="detail2 cover cover2 fl tl mb20">
-					<div class="full fl hide" id="bottom">
-						<!--评论-->
-						<div class="comment fl hide" id="comment">
-							<div class="title">
-								<i class="fl color-lump"></i>
-								<h2 class="fl f16">最新评论</h2>
+		<div class="mui-scroll-wrapper" id="scroll-wrapper" style="top:0px;bottom:0px;">
+			<div class="mui-scroll" id="scroll">
+				<div id="wrapper" class="hide">
+					<div class="mui-content" style="overflow-x:hidden;" id="wrapper1">
+						<!--通用样式-->
+						<div id="main0" class="f13 tl mt10 mb10 hide">
+							<div class="detail">
+								<div class="full tl">
+									<p class="f16 c000" id="title0"></p>
+									<span class="mt0 mb0 csubtitle f13" id="createdate0"></span>
+									<span class="mb0 ml10 user mt5 blue" userid="0" id="nickname0"></span>
+									<span class="mt0 mb0 ml10 csubtitle f13" id="views0"></span>
+									<p id="music0" play="on" class="music" onclick="switchsound()">
+										<i></i>
+										<span id="musicname0"></span>
+									</p>
+								</div>
 							</div>
-							<div class="list" id="commentlist">
+						</div>
+						<!--排版1-->
+						<div id="main1" class="f13 tc hide" style="position:relative;">
+							<div class="detail full fl" id="detail1">
+								<div class="fl" style="width:23%;display:inline-block;">
+									<img id="useravatar1" class="full fl" />
+								</div>
+								<div class="fr tl" style="width:77%;display:inline-block;">
+									<p class="user ml10 mt10 mb0 textshadow f15 cfff fl full bold" userid="0" id="nickname1"></p>
+									<p class="ml10 mb0 mt10 cfff textshadow f13 full">
+										<span id="createdate1" class="mr10"></span>
+										<span class="ml15" id="views1"></span>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="detail2 cover fl tl">
+							<p class="f16 c333 tc hide" id="title1"></p>
+							<div class="c333 full" id="desc">
 
 							</div>
 						</div>
-						<!--下载-->
-						<div id="download" class="download" onclick="Download()"><i class="mui-icon mui-icon-download"></i><span class="f13">免费制作你自己的图文故事</span></div>
+						<!--内容-->
+						<div class="detail2 cover fl tl">
+							<div class="full fl hide" id="bottom">
+								<!--评论-->
+								<div class="comment fl hide" id="comment">
+									<div class="title">
+										<i class="fl color-lump"></i>
+										<h2 class="fl f16">最新评论</h2>
+									</div>
+									<div class="list" id="commentlist">
+
+									</div>
+								</div>
+								<!--下载-->
+								<div id="download" class="download" onclick="Download()"><i class="mui-icon mui-icon-download"></i><span class="f13">免费制作你自己的图文故事</span></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -185,6 +189,8 @@
 	var MusicUrl = "";
 	var ArticleID = 0;
 	var CurrTemplate = 0;
+	var CurrCover = "";
+	var AutoMusic = 0;
 	var isLoading = false;
 
 	mui.init({
@@ -198,13 +204,13 @@
 
 		$("#wrapper2").css({
 			"width": window.innerWidth + "px",
-			"height": (window.innerHeight - 50) + "px",
+			"height": window.innerHeight + "px",
 			"position": "fixed",
 			"z-index": -1
 		});
-		$("#wrapper1").css("min-height", (window.innerHeight - 50) + "px")
-		$("#detail1").css("margin-top", (window.innerHeight - 50) * 0.3 + "px");
-		$(".cover").css("min-height", (window.innerHeight - 50) * 0.526 + "px");
+		$("#wrapper1").css("min-height", window.innerHeight + "px")
+		$("#detail1").css("margin-top", window.innerHeight * 0.3 + "px");
+		$(".cover:eq(0)").css("min-height", window.innerHeight * 0.526 + "px");
 
 		base.InitScroll();
 
@@ -228,7 +234,7 @@
 				return mui.toast("请填写解锁密码");
 			}
 			if(isLoading) {
-				return false; 
+				return false;
 			}
 			isLoading = true;
 			mui.getJSON(RootUrl + "Article/CheckPowerPwd", {
@@ -287,6 +293,9 @@
 				$("#wrapper").removeClass("hide");
 			}
 
+			AutoMusic = data.AutoMusic;
+			MusicUrl = data.MusicUrl;
+
 			//段落
 			var html = [];
 			var parts = data.ArticlePart;
@@ -298,7 +307,7 @@
 						html.push('<div class="full f13 mt10"><img src="' + base.ShowThumb(part.Introduction, 1) + '" class="full" /></div>');
 					} else if(part.Types == 2) {
 						//文本
-						html.push('<div class="full f13 mt10">' + part.Introduction + '</div>');
+						html.push('<div class="full f13 mt10">' + UnUnicodeText(part.Introduction) + '</div>');
 					} else if(part.Types == 3) {
 						//视频
 						html.push('<div class="full f13 mt10">' + AppendVideo(part.Introduction) + '</div>');
@@ -307,7 +316,7 @@
 			}
 
 			//排版
-			var CurrCover = data.Cover;
+			CurrCover = data.Cover;
 			var mainIndex = 0;
 			CurrTemplate = data.Template;
 			if(CurrTemplate == 1) {
@@ -317,7 +326,7 @@
 				if(data.TemplateJson.ID > 0) {
 					mainIndex = data.TemplateJson.TemplateType;
 					CurrCover = data.TemplateJson.Cover;
-					$("#wrapper").css("background-color", data.TemplateJson.Background);
+					$("#scroll-wrapper").css("background-color", data.TemplateJson.Background);
 				}
 			}
 			CurrBackground = data.BackgroundJson;
@@ -356,38 +365,15 @@
 
 	//背景状态切换
 	function ChangeBg() {
-		if(CurrTemplate == 0) {
-			base.Get("scroll-wrapper").style.top = "45px";
-		} else {
-			base.Get("scroll-wrapper").style.top = "0px";
-		}
-
 		if(CurrTemplate > 0) {
 			$("#title1").removeClass("hide");
 		} else {
 			$("#title1").addClass("hide");
 		}
-		if(CurrTemplate == 0) {
-			$("#header").find("span").removeClass("cfff").addClass("c333");
-			$("#header").find("h1").removeClass("cfff").addClass("c333");
-		} else {
-			//背景色渐变
-			$header.style.backgroundColor = 'rgba(255,255,255,' + scrolly / 100 + ')';
-			var success = scrolly > 100;
-			mui.each(document.querySelectorAll(".headericon"), function() {
-				if(success) {
-					this.classList.remove("cfff");
-					this.classList.remove("c333");
-				} else {
-					this.classList.remove("c333");
-					this.classList.add("cfff");
-				}
-			});
-		}
 
 		//纯白背景
 		if(CurrTemplate == 0) {
-			$("#wrapper").css("background-color", "transparent");
+			$("#scroll-wrapper").css("background-color", "transparent");
 			$("#wrapper1").css("background", "none");
 			$("#wrapper2").css("background", "#fff");
 			$(".cover").css("background", "RGBA(255, 255, 255, 1");
@@ -399,7 +385,7 @@
 			});
 			$(".cover").css("background", "RGBA(255, 255, 255, 0.5");
 		} else {
-			$("#wrapper").css("background-color", "transparent");
+			$("#scroll-wrapper").css("background-color", "transparent");
 			$("#wrapper1").css("background", "none");
 			if(CurrBackground == null) {
 				//全屏
@@ -426,7 +412,7 @@
 						//全屏
 						$("#wrapper2").css({
 							"background": "url(" + url + ") center center no-repeat",
-							"background-size": "100% auto",
+							"background-size": "100% 100%",
 						});
 						break;
 					default:
@@ -440,7 +426,7 @@
 	function ChangeMusic(index) {
 		MusicID = "music" + index;
 		if(!base.IsNullOrEmpty(MusicUrl)) {
-			if(Article.AutoMusic == 1) {
+			if(AutoMusic == 1) {
 				document.addEventListener('touchstart', startsound);
 			}
 			$("#music" + index).removeClass("hide");
@@ -472,6 +458,7 @@
 							var div = appendStr(data.list[i]);
 							table.appendChild(div);
 						}
+						$("#comment").removeClass("hide");
 					}
 				}
 			}
@@ -487,14 +474,13 @@
 		var model = [];
 		model.push('<div class="mui-slider-cell mt10 mb10"><div class="oa-contact-cell mui-table">');
 		model.push('<div class="mui-table-cell oa-contact-avatar"><img src="' + base.ShowThumb(item.Avatar, 1) + '" class="user" userid="' + item.UserNumber + '" /></div>');
-		model.push('<div class="mui-table-cell pb0">');
-		model.push('<p class="f12 user c999" userid="' + item.UserNumber + '">' + item.NickName + '<span class="fr c999 f11">' + item.CreateDate + '</span></p>');
-		model.push('<p class="f12 c333 mt5 mb5" style="line-height:1.3rem;">' + item.Summary + '</p>');
-		if(item.ParentCommentID > 0) {
-			model.push('<p class="tip mb0 f12" style="line-height:1.3rem;"><span class="user blue" userid="' + item.ParentUserNumber + '">@' + item.ParentNickName + '：</span>' + item.ParentSummary + '</p>');
+		model.push('<div class="mui-table-cell pb0 main">');
+		model.push('<p class="f12 user c333" userid="' + item.UserNumber + '">' + UnUnicodeText(item.NickName) + '<span class="fr c999 f11">' + item.CreateDateText + '</span></p>');
+		model.push('<p class="f11 c999 mt3 mb5" style="line-height:1.3rem;">' + UnUnicodeText(item.Summary) + '</p>');
+		if(!base.IsNullOrEmpty(item.ParentCommentNumber)) {
+			model.push('<p class="tip mb0 f11" style="line-height:1.3rem;"><span class="user blue" userid="' + item.ParentUserNumber + '">@' + UnUnicodeText(item.ParentNickName) + '：</span>' + UnUnicodeText(item.ParentSummary) + '</p>');
 		}
-		model.push('</div>');
-		model.push('</div>');
+		model.push('</div></div>');
 		div.innerHTML = model.join('');
 		return div;
 	}

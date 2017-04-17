@@ -154,11 +154,11 @@
 }
 
 .music[play=on] i {
-	background-image: url("../images/article/on.png");
+	background-image: url("../img/on.png");
 }
 
 .music[play=stop] i {
-	background-image: url("../images/article/off.png");
+	background-image: url("../img/off.png");
 }
 
 .music i {
