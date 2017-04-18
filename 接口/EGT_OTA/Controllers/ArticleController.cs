@@ -184,8 +184,8 @@ namespace EGT_OTA.Controllers
                     var covers = cover.Split(',');
                     model.Cover = covers[0];
                     model.Recommend = Enum_ArticleRecommend.None;
-                    model.TypeID = 10000;
-                    model.TypeIDList = "-10000-";
+                    model.TypeID = 0;
+                    model.TypeIDList = "-0-0-";
                     model.ArticlePower = Enum_ArticlePower.Myself;
                     model.ArticlePowerPwd = string.Empty;
                     model.CreateUserNumber = user.Number;

@@ -43,8 +43,8 @@ namespace EGT_OTA.Models
             this.Keeps = 0;
             this.Comments = 0;
             this.Pays = 0;
-            this.TypeID = 10000;
-            this.TypeIDList = "-10000-";
+            this.TypeID = 0;
+            this.TypeIDList = "-0-0-";
             this.Template = 0;
             this.ArticlePower = Enum_ArticlePower.Public;
             this.Status = Enum_Status.Approved;

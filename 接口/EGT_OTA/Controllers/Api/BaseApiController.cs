@@ -12,6 +12,8 @@ using System.Drawing;
 using EGT_OTA.Helper.Config;
 using System.Web.Http;
 using SubSonic.DataProviders;
+using IRedis;
+using EGT_OTA.Redis;
 
 namespace EGT_OTA.Controllers.Api
 {
@@ -19,6 +21,7 @@ namespace EGT_OTA.Controllers.Api
     {
         protected readonly SimpleRepository db = Repository.GetRepo();
         protected readonly IDataProvider provider = Repository.GetProvider();
+        protected static readonly RedisBase redis = RedisHelper.Redis;
 
         //默认管理员账号
         protected readonly string Admin_Name = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_name"];
@@ -260,12 +263,8 @@ namespace EGT_OTA.Controllers.Api
         /// </summary>
         protected List<MusicJson> GetMusic()
         {
-            List<MusicJson> list = new List<MusicJson>();
-            if (CacheHelper.Exists("Music"))
-            {
-                list = (List<MusicJson>)CacheHelper.GetCache("Music");
-            }
-            else
+            List<MusicJson> list = redis.HashGetAllValues<MusicJson>("Music");
+            if (list.Count == 0)
             {
                 string str = string.Empty;
                 string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/music.config");
@@ -282,8 +281,8 @@ namespace EGT_OTA.Controllers.Api
                     {
                         y.FileUrl = Base_Url + y.FileUrl;
                     });
+                    redis.HashSet<MusicJson>("Music", x.ID.ToString(), x);
                 });
-                CacheHelper.Insert("Music", list);
             }
             return list.FindAll(x => x.Status == Enum_Status.Approved);
         }
@@ -351,12 +350,8 @@ namespace EGT_OTA.Controllers.Api
         /// </summary>
         protected List<DirtyWord> GetDirtyWord()
         {
-            List<DirtyWord> list = new List<DirtyWord>();
-            if (CacheHelper.Exists("DirtyWord"))
-            {
-                list = (List<DirtyWord>)CacheHelper.GetCache("DirtyWord");
-            }
-            else
+            List<DirtyWord> list = redis.HashGetAllValues<DirtyWord>("DirtyWord");
+            if (list.Count == 0)
             {
                 string str = string.Empty;
                 string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/dirtyword.config");
@@ -367,7 +362,12 @@ namespace EGT_OTA.Controllers.Api
                     sr.Close();
                 }
                 list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DirtyWord>>(str);
-                CacheHelper.Insert("DirtyWord", list);
+
+                var index = 0;
+                list.ForEach(x =>
+                {
+                    redis.HashSet<DirtyWord>("DirtyWord", index++.ToString(), x);
+                });
             }
             return list;
         }

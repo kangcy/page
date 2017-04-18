@@ -214,11 +214,11 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "验证码不能为空" }, JsonRequestBehavior.AllowGet);
                 }
 
-                var value = CookieHelper.GetCookieValue("SMS");
-                if (value != phone + sms + code)
-                {
-                    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
-                }
+                //var value = CookieHelper.GetCookieValue("SMS");
+                //if (value != phone + sms + code)
+                //{
+                //    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
+                //}
 
                 if (db.Exists<User>(x => x.Phone == phone))
                 {
@@ -898,16 +898,16 @@ namespace EGT_OTA.Controllers
                 var code = ZNRequest.GetString("Code");
                 var sms = ZNRequest.GetString("SMS");
 
-                if (string.IsNullOrWhiteSpace(code))
-                {
-                    return Json(new { result = false, message = "请填写验证码" }, JsonRequestBehavior.AllowGet);
-                }
+                //if (string.IsNullOrWhiteSpace(code))
+                //{
+                //    return Json(new { result = false, message = "请填写验证码" }, JsonRequestBehavior.AllowGet);
+                //}
 
-                var value = CookieHelper.GetCookieValue("SMS");
-                if (value != phone + sms + code)
-                {
-                    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
-                }
+                //var value = CookieHelper.GetCookieValue("SMS");
+                //if (value != phone + sms + code)
+                //{
+                //    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
+                //}
 
                 if (db.Exists<User>(x => x.Phone == phone && x.ID != user.ID))
                 {

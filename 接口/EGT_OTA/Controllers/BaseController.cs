@@ -14,6 +14,8 @@ using System.Drawing;
 using EGT_OTA.Helper.Config;
 using SubSonic.DataProviders;
 using System.Drawing.Imaging;
+using IRedis;
+using EGT_OTA.Redis;
 
 namespace EGT_OTA.Controllers
 {
@@ -21,6 +23,7 @@ namespace EGT_OTA.Controllers
     {
         protected readonly SimpleRepository db = Repository.GetRepo();
         protected readonly IDataProvider provider = Repository.GetProvider();
+        protected static readonly RedisBase redis = RedisHelper.Redis;
 
         //默认管理员账号
         protected readonly string Admin_Name = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_name"];
@@ -213,6 +216,10 @@ namespace EGT_OTA.Controllers
         protected List<MusicJson> GetMusic()
         {
             List<MusicJson> list = new List<MusicJson>();
+
+            list = redis.HashGetAllValues<MusicJson>("Music");
+
+
             if (CacheHelper.Exists("Music"))
             {
                 list = (List<MusicJson>)CacheHelper.GetCache("Music");

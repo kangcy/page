@@ -154,13 +154,14 @@ namespace EGT_OTA.Controllers.Api
                 if (CreateUserNumber != CurrUserNumber || string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
                     query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
+                    query = query.And("TypeID").IsGreaterThan(0);
                 }
 
                 //文章类型
                 var TypeID = ZNRequest.GetInt("TypeID");
                 if (TypeID > 0)
                 {
-                    query = query.And("TypeIDList").Like("%-" + TypeID.ToString() + "-%");
+                    query = query.And("TypeIDList").Like("%-0-" + TypeID.ToString() + "-%");
                 }
 
                 //搜索默认显示推荐文章
