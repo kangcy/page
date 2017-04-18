@@ -289,8 +289,6 @@ namespace IRedis
             return true;
         }
 
-
-
         /// <summary>
         /// Redis散列数据类型  新增一个
         /// </summary>
