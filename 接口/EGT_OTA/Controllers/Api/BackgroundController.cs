@@ -39,28 +39,47 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "信息异常";
                     return JsonConvert.SerializeObject(result);
                 }
+                var id = ZNRequest.GetInt("EditID");
                 Background model = new Background();
-                model.Number = BuildNumber();
-                model.ArticleNumber = number;
-                model.CreateUserNumber = user.Number;
+                if (id > 0)
+                {
+                    model = db.Single<Background>(x => x.ID == id);
+                }
+                else
+                {
+                    model.Number = BuildNumber();
+                    model.ArticleNumber = number;
+                    model.CreateUserNumber = user.Number;
+                    model.IsUsed = Enum_Used.Approved;
+                }
                 model.Full = ZNRequest.GetInt("Full");
                 model.High = ZNRequest.GetInt("High");
                 model.Transparency = ZNRequest.GetInt("Transparency");
                 model.Url = url;
-                model.IsUsed = Enum_Used.Approved;
-                var success = Tools.SafeInt(db.Add<Background>(model)) > 0;
+                var success = false;
+                if (id == 0)
+                {
+                    success = Tools.SafeInt(db.Add<Background>(model)) > 0;
+                    if (success)
+                    {
+                        //取消启用
+                        var list = db.Find<Background>(x => x.ArticleNumber == number && x.Number != model.Number && x.IsUsed == Enum_Used.Approved).ToList();
+                        if (list.Count > 0)
+                        {
+                            list.ForEach(x =>
+                            {
+                                x.IsUsed = Enum_Used.Audit;
+                            });
+                            db.UpdateMany<Background>(list);
+                        }
+                    }
+                }
+                else
+                {
+                    success = db.Update<Background>(model) > 0;
+                }
                 if (success)
                 {
-                    //取消启用
-                    var list = db.Find<Background>(x => x.ArticleNumber == number && x.Number != model.Number && x.IsUsed == Enum_Used.Approved).ToList();
-                    if (list.Count > 0)
-                    {
-                        list.ForEach(x =>
-                        {
-                            x.IsUsed = Enum_Used.Audit;
-                        });
-                        db.UpdateMany<Background>(list);
-                    }
                     result.result = true;
                     result.message = model.Number;
                 }

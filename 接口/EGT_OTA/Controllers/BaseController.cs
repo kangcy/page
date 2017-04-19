@@ -301,14 +301,10 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 敏感词
         /// </summary>
-        protected List<DirtyWord> GetDirtyWord()
+        protected List<string> GetDirtyWord()
         {
-            List<DirtyWord> list = new List<DirtyWord>();
-            if (CacheHelper.Exists("DirtyWord"))
-            {
-                list = (List<DirtyWord>)CacheHelper.GetCache("DirtyWord");
-            }
-            else
+            List<string> list = redis.HashGetAllValues<string>("DirtyWord");
+            if (list.Count == 0)
             {
                 string str = string.Empty;
                 string filePath = System.Web.HttpContext.Current.Server.MapPath("~/Config/dirtyword.config");
@@ -318,10 +314,36 @@ namespace EGT_OTA.Controllers
                     str = sr.ReadToEnd();
                     sr.Close();
                 }
-                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DirtyWord>>(str);
-                CacheHelper.Insert("DirtyWord", list);
+                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(str);
+
+                var index = 0;
+                list.ForEach(x =>
+                {
+                    redis.HashSet<string>("DirtyWord", index++.ToString(), x);
+                });
             }
             return list;
+        }
+
+        /// <summary>
+        /// 判断是否包含敏感词
+        /// </summary>
+        protected bool HasDirtyWord(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return false;
+            }
+            content = content.Trim();
+            var list = GetDirtyWord();
+            for (var i = 0; i < list.Count; i++)
+            {
+                if (list[i] == content)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -415,27 +437,6 @@ namespace EGT_OTA.Controllers
             public bool State { get; set; }
 
             public string Message { get; set; }
-        }
-
-        /// <summary>
-        /// 判断是否包含敏感词
-        /// </summary>
-        protected bool HasDirtyWord(string content)
-        {
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                return false;
-            }
-            content = content.Trim();
-            var list = GetDirtyWord();
-            for (var i = 0; i < list.Count; i++)
-            {
-                if (list[i].Name == content)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         #region  生成缩略图
