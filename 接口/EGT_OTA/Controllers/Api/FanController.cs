@@ -162,11 +162,11 @@ namespace EGT_OTA.Controllers.Api
                 if (fans.Count == 0)
                 {
                     var users = db.Find<User>(x => x.IsRecommend == 1);
-                    query.And("CreateUserNumber").In(users.Select(x => x.Number).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+                    query.And("CreateUserNumber").In(users.Select(x => x.Number).ToArray());
                 }
                 else
                 {
-                    query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray()).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
+                    query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray());
                 }
 
                 var recordCount = query.GetRecordCount();

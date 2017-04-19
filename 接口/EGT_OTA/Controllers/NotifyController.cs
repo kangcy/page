@@ -150,7 +150,15 @@ namespace EGT_OTA.Controllers
                 order.Anony = ZNRequest.GetInt("Anony", 0);
                 order.CreateUserNumber = ZNRequest.GetString("UserNumber");
                 order.ToArticleNumber = ZNRequest.GetString("ArticleNumber");
-                order.ToUserNumber = ZNRequest.GetString("ArticleUserNumber");
+                if (string.IsNullOrWhiteSpace(order.ToArticleNumber))
+                {
+                    order.ToUserNumber = ZNRequest.GetString("ArticleUserNumber");
+                }
+                else
+                {
+                    var toUserNumber = db.Single<Article>(x => x.Number == order.ToArticleNumber);
+                    order.ToUserNumber = toUserNumber == null ? "" : toUserNumber.CreateUserNumber;
+                }
                 order.CreateIP = Tools.GetClientIP;
                 db.Add<Order>(order);
 

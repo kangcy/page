@@ -1465,7 +1465,7 @@ namespace EGT_OTA.Controllers
             }
             else
             {
-                user.Money = user.Money / 100;
+                user.Money = user.Money;
             }
 
             //关注
