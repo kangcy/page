@@ -189,6 +189,12 @@ namespace EGT_OTA.Models
         /// </summary>
         public int UserRole { get; set; }
 
+        /// <summary>
+        /// 设备号
+        /// </summary>
+        [SubSonicNullString]
+        public string ClientID { get; set; }
+
         #region  隐私管理
 
         /// <summary>

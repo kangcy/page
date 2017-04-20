@@ -54,6 +54,7 @@ namespace EGT_OTA.Controllers
                 if (user == null)
                 {
                     user = new User();
+                    user.ClientID = ZNRequest.GetString("ClientID");
                     user.Province = ZNRequest.GetString("Province");
                     user.City = ZNRequest.GetString("City");
                     user.District = ZNRequest.GetString("District");
@@ -127,6 +128,7 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
+                    user.ClientID = ZNRequest.GetString("ClientID");
                     user.Province = ZNRequest.GetString("Province");
                     user.City = ZNRequest.GetString("City");
                     user.District = ZNRequest.GetString("District");
@@ -176,6 +178,7 @@ namespace EGT_OTA.Controllers
                     string info = "\r\n" + user.Phone + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
                     LogHelper.UserLoger.Info(info);
 
+                    user.ClientID = ZNRequest.GetString("ClientID");
                     user.LoginTimes += 1;
                     user.LastLoginDate = DateTime.Now;
                     user.LastLoginIP = Tools.GetClientIP;
@@ -272,6 +275,7 @@ namespace EGT_OTA.Controllers
                 user.Status = Enum_Status.Approved;
                 user.Number = BuildNumber();
                 user.IsPay = 1;
+                user.ClientID = ZNRequest.GetString("ClientID");
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {

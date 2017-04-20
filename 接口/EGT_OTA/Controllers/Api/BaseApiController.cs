@@ -385,7 +385,7 @@ namespace EGT_OTA.Controllers.Api
             var list = GetDirtyWord();
             for (var i = 0; i < list.Count; i++)
             {
-                if (list[i] == content)
+                if (content.Contains(list[i]))
                 {
                     return true;
                 }

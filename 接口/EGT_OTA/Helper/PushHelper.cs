@@ -28,9 +28,9 @@ namespace EGT_OTA.Helper
 
         #region  应用基本参数信息
 
-        public string APPID = "lj3zn7lhe8AnwY2fRGkXxA";
-        public string APPKEY = "22yXZ7maL29z3H0OcCnU39";
-        public string MASTERSECRET = "j6ZZuyb5wy7RUZKhIf8EKA";
+        public string APPID = "Z2BVMC4pXJ9RKhk8tOpp61";
+        public string APPKEY = "t8uxXtZgS96n5ZjNvbtHe";
+        public string MASTERSECRET = "eCG1n9pz516ek7RYk5Tum1";
         public string CLIENTID = "请更换你安装了Android应用的手机clientid";
         public static string HOST = "http://sdk.open.api.igexin.com/apiex.htm";
         public static string DeviceToken = "";//填写IOS系统的DeviceToken 
