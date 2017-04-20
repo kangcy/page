@@ -39,30 +39,34 @@ namespace EGT_OTA.Helper
 
         #region 1、PushMessageToSingle接口：支持对单个用户进行推送(4种模式)
 
+        /// <summary>
+        /// 单个推送
+        /// </summary>
+        /// <param name="template">模板内容</param>
+        public string PushSingle(ITemplate template)
+        {
+            IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
+            SingleMessage message = new SingleMessage();
+            message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
+            message.OfflineExpireTime = 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
+            message.Data = template;
+            //message.PushNetWorkType = 1; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
+            Target target = new Target();
+            target.appId = APPID;
+            target.clientId = CLIENTID;
+            return push.pushMessageToSingle(message, target);
+        }
+
         /// <summary>  
         /// 透传模板  
         /// </summary>  
         /// <param name="transContent">透传内容</param>  
         /// <param name="beginTM">客户端展示开始时间</param>  
         /// <param name="endTM">客户端展示结束时间</param>  
-        /// <returns></returns>  
         public string PushMessageToSingleByTransmissionTemplate(string transContent, string beginTM, string endTM)
-        {  
-            IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
+        {
             TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
-
-            // 单推消息模型  
-            SingleMessage message = new SingleMessage();
-            message.IsOffline = false; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 1; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-            com.igetui.api.openservice.igetui.Target target = new com.igetui.api.openservice.igetui.Target();
-            target.appId = APPID;
-            target.clientId = CLIENTID;
-
-            String pushResult = push.pushMessageToSingle(message, target);
-            return pushResult;
+            return PushSingle(template);
         }
 
         /// <summary>  
@@ -73,25 +77,10 @@ namespace EGT_OTA.Helper
         /// <param name="logo">通知栏显示本地图片</param>  
         /// <param name="logoUrl">通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空</param>  
         /// <param name="url">打开的链接地址</param>  
-        /// <returns></returns>  
         public string PushMessageToSingleByLinkTemplate(string title, string text, string logo, string logoUrl, string url)
         {
-            // 推送主类  
-            IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
             LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
-
-            // 单推消息模型  
-            SingleMessage message = new SingleMessage();
-            message.IsOffline = false; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 1; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-            com.igetui.api.openservice.igetui.Target target = new com.igetui.api.openservice.igetui.Target();
-            target.appId = APPID;
-            target.clientId = CLIENTID;
-
-            String pushResult = push.pushMessageToSingle(message, target);
-            return pushResult;
+            return PushSingle(template);
         }
 
         /// <summary>  
@@ -104,23 +93,10 @@ namespace EGT_OTA.Helper
         /// <param name="transContent">透传内容</param>  
         /// <param name="beginTM">客户端展示开始时间</param>  
         /// <param name="endTM">客户端展示结束时间</param>  
-        /// <returns></returns>  
         public string PushMessageToSingleByNotificationTemplate(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
         {
-            // 推送主类  
-            IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
             NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
-
-            // 单推消息模型  
-            SingleMessage message = new SingleMessage();
-            message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 600;// 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 1; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-            com.igetui.api.openservice.igetui.Target target = new com.igetui.api.openservice.igetui.Target();
-            target.appId = APPID;
-            target.clientId = CLIENTID;
-            return push.pushMessageToSingle(message, target);
+            return PushSingle(template);
         }
 
         /// <summary>  
@@ -138,23 +114,10 @@ namespace EGT_OTA.Helper
         /// <param name="loadTitle">通知栏显示下载标题</param>  
         /// <param name="loadIcon">通知栏显示下载图标,可为空</param>  
         /// <param name="loadUrl">下载地址，不可为空</param>  
-        /// <returns></returns>  
         public string PushMessageToSingleByNotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
         {
-            IGtPush push = new IGtPush("", APPKEY, MASTERSECRET);
             NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
-
-            // 单推消息模型  
-            SingleMessage message = new SingleMessage();
-            message.IsOffline = false; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 1; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-            com.igetui.api.openservice.igetui.Target target = new com.igetui.api.openservice.igetui.Target();
-            target.appId = APPID;
-            target.clientId = CLIENTID;
-
-            return push.pushMessageToSingle(message, target);
+            return PushSingle(template);
         }
 
         #endregion
@@ -180,13 +143,13 @@ namespace EGT_OTA.Helper
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
 
             //设置接收者  
-            List<com.igetui.api.openservice.igetui.Target> targetList = new List<com.igetui.api.openservice.igetui.Target>();
-            com.igetui.api.openservice.igetui.Target target1 = new com.igetui.api.openservice.igetui.Target();
+            List<Target> targetList = new List<Target>();
+            Target target1 = new Target();
             target1.appId = APPID;
             target1.clientId = CLIENTID;
 
             // 如需要，可以设置多个接收者  
-            com.igetui.api.openservice.igetui.Target target2 = new com.igetui.api.openservice.igetui.Target();
+            Target target2 = new Target();
             target2.appId = APPID;
 
             targetList.Add(target1);
@@ -218,13 +181,13 @@ namespace EGT_OTA.Helper
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
 
             //设置接收者  
-            List<com.igetui.api.openservice.igetui.Target> targetList = new List<com.igetui.api.openservice.igetui.Target>();
-            com.igetui.api.openservice.igetui.Target target1 = new com.igetui.api.openservice.igetui.Target();
+            List<Target> targetList = new List<Target>();
+            Target target1 = new Target();
             target1.appId = APPID;
             target1.clientId = CLIENTID;
 
             // 如需要，可以设置多个接收者  
-            com.igetui.api.openservice.igetui.Target target2 = new com.igetui.api.openservice.igetui.Target();
+            Target target2 = new Target();
             target2.appId = APPID;
 
             targetList.Add(target1);
@@ -258,13 +221,13 @@ namespace EGT_OTA.Helper
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
 
             //设置接收者  
-            List<com.igetui.api.openservice.igetui.Target> targetList = new List<com.igetui.api.openservice.igetui.Target>();
-            com.igetui.api.openservice.igetui.Target target1 = new com.igetui.api.openservice.igetui.Target();
+            List<Target> targetList = new List<Target>();
+            Target target1 = new Target();
             target1.appId = APPID;
             target1.clientId = CLIENTID;
 
             // 如需要，可以设置多个接收者  
-            com.igetui.api.openservice.igetui.Target target2 = new com.igetui.api.openservice.igetui.Target();
+            Target target2 = new Target();
             target2.appId = APPID;
 
             targetList.Add(target1);
@@ -303,13 +266,13 @@ namespace EGT_OTA.Helper
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
 
             //设置接收者  
-            List<com.igetui.api.openservice.igetui.Target> targetList = new List<com.igetui.api.openservice.igetui.Target>();
-            com.igetui.api.openservice.igetui.Target target1 = new com.igetui.api.openservice.igetui.Target();
+            List<Target> targetList = new List<Target>();
+            Target target1 = new Target();
             target1.appId = APPID;
             target1.clientId = CLIENTID;
 
             // 如需要，可以设置多个接收者  
-            com.igetui.api.openservice.igetui.Target target2 = new com.igetui.api.openservice.igetui.Target();
+            Target target2 = new Target();
             target2.appId = APPID;
 
             targetList.Add(target1);
@@ -382,7 +345,7 @@ namespace EGT_OTA.Helper
             LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
 
             AppMessage message = new AppMessage();
-            message.IsOffline = false; // 用户当前不在线时，是否离线存储,可选  
+            message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
             message.Data = template;
             //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
@@ -392,22 +355,20 @@ namespace EGT_OTA.Helper
             appIdList.Add(APPID);
 
             List<String> phoneTypeList = new List<string>();//通知接收者的手机操作系统类型  
-            //phoneTypeList.Add("ANDROID");  
+            phoneTypeList.Add("ANDROID");
             //phoneTypeList.Add("IOS");  
 
+            //省份
             List<String> provinceList = new List<string>();//通知接收者所在省份  
             //provinceList.Add("浙江");  
-            //provinceList.Add("上海");  
-            //provinceList.Add("北京");  
 
+            //标签
             List<String> tagList = new List<string>();
-            //tagList.Add("标签5");  
 
             message.AppIdList = appIdList;
             message.PhoneTypeList = phoneTypeList;
             message.ProvinceList = provinceList;
             message.TagList = tagList;
-
 
             String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
             return pushResult;
@@ -440,13 +401,11 @@ namespace EGT_OTA.Helper
             appIdList.Add(APPID);
 
             List<String> phoneTypeList = new List<string>();//通知接收者的手机操作系统类型  
-            phoneTypeList.Add("ANDROID");  
+            phoneTypeList.Add("ANDROID");
             //phoneTypeList.Add("IOS");  
 
             List<String> provinceList = new List<string>();//通知接收者所在省份  
-            //provinceList.Add("浙江");  
-            //provinceList.Add("上海");  
-            //provinceList.Add("北京");  
+            //provinceList.Add("浙江");   
 
             List<String> tagList = new List<string>();
             //tagList.Add("标签5");  
@@ -498,8 +457,6 @@ namespace EGT_OTA.Helper
 
             List<String> provinceList = new List<string>(); //通知接收者所在省份  
             //provinceList.Add("浙江");  
-            //provinceList.Add("上海");  
-            //provinceList.Add("北京");  
 
             List<String> tagList = new List<string>();
             //tagList.Add("标签5");  
