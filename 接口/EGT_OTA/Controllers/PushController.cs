@@ -25,11 +25,11 @@ namespace EGT_OTA.Controllers
             //    result = ex.Message;
             //}
 
-            string clientId = "54f3c1dc7795e813a8e0cdb039becb6f";
+            string clientId = "557e5625f84c82517457c43024b03b0c";
             PushHelper message = new PushHelper(clientId);
 
             var beginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            var endTime = DateTime.Now.AddMinutes(5).ToString("yyyy-MM-dd HH:mm:ss");
+            var endTime = DateTime.Now.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss");
             //string msg1 = message.PushMessageToSingleByNotificationTemplate("XXX - 单用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
             //string msg2 = message.PushMessageToListByNotificationTemplate("XXX  - 多用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
             string msg3 = message.PushMessageToAppByNotificationTemplate("XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
