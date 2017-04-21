@@ -15,7 +15,6 @@ namespace EGT_OTA.Controllers.Api
 {
     public class ArticleTypeController : BaseApiController
     {
-        [DeflateCompression]
         [HttpGet]
         [Route("Api/ArticleType/All")]
         public string All()
@@ -39,7 +38,6 @@ namespace EGT_OTA.Controllers.Api
             return JsonConvert.SerializeObject(result);
         }
 
-        [DeflateCompression]
         [HttpGet]
         [Route("Api/ArticleType/All2")]
         public string All2()

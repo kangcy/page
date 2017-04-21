@@ -27,7 +27,7 @@ namespace EGT_OTA.Controllers
             //}
 
             string clientId = "557e5625f84c82517457c43024b03b0c";
-            PushHelper message = new PushHelper(clientId);
+            PushHelper message = new PushHelper(new List<string>() { clientId });
 
             var beginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             var endTime = DateTime.Now.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss");

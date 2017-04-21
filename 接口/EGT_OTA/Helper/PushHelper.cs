@@ -21,18 +21,18 @@ namespace EGT_OTA.Helper
         /// 构造函数中传入移动客户端的CLIENTID号  
         /// </summary>  
         /// <param name="clientId">获取的clientID </param>  
-        public PushHelper(string clientId)
+        public PushHelper(List<string> clientIdList)
         {
             Environment.SetEnvironmentVariable("needDetails", "true");
-            CLIENTID = clientId;
+            CLIENTID = clientIdList;
         }
 
         #region  应用基本参数信息
 
-        public string APPID = "Z2BVMC4pXJ9RKhk8tOpp61";
-        public string APPKEY = "t8uxXtZgS96n5ZjNvbtHe";
-        public string MASTERSECRET = "eCG1n9pz516ek7RYk5Tum1";
-        public string CLIENTID = "请更换你安装了Android应用的手机clientid";
+        public string APPID = System.Web.Configuration.WebConfigurationManager.AppSettings["APPID"];
+        public string APPKEY = System.Web.Configuration.WebConfigurationManager.AppSettings["APPKEY"];
+        public string MASTERSECRET = System.Web.Configuration.WebConfigurationManager.AppSettings["MASTERSECRET"];
+        public List<string> CLIENTID = new List<string>();
         public static string HOST = "http://sdk.open.api.igexin.com/apiex.htm";
         public static string DeviceToken = "";//填写IOS系统的DeviceToken 
 
@@ -46,15 +46,15 @@ namespace EGT_OTA.Helper
         /// <param name="endTM">客户端展示结束时间</param>  
         public string PushTemplate(int pushType, string transContent, string beginTM, string endTM)
         {
-            TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
+            TransmissionTemplate template = TransmissionTemplate(transContent, beginTM, endTM);
             switch (pushType)
             {
                 case Enum_Push.Single:
                     return PushSingle(template);
                 case Enum_Push.Multiple:
-                    return PushSingle(template);
+                    return PushMultiple(template);
                 case Enum_Push.All:
-                    return PushSingle(template);
+                    return PushAll(template);
                 default:
                     return "false";
             }
@@ -70,15 +70,15 @@ namespace EGT_OTA.Helper
         /// <param name="url">打开的链接地址</param>   
         public string PushTemplate(int pushType, string title, string text, string logo, string logoUrl, string url)
         {
-            LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
+            LinkTemplate template = LinkTemplate(title, text, logo, logoUrl, url);
             switch (pushType)
             {
                 case Enum_Push.Single:
                     return PushSingle(template);
                 case Enum_Push.Multiple:
-                    return PushSingle(template);
+                    return PushMultiple(template);
                 case Enum_Push.All:
-                    return PushSingle(template);
+                    return PushAll(template);
                 default:
                     return "false";
             }
@@ -96,15 +96,15 @@ namespace EGT_OTA.Helper
         /// <param name="endTM">客户端展示结束时间</param>    
         public string PushTemplate(int pushType, string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
         {
-            NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
+            NotificationTemplate template = NotificationTemplate(title, text, logo, logoUrl, transContent, beginTM, endTM);
             switch (pushType)
             {
                 case Enum_Push.Single:
                     return PushSingle(template);
                 case Enum_Push.Multiple:
-                    return PushSingle(template);
+                    return PushMultiple(template);
                 case Enum_Push.All:
-                    return PushSingle(template);
+                    return PushAll(template);
                 default:
                     return "false";
             }
@@ -127,15 +127,15 @@ namespace EGT_OTA.Helper
         /// <param name="loadUrl">下载地址，不可为空</param>  
         public string PushTemplate(int pushType, string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
         {
-            NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
+            NotyPopLoadTemplate template = NotyPopLoadTemplate(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
             switch (pushType)
             {
                 case Enum_Push.Single:
                     return PushSingle(template);
                 case Enum_Push.Multiple:
-                    return PushSingle(template);
+                    return PushMultiple(template);
                 case Enum_Push.All:
-                    return PushSingle(template);
+                    return PushAll(template);
                 default:
                     return "false";
             }
@@ -155,7 +155,7 @@ namespace EGT_OTA.Helper
             //message.PushNetWorkType = 1; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
             Target target = new Target();
             target.appId = APPID;
-            target.clientId = CLIENTID;
+            target.clientId = CLIENTID[0];
             return push.pushMessageToSingle(message, target);
         }
 
@@ -174,16 +174,13 @@ namespace EGT_OTA.Helper
 
             //设置接收者  
             List<Target> targetList = new List<Target>();
-            Target target1 = new Target();
-            target1.appId = APPID;
-            target1.clientId = CLIENTID;
-
-            // 如需要，可以设置多个接收者  
-            Target target2 = new Target();
-            target2.appId = APPID;
-
-            targetList.Add(target1);
-            targetList.Add(target2);
+            for (var i = 0; i < CLIENTID.Count; i++)
+            {
+                Target target = new Target();
+                target.appId = APPID;
+                target.clientId = CLIENTID[i];
+                targetList.Add(target);
+            }
 
             String contentId = push.getContentId(message, "任务组名");
             String pushResult = push.pushMessageToList(contentId, targetList);
@@ -249,8 +246,7 @@ namespace EGT_OTA.Helper
         /// <param name="loadTitle">通知栏显示下载标题</param>  
         /// <param name="loadIcon">通知栏显示下载图标,可为空</param>  
         /// <param name="loadUrl">下载地址，不可为空</param>  
-        /// <returns></returns>  
-        public NotyPopLoadTemplate NotyPopLoadTemplateDemo(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
+        public NotyPopLoadTemplate NotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
         {
             NotyPopLoadTemplate template = new NotyPopLoadTemplate();
             template.AppId = APPID;
@@ -286,8 +282,7 @@ namespace EGT_OTA.Helper
         /// <param name="logo">通知栏显示本地图片</param>  
         /// <param name="logoUrl">通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空</param>  
         /// <param name="url">打开的链接地址</param>  
-        /// <returns></returns>  
-        public LinkTemplate LinkTemplateDemo(string title, string text, string logo, string logoUrl, string url)
+        public LinkTemplate LinkTemplate(string title, string text, string logo, string logoUrl, string url)
         {
             LinkTemplate template = new LinkTemplate();
             template.AppId = APPID;
@@ -316,9 +311,8 @@ namespace EGT_OTA.Helper
         /// <param name="logoUrl">通知栏显示网络图标</param>  
         /// <param name="transContent">透传内容</param>  
         /// <param name="beginTM">客户端展示开始时间</param>  
-        /// <param name="endTM">客户端展示结束时间</param>  
-        /// <returns></returns>  
-        public NotificationTemplate NotificationTemplateDemo(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
+        /// <param name="endTM">客户端展示结束时间</param>   
+        public NotificationTemplate NotificationTemplate(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
         {
             NotificationTemplate template = new NotificationTemplate();
             template.AppId = APPID;
@@ -351,7 +345,7 @@ namespace EGT_OTA.Helper
         /// <param name="beginTM">客户端展示开始时间</param>  
         /// <param name="endTM">客户端展示结束时间</param>  
         /// <returns></returns>  
-        public TransmissionTemplate TransmissionTemplateDemo(string transContent, string beginTM, string endTM)
+        public TransmissionTemplate TransmissionTemplate(string transContent, string beginTM, string endTM)
         {
             TransmissionTemplate template = new TransmissionTemplate();
             template.AppId = APPID;
@@ -376,10 +370,10 @@ namespace EGT_OTA.Helper
         /// 获取用户当前状态  
         /// </summary>  
         /// <returns></returns>  
-        public string getUserStatus()
+        public string GetUserStatus()
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            String ret = push.getClientIdStatus(APPID, CLIENTID);
+            String ret = push.getClientIdStatus(APPID, CLIENTID[0]);
             return ret;
         }
 
