@@ -193,6 +193,7 @@
     <Compile Include="Controllers\Api\ArticlePartController.cs" />
     <Compile Include="Controllers\Api\DemoController.cs" />
     <Compile Include="Controllers\Api\SystemController.cs" />
+    <Compile Include="Controllers\Api\PushController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\Filter\DeflateCompressionAttribute.cs" />
@@ -226,6 +227,7 @@
     <Compile Include="Enum\Enum_ZanType.cs" />
     <Compile Include="Enum\Enum_ArticlePart.cs" />
     <Compile Include="Enum\Enum_UserRole.cs" />
+    <Compile Include="Enum\Enum_Push.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

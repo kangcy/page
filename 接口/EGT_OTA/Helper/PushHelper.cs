@@ -6,6 +6,7 @@ using System.Web;
 using com.igetui.api.openservice;
 using com.igetui.api.openservice.igetui;
 using com.igetui.api.openservice.igetui.template;
+using EGT_OTA.Models;
 
 namespace EGT_OTA.Helper
 {
@@ -37,10 +38,111 @@ namespace EGT_OTA.Helper
 
         #endregion
 
-        #region 1、PushMessageToSingle接口：支持对单个用户进行推送(4种模式)
+        /// <summary>  
+        /// 透传模板  
+        /// </summary>  
+        /// <param name="transContent">透传内容</param>  
+        /// <param name="beginTM">客户端展示开始时间</param>  
+        /// <param name="endTM">客户端展示结束时间</param>  
+        public string PushTemplate(int pushType, string transContent, string beginTM, string endTM)
+        {
+            TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
+            switch (pushType)
+            {
+                case Enum_Push.Single:
+                    return PushSingle(template);
+                case Enum_Push.Multiple:
+                    return PushSingle(template);
+                case Enum_Push.All:
+                    return PushSingle(template);
+                default:
+                    return "false";
+            }
+        }
+
+        /// <summary>  
+        /// 通知链接模板  
+        /// </summary>  
+        /// <param name="title">通知栏标题</param>  
+        /// <param name="text">通知栏内容</param>  
+        /// <param name="logo">通知栏显示本地图片</param>  
+        /// <param name="logoUrl">通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空</param>  
+        /// <param name="url">打开的链接地址</param>   
+        public string PushTemplate(int pushType, string title, string text, string logo, string logoUrl, string url)
+        {
+            LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
+            switch (pushType)
+            {
+                case Enum_Push.Single:
+                    return PushSingle(template);
+                case Enum_Push.Multiple:
+                    return PushSingle(template);
+                case Enum_Push.All:
+                    return PushSingle(template);
+                default:
+                    return "false";
+            }
+        }
+
+        /// <summary>  
+        /// 通知透传模板  
+        /// </summary>  
+        /// <param name="title">通知栏标题</param>  
+        /// <param name="text">通知栏内容</param>  
+        /// <param name="logo">通知栏显示本地图片</param>  
+        /// <param name="logoUrl">通知栏显示网络图标</param>  
+        /// <param name="transContent">透传内容</param>  
+        /// <param name="beginTM">客户端展示开始时间</param>  
+        /// <param name="endTM">客户端展示结束时间</param>    
+        public string PushTemplate(int pushType, string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
+        {
+            NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
+            switch (pushType)
+            {
+                case Enum_Push.Single:
+                    return PushSingle(template);
+                case Enum_Push.Multiple:
+                    return PushSingle(template);
+                case Enum_Push.All:
+                    return PushSingle(template);
+                default:
+                    return "false";
+            }
+        }
+
+        /// <summary>  
+        /// 通知弹框下载模板  
+        /// </summary>  
+        /// <param name="notyTitle">通知栏标题</param>  
+        /// <param name="notyContent">通知栏内容</param>  
+        /// <param name="notyIcon">通知栏显示本地图片</param>  
+        /// <param name="logoUrl">通知栏显示网络图标</param>  
+        /// <param name="popTitle">弹框显示标题</param>  
+        /// <param name="popContent">弹框显示内容</param>  
+        /// <param name="popImage">弹框显示图片</param>  
+        /// <param name="popButton1">弹框左边按钮显示文本</param>  
+        /// <param name="popButton2">弹框右边按钮显示文本</param>  
+        /// <param name="loadTitle">通知栏显示下载标题</param>  
+        /// <param name="loadIcon">通知栏显示下载图标,可为空</param>  
+        /// <param name="loadUrl">下载地址，不可为空</param>  
+        public string PushTemplate(int pushType, string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
+        {
+            NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
+            switch (pushType)
+            {
+                case Enum_Push.Single:
+                    return PushSingle(template);
+                case Enum_Push.Multiple:
+                    return PushSingle(template);
+                case Enum_Push.All:
+                    return PushSingle(template);
+                default:
+                    return "false";
+            }
+        }
 
         /// <summary>
-        /// 单个推送
+        /// 推送单个用户
         /// </summary>
         /// <param name="template">模板内容</param>
         public string PushSingle(ITemplate template)
@@ -57,85 +159,13 @@ namespace EGT_OTA.Helper
             return push.pushMessageToSingle(message, target);
         }
 
-        /// <summary>  
-        /// 透传模板  
-        /// </summary>  
-        /// <param name="transContent">透传内容</param>  
-        /// <param name="beginTM">客户端展示开始时间</param>  
-        /// <param name="endTM">客户端展示结束时间</param>  
-        public string PushMessageToSingleByTransmissionTemplate(string transContent, string beginTM, string endTM)
-        {
-            TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
-            return PushSingle(template);
-        }
-
-        /// <summary>  
-        /// 通知链接模板  
-        /// </summary>  
-        /// <param name="title">通知栏标题</param>  
-        /// <param name="text">通知栏内容</param>  
-        /// <param name="logo">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空</param>  
-        /// <param name="url">打开的链接地址</param>  
-        public string PushMessageToSingleByLinkTemplate(string title, string text, string logo, string logoUrl, string url)
-        {
-            LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
-            return PushSingle(template);
-        }
-
-        /// <summary>  
-        /// 通知透传模板  
-        /// </summary>  
-        /// <param name="title">通知栏标题</param>  
-        /// <param name="text">通知栏内容</param>  
-        /// <param name="logo">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标</param>  
-        /// <param name="transContent">透传内容</param>  
-        /// <param name="beginTM">客户端展示开始时间</param>  
-        /// <param name="endTM">客户端展示结束时间</param>  
-        public string PushMessageToSingleByNotificationTemplate(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
-        {
-            NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
-            return PushSingle(template);
-        }
-
-        /// <summary>  
-        /// 通知弹框下载模板  
-        /// </summary>  
-        /// <param name="notyTitle">通知栏标题</param>  
-        /// <param name="notyContent">通知栏内容</param>  
-        /// <param name="notyIcon">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标</param>  
-        /// <param name="popTitle">弹框显示标题</param>  
-        /// <param name="popContent">弹框显示内容</param>  
-        /// <param name="popImage">弹框显示图片</param>  
-        /// <param name="popButton1">弹框左边按钮显示文本</param>  
-        /// <param name="popButton2">弹框右边按钮显示文本</param>  
-        /// <param name="loadTitle">通知栏显示下载标题</param>  
-        /// <param name="loadIcon">通知栏显示下载图标,可为空</param>  
-        /// <param name="loadUrl">下载地址，不可为空</param>  
-        public string PushMessageToSingleByNotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
-        {
-            NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
-            return PushSingle(template);
-        }
-
-        #endregion
-
-        #region 2、PushMessageToList接口：支持对多个用户进行推送，建议为50个用户
-
-        /// <summary>  
-        /// 透传模板  
-        /// </summary>  
-        /// <param name="transContent">透传内容</param>  
-        /// <param name="beginTM">客户端展示开始时间</param>  
-        /// <param name="endTM">客户端展示结束时间</param>  
-        /// <returns></returns>  
-        public string PushMessageToListByTransmissionTemplate(string transContent, string beginTM, string endTM)
+        /// <summary>
+        /// 推送多个用户
+        /// </summary>
+        /// <returns></returns>
+        public string PushMultiple(ITemplate template)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
-
             ListMessage message = new ListMessage();
             message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
@@ -160,241 +190,19 @@ namespace EGT_OTA.Helper
             return pushResult;
         }
 
-        /// <summary>  
-        /// 通知链接模板  
-        /// </summary>  
-        /// <param name="title">通知栏标题</param>  
-        /// <param name="text">通知栏内容</param>  
-        /// <param name="logo">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空</param>  
-        /// <param name="url">打开的链接地址</param>  
-        /// <returns></returns>  
-        public string PushMessageToListByLinkTemplate(string title, string text, string logo, string logoUrl, string url)
+        /// <summary>
+        /// 推送所有用户
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        public string PushAll(ITemplate template)
         {
             IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
-
-            ListMessage message = new ListMessage();
-            message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-
-            //设置接收者  
-            List<Target> targetList = new List<Target>();
-            Target target1 = new Target();
-            target1.appId = APPID;
-            target1.clientId = CLIENTID;
-
-            // 如需要，可以设置多个接收者  
-            Target target2 = new Target();
-            target2.appId = APPID;
-
-            targetList.Add(target1);
-            targetList.Add(target2);
-
-            String contentId = push.getContentId(message, "任务组名");
-            String pushResult = push.pushMessageToList(contentId, targetList);
-            return pushResult;
-        }
-
-        /// <summary>  
-        /// 通知透传模板  
-        /// </summary>  
-        /// <param name="title">通知栏标题</param>  
-        /// <param name="text">通知栏内容</param>  
-        /// <param name="logo">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标</param>  
-        /// <param name="transContent">透传内容</param>  
-        /// <param name="beginTM">客户端展示开始时间</param>  
-        /// <param name="endTM">客户端展示结束时间</param>  
-        /// <returns></returns>  
-        public string PushMessageToListByNotificationTemplate(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
-        {
-            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
-
-            ListMessage message = new ListMessage();
-            message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-
-            //设置接收者  
-            List<Target> targetList = new List<Target>();
-            Target target1 = new Target();
-            target1.appId = APPID;
-            target1.clientId = CLIENTID;
-
-            // 如需要，可以设置多个接收者  
-            Target target2 = new Target();
-            target2.appId = APPID;
-
-            targetList.Add(target1);
-            targetList.Add(target2);
-
-            String contentId = push.getContentId(message, "任务组名");
-            String pushResult = push.pushMessageToList(contentId, targetList);
-            return pushResult;
-        }
-
-        /// <summary>  
-        /// 通知弹框下载模板  
-        /// </summary>  
-        /// <param name="notyTitle">通知栏标题</param>  
-        /// <param name="notyContent">通知栏内容</param>  
-        /// <param name="notyIcon">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标</param>  
-        /// <param name="popTitle">弹框显示标题</param>  
-        /// <param name="popContent">弹框显示内容</param>  
-        /// <param name="popImage">弹框显示图片</param>  
-        /// <param name="popButton1">弹框左边按钮显示文本</param>  
-        /// <param name="popButton2">弹框右边按钮显示文本</param>  
-        /// <param name="loadTitle">通知栏显示下载标题</param>  
-        /// <param name="loadIcon">通知栏显示下载图标,可为空</param>  
-        /// <param name="loadUrl">下载地址，不可为空</param>  
-        /// <returns></returns>  
-        public string PushMessageToListByNotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
-        {
-            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
-
-            ListMessage message = new ListMessage();
-            message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-
-            //设置接收者  
-            List<Target> targetList = new List<Target>();
-            Target target1 = new Target();
-            target1.appId = APPID;
-            target1.clientId = CLIENTID;
-
-            // 如需要，可以设置多个接收者  
-            Target target2 = new Target();
-            target2.appId = APPID;
-
-            targetList.Add(target1);
-            targetList.Add(target2);
-
-            String contentId = push.getContentId(message, "任务组名");
-            String pushResult = push.pushMessageToList(contentId, targetList);
-            return pushResult;
-        }
-
-        #endregion
-
-        #region 3、PushMessageToApp接口：对单个应用下的所有用户进行推送，可根据省份，标签，机型过滤推送
-
-        /// <summary>  
-        /// 透传模板  
-        /// </summary>  
-        /// <param name="transContent">透传内容</param>  
-        /// <param name="beginTM">客户端展示开始时间</param>  
-        /// <param name="endTM">客户端展示结束时间</param>  
-        /// <returns></returns>  
-        public string PushMessageToAppByTransmissionTemplate(string transContent, string beginTM, string endTM)
-        {
-            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            TransmissionTemplate template = TransmissionTemplateDemo(transContent, beginTM, endTM);
-
-            AppMessage message = new AppMessage();
-            message.IsOffline = false;// 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 0; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-            message.Speed = 1;
-
-            List<String> appIdList = new List<string>();
-            appIdList.Add(APPID);
-
-            List<String> phoneTypeList = new List<string>();//通知接收者的手机操作系统类型  
-            //phoneTypeList.Add("ANDROID");  
-            //phoneTypeList.Add("IOS");  
-
-            List<String> provinceList = new List<string>();//通知接收者所在省份  
-            //provinceList.Add("浙江");  
-            //provinceList.Add("上海");  
-            //provinceList.Add("北京");  
-
-            List<String> tagList = new List<string>();
-            //tagList.Add("标签5");  
-
-            message.AppIdList = appIdList;
-            message.PhoneTypeList = phoneTypeList;
-            message.ProvinceList = provinceList;
-            message.TagList = tagList;
-
-            String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
-            return pushResult;
-        }
-
-        /// <summary>  
-        /// 通知链接模板  
-        /// </summary>  
-        /// <param name="title">通知栏标题</param>  
-        /// <param name="text">通知栏内容</param>  
-        /// <param name="logo">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标，如无法读取，则显示本地默认图标，可为空</param>  
-        /// <param name="url">打开的链接地址</param>  
-        /// <returns></returns>  
-        public string PushMessageToAppByLinkTemplate(string title, string text, string logo, string logoUrl, string url)
-        {
-            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            LinkTemplate template = LinkTemplateDemo(title, text, logo, logoUrl, url);
-
-            AppMessage message = new AppMessage();
-            message.IsOffline = true; // 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12; // 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-            message.Speed = 1;
-
-            List<String> appIdList = new List<string>();
-            appIdList.Add(APPID);
-
-            List<String> phoneTypeList = new List<string>();//通知接收者的手机操作系统类型  
-            phoneTypeList.Add("ANDROID");
-            //phoneTypeList.Add("IOS");  
-
-            //省份
-            List<String> provinceList = new List<string>();//通知接收者所在省份  
-            //provinceList.Add("浙江");  
-
-            //标签
-            List<String> tagList = new List<string>();
-
-            message.AppIdList = appIdList;
-            message.PhoneTypeList = phoneTypeList;
-            message.ProvinceList = provinceList;
-            message.TagList = tagList;
-
-            String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
-            return pushResult;
-        }
-
-        /// <summary>  
-        /// 通知透传模板  
-        /// </summary>  
-        /// <param name="title">通知栏标题</param>  
-        /// <param name="text">通知栏内容</param>  
-        /// <param name="logo">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标</param>  
-        /// <param name="transContent">透传内容</param>  
-        /// <param name="beginTM">客户端展示开始时间</param>  
-        /// <param name="endTM">客户端展示结束时间</param>  
-        /// <returns></returns>  
-        public string PushMessageToAppByNotificationTemplate(string title, string text, string logo, string logoUrl, string transContent, string beginTM, string endTM)
-        {
-            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            NotificationTemplate template = NotificationTemplateDemo(title, text, logo, logoUrl, transContent, beginTM, endTM);
-
             AppMessage message = new AppMessage();
             message.IsOffline = true;// 用户当前不在线时，是否离线存储,可选  
             message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
             message.Data = template;
-            //message.PushNetWorkType = 0;//判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
+            //message.PushNetWorkType = 0; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
             message.Speed = 1;
 
             List<String> appIdList = new List<string>();
@@ -405,57 +213,6 @@ namespace EGT_OTA.Helper
             //phoneTypeList.Add("IOS");  
 
             List<String> provinceList = new List<string>();//通知接收者所在省份  
-            //provinceList.Add("浙江");   
-
-            List<String> tagList = new List<string>();
-            //tagList.Add("标签5");  
-
-            message.AppIdList = appIdList;
-            message.PhoneTypeList = phoneTypeList;
-            message.ProvinceList = provinceList;
-            message.TagList = tagList;
-
-            String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
-            return pushResult;
-        }
-
-
-        /// <summary>  
-        /// 通知弹框下载模板  
-        /// </summary>  
-        /// <param name="notyTitle">通知栏标题</param>  
-        /// <param name="notyContent">通知栏内容</param>  
-        /// <param name="notyIcon">通知栏显示本地图片</param>  
-        /// <param name="logoUrl">通知栏显示网络图标</param>  
-        /// <param name="popTitle">弹框显示标题</param>  
-        /// <param name="popContent">弹框显示内容</param>  
-        /// <param name="popImage">弹框显示图片</param>  
-        /// <param name="popButton1">弹框左边按钮显示文本</param>  
-        /// <param name="popButton2">弹框右边按钮显示文本</param>  
-        /// <param name="loadTitle">通知栏显示下载标题</param>  
-        /// <param name="loadIcon">通知栏显示下载图标,可为空</param>  
-        /// <param name="loadUrl">下载地址，不可为空</param>  
-        /// <returns></returns>  
-        public string PushMessageToAppByNotyPopLoadTemplate(string notyTitle, string notyContent, string notyIcon, string logoUrl, string popTitle, string popContent, string popImage, string popButton1, string popButton2, string loadTitle, string loadIcon, string loadUrl)
-        {
-            IGtPush push = new IGtPush(HOST, APPKEY, MASTERSECRET);
-            NotyPopLoadTemplate template = NotyPopLoadTemplateDemo(notyTitle, notyContent, notyIcon, logoUrl, popTitle, popContent, popImage, popButton1, popButton2, loadTitle, loadIcon, loadUrl);
-
-            AppMessage message = new AppMessage();
-            message.IsOffline = false;// 用户当前不在线时，是否离线存储,可选  
-            message.OfflineExpireTime = 1000 * 3600 * 12;// 离线有效时间，单位为毫秒，可选  
-            message.Data = template;
-            //message.PushNetWorkType = 0; //判断是否客户端是否wifi环境下推送，1为在WIFI环境下，0为非WIFI环境  
-            message.Speed = 1;
-
-            List<String> appIdList = new List<string>();
-            appIdList.Add(APPID);
-
-            List<String> phoneTypeList = new List<string>(); //通知接收者的手机操作系统类型  
-            //phoneTypeList.Add("ANDROID");  
-            //phoneTypeList.Add("IOS");  
-
-            List<String> provinceList = new List<string>(); //通知接收者所在省份  
             //provinceList.Add("浙江");  
 
             List<String> tagList = new List<string>();
@@ -465,12 +222,8 @@ namespace EGT_OTA.Helper
             message.PhoneTypeList = phoneTypeList;
             message.ProvinceList = provinceList;
             message.TagList = tagList;
-
-            String pushResult = push.pushMessageToApp(message, "toAPP任务别名");
-            return pushResult;
+            return push.pushMessageToApp(message, "toAPP任务别名");
         }
-
-        #endregion
 
         #region 2、四种消息模板
 

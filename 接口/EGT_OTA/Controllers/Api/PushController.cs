@@ -21,7 +21,7 @@ namespace EGT_OTA.Controllers.Api
         /// </summary>
         [HttpGet]
         [Route("Api/Push/ALL")]
-        public string Edit()
+        public string ALL()
         {
             ApiResult result = new ApiResult();
             try
@@ -36,7 +36,7 @@ namespace EGT_OTA.Controllers.Api
                 var endTime = DateTime.Now.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss");
                 //string msg1 = message.PushMessageToSingleByNotificationTemplate("XXX - 单用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
                 //string msg2 = message.PushMessageToListByNotificationTemplate("XXX  - 多用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
-                string msg3 = message.PushMessageToAppByNotificationTemplate("XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
+                string msg3 = message.PushTemplate(Enum_Push.All, "XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
 
             }
             catch (Exception ex)
@@ -65,9 +65,9 @@ namespace EGT_OTA.Controllers.Api
 
                 var beginTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 var endTime = DateTime.Now.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss");
-                string msg1 = message.PushMessageToSingleByNotificationTemplate("XXX - 单用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
-                string msg2 = message.PushMessageToListByNotificationTemplate("XXX  - 多用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
-                string msg3 = message.PushMessageToAppByNotificationTemplate("XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
+                string msg1 = message.PushTemplate(Enum_Push.Single, "XXX - 单用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
+                string msg2 = message.PushTemplate(Enum_Push.Multiple, "XXX  - 多用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
+                string msg3 = message.PushTemplate(Enum_Push.All, "XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
             }
             catch (Exception ex)
             {

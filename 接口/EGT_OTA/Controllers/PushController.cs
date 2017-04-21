@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using EGT_OTA.Helper;
+using EGT_OTA.Models;
 
 namespace EGT_OTA.Controllers
 {
@@ -32,7 +33,7 @@ namespace EGT_OTA.Controllers
             var endTime = DateTime.Now.AddHours(2).ToString("yyyy-MM-dd HH:mm:ss");
             //string msg1 = message.PushMessageToSingleByNotificationTemplate("XXX - 单用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
             //string msg2 = message.PushMessageToListByNotificationTemplate("XXX  - 多用户", "您有新的任务，点击查看！", "", "", "", beginTime, endTime);
-            string msg3 = message.PushMessageToAppByNotificationTemplate("XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
+            string msg3 = message.PushTemplate(Enum_Push.All, "XXX  - APP应用", "您有新的任务，点击查看啊！", "", "", "{id:1}", beginTime, endTime);
 
             //解析输出结果  
             //{"taskId":"OSS-0420_ZiFBb3Sx7A7Pz7YWMwJdD9","result":"ok","status":"successed_online"} 在线状态  
