@@ -194,6 +194,8 @@
     <Compile Include="Controllers\Api\DemoController.cs" />
     <Compile Include="Controllers\Api\SystemController.cs" />
     <Compile Include="Controllers\Api\PushController.cs" />
+    <Compile Include="Controllers\Api\UserController.cs" />
+    <Compile Include="Controllers\Api\OrderController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Filter\ArticlePowerAttribute.cs" />
     <Compile Include="Controllers\Filter\DeflateCompressionAttribute.cs" />

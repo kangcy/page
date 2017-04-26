@@ -35,13 +35,22 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "参数异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ID != id && x.ArticleUserNumber == ArticleUserNumber);
+                var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ArticleUserNumber == ArticleUserNumber);
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
+                    result.result = true;
                     result.message = new { records = recordCount, totalpage = 1 };
                     return JsonConvert.SerializeObject(result);
                 }
+
+                if (recordCount == 1 && id > 0)
+                {
+                    result.result = true;
+                    result.message = new { records = recordCount, totalpage = 1 };
+                    return JsonConvert.SerializeObject(result);
+                }
+                query = query.And("ID").IsNotEqualTo(id);
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
@@ -111,13 +120,21 @@ namespace EGT_OTA.Controllers.Api
                 }
                 var UserNumber = ZNRequest.GetString("UserNumber");
 
-                var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ID != id && x.ArticleNumber == ArticleNumber);
+                var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ArticleNumber == ArticleNumber);
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
+                    result.result = true;
                     result.message = new { records = recordCount, totalpage = 1 };
                     return JsonConvert.SerializeObject(result);
                 }
+                if (recordCount == 1 && id > 0)
+                {
+                    result.result = true;
+                    result.message = new { records = recordCount, totalpage = 1 };
+                    return JsonConvert.SerializeObject(result);
+                }
+                query = query.And("ID").IsNotEqualTo(id);
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
 

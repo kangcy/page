@@ -154,7 +154,7 @@ namespace EGT_OTA.Controllers.Api
                 if (CreateUserNumber != CurrUserNumber || string.IsNullOrWhiteSpace(CreateUserNumber))
                 {
                     query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
-                    query = query.And("TypeID").IsGreaterThan(0);
+                    //query = query.And("TypeID").IsGreaterThan(0);
                 }
 
                 //文章类型
