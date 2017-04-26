@@ -65,39 +65,7 @@ namespace EGT_OTA.Models
         /// </summary>
         public int Status { get; set; }
 
-        //#region 文本修饰
 
-        ///// <summary>
-        ///// 颜色
-        ///// </summary>
-        //[SubSonicNullString]
-        //public string Color { get; set; }
-
-        ///// <summary>
-        ///// 位置
-        ///// </summary>
-        //[SubSonicNullString]
-        //public string Align { get; set; }
-
-        ///// <summary>
-        ///// 字体大小
-        ///// </summary>
-        //[SubSonicNullString]
-        //public string FontSize { get; set; }
-
-        ///// <summary>
-        ///// 字体加粗
-        ///// </summary>
-        //[SubSonicNullString]
-        //public string FontWeight { get; set; }
-
-        ///// <summary>
-        ///// 超链接
-        ///// </summary>
-        //[SubSonicNullString]
-        //public string Link { get; set; }
-
-        //#endregion
     }
 
     public class ArticlePartJson
@@ -112,5 +80,18 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         public string Url { get; set; }
+    }
+
+    public class PartJson
+    {
+        public string ID { get; set; }
+
+        public string Introduction { get; set; }
+
+        public int PartType { get; set; }
+
+        public int Status { get; set; }
+
+        public int SortID { get; set; }
     }
 }

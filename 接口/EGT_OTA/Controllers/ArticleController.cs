@@ -226,18 +226,72 @@ namespace EGT_OTA.Controllers
                     }
                     result = db.Update<Article>(model) > 0;
 
-                    var parts = ZNRequest.GetString("PartIDs");
+                    var parts = SqlFilter(ZNRequest.GetString("Part").Trim(), false, false);
+
+                    LogHelper.ErrorLoger.Error(parts);
+
                     if (!string.IsNullOrWhiteSpace(parts))
                     {
-                        var ids = parts.Split(',').ToList();
-                        ids.ForEach(x =>
+                        List<PartJson> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PartJson>>(parts);
+                        list.ForEach(x =>
                         {
-                            var id = x.Split('-');
-                            var partid = Tools.SafeInt(id[0]);
-                            var index = Tools.SafeInt(id[1]);
-                            new SubSonic.Query.Update<ArticlePart>(provider).Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
+                            if (x.Status == 0)
+                            {
+                                //编辑
+                                var partid = Tools.SafeInt(x.ID);
+                                var part = db.Single<ArticlePart>(y => y.ID == partid);
+                                if (part != null)
+                                {
+                                    part.SortID = x.SortID;
+                                    db.Update<ArticlePart>(part);
+                                }
+                            }
+                            else if (x.Status == 1)
+                            {
+                                //新增
+                                ArticlePart part = new ArticlePart();
+                                part.ArticleNumber = model.Number;
+                                part.Types = x.PartType;
+                                part.Introduction = x.Introduction;
+                                part.SortID = x.SortID;
+                                part.Status = Enum_Status.Audit;
+                                part.CreateDate = DateTime.Now;
+                                part.CreateUserNumber = user.Number;
+                                part.CreateIP = Tools.GetClientIP;
+                                part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
+                            }
+                            else if (x.Status == 2)
+                            {
+                                //编辑
+                                var partid = Tools.SafeInt(x.ID);
+                                var part = db.Single<ArticlePart>(y => y.ID == partid);
+                                if (part != null)
+                                {
+                                    part.Introduction = x.Introduction;
+                                    part.SortID = x.SortID;
+                                    db.Update<ArticlePart>(part);
+                                }
+                            }
+                            else if (x.Status == 3)
+                            {
+                                //删除
+                                db.Delete<ArticlePart>(x.ID);
+                            }
                         });
                     }
+
+                    //var parts = ZNRequest.GetString("PartIDs");
+                    //if (!string.IsNullOrWhiteSpace(parts))
+                    //{
+                    //    var ids = parts.Split(',').ToList();
+                    //    ids.ForEach(x =>
+                    //    {
+                    //        var id = x.Split('-');
+                    //        var partid = Tools.SafeInt(id[0]);
+                    //        var index = Tools.SafeInt(id[1]);
+                    //        new SubSonic.Query.Update<ArticlePart>(provider).Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
+                    //    });
+                    //}
                 }
                 if (result)
                 {

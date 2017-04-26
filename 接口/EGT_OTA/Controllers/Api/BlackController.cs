@@ -19,7 +19,6 @@ namespace EGT_OTA.Controllers.Api
         /// <summary>
         /// 黑名单列表
         /// </summary>
-        [DeflateCompression]
         [HttpGet]
         [Route("Api/Black/All")]
         public string All()
@@ -58,7 +57,13 @@ namespace EGT_OTA.Controllers.Api
                                    Signature = u.Signature,
                                }).ToList();
                 result.result = true;
-                result.message = newlist;
+                result.message = new
+                {
+                    currpage = 1,
+                    records = newlist.Count,
+                    totalpage = 1,
+                    list = newlist
+                };
             }
             catch (Exception ex)
             {
