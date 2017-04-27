@@ -304,13 +304,13 @@
 					var part = parts[i];
 					if(part.Types == 1) {
 						//图片
-						html.push('<div class="full f13 mt10"><img src="' + base.ShowThumb(part.Introduction, 1) + '" class="full" /></div>');
+						html.push('<div class="full f13 mt5"><img src="' + base.ShowThumb(part.Introduction, 1) + '" class="full" /></div>');
 					} else if(part.Types == 2) {
 						//文本
-						html.push('<div class="full f13 mt10">' + UnUnicodeText(part.Introduction) + '</div>');
+						html.push('<div class="full f13 mt5">' + UnUnicodeText(part.Introduction) + '</div>');
 					} else if(part.Types == 3) {
 						//视频
-						html.push('<div class="full f13 mt10">' + AppendVideo(part.Introduction) + '</div>');
+						html.push('<div class="full f13 mt5" style="display:inline-block;">' + AppendVideo(part.Introduction) + '</div>');
 					}
 				}
 			}
@@ -500,13 +500,18 @@
 
 	function AppendVideo(sourceurl) {
 		var html = [];
+		var height = window.innerHeight * 0.5;
 		//优酷
 		if(sourceurl.indexOf(".") < 0) {
-			return '<div class="media-cont audio-cont" style="margin-top: 10px; width: 100%;"><div id="youku_player_' + sourceurl + '" sid="' + sourceurl + '" class="youku_player" style="width:100%;height:400px;"></div></div>';
+			return '<div class="media-cont audio-cont" style="width:100%;"><div id="youku_player_' + sourceurl + '" sid="' + sourceurl + '" class="youku_player" style="width:100%;height:' + height + ';"></div></div>';
 		}
 		//SWF
 		if(sourceurl.toLowerCase().indexOf(".swf") > 0) {
-			return '<div class="media-cont audio-cont" style="margin-top:10px;width: 100%;"><embed src="' + sourceurl + '" allowfullscreen="true" quality="high" width="100%"  height="400" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash"></embed></div>';
+			return '<div class="media-cont audio-cont" style="width:100%;"><embed src="' + sourceurl + '" allowfullscreen="true" quality="high" width="100%"  height="' + height + '" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash"></embed></div>';
+		}
+		//本地视频
+		if(sourceurl.toLowerCase().indexOf(".") > 0) {
+			return '<video style="width:100%;height:' + height + 'px;" autoplay controls preload="none"><source src="' + sourceurl + '" /></video>';
 		}
 		return "";
 	}
