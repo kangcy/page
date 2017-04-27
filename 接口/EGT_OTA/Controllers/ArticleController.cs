@@ -133,6 +133,7 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑
         /// </summary>
+        [HttpPost]
         public ActionResult Edit()
         {
             try
@@ -228,8 +229,6 @@ namespace EGT_OTA.Controllers
 
                     var parts = SqlFilter(ZNRequest.GetString("Part").Trim(), false, false);
 
-                    LogHelper.ErrorLoger.Error(parts);
-
                     if (!string.IsNullOrWhiteSpace(parts))
                     {
                         List<PartJson> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PartJson>>(parts);
@@ -279,19 +278,6 @@ namespace EGT_OTA.Controllers
                             }
                         });
                     }
-
-                    //var parts = ZNRequest.GetString("PartIDs");
-                    //if (!string.IsNullOrWhiteSpace(parts))
-                    //{
-                    //    var ids = parts.Split(',').ToList();
-                    //    ids.ForEach(x =>
-                    //    {
-                    //        var id = x.Split('-');
-                    //        var partid = Tools.SafeInt(id[0]);
-                    //        var index = Tools.SafeInt(id[1]);
-                    //        new SubSonic.Query.Update<ArticlePart>(provider).Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
-                    //    });
-                    //}
                 }
                 if (result)
                 {
