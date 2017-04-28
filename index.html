@@ -113,6 +113,8 @@
 				<span class="circles-loader"></span>
 			</div>
 		</div>
+		<!--漂浮特效-->
+		<div id="snowwrapper" class="hide"></div>
 		<i id="music1" class="fa fa-music f13 hide" onclick="switchsound()" style="position:fixed;right:10px;top:10px;z-index:999;"></i>
 		<div id="wrapper2"></div>
 		<div class="mui-scroll-wrapper" id="scroll-wrapper" style="top:0px;bottom:0px;">
@@ -202,6 +204,11 @@
 
 	mui.ready(function() {
 
+		//屏蔽IOS微信端页面回弹
+		$('body').on('touchmove', function(event) {
+			event.preventDefault();
+		});
+
 		$("#wrapper2").css({
 			"width": window.innerWidth + "px",
 			"height": window.innerHeight + "px",
@@ -288,9 +295,9 @@
 				if(pwd != data.ArticlePowerPwd)
 					$("#password").removeClass("hide");
 				else
-					$("#wrapper").removeClass("hide");
+					$("#wrapper,#snowwrapper").removeClass("hide");
 			} else {
-				$("#wrapper").removeClass("hide");
+				$("#wrapper,#snowwrapper").removeClass("hide");
 			}
 
 			AutoMusic = data.AutoMusic;
@@ -358,6 +365,12 @@
 			$("#main" + mainIndex).removeClass("hide");
 
 			$("#bottom").removeClass("hide");
+
+			mui('#snowwrapper').load("part/snow/snow.html", function(response) {
+				LoadScript("part/snow/snow.js", function() {
+					$(".snow-canvas").snow();
+				});
+			});
 
 			isLoading = false;
 		});

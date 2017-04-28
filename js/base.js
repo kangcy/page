@@ -169,3 +169,29 @@ var base = new function() {
 		return false;
 	}
 }
+
+/**
+ * 动态加载JS 
+ * url：JS地址
+ * callback：回调方法
+ */
+function LoadScript(url, callback) {
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	if(typeof(callback) != "undefined") {
+		if(script.readyState) {
+			script.onreadystatechange = function() {
+				if(script.readyState == "loaded" || script.readyState == "complete") {
+					script.onreadystatechange = null;
+					callback();
+				}
+			};
+		} else {
+			script.onload = function() {
+				callback();
+			};
+		}
+	}
+	script.src = url;
+	document.body.appendChild(script);
+}
