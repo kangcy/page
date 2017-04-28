@@ -317,7 +317,7 @@
 						html.push('<div class="full f13 mt5">' + UnUnicodeText(part.Introduction) + '</div>');
 					} else if(part.Types == 3) {
 						//视频
-						html.push('<div class="full f13 mt5" style="display:inline-block;">' + AppendVideo(part.Introduction) + '</div>');
+						html.push('<div class="full f13 mt5 hide" style="display:inline-block;">' + AppendVideo(part.Introduction) + '</div>');
 					}
 				}
 			}
@@ -359,6 +359,12 @@
 			$(".youku_player").each(function() {
 				var $this = $(this);
 				ShowVideo($this.attr("id"), $this.attr("sid"));
+			});
+			mui.each(document.querySelectorAll(".video"), function() {
+				var $this = this;
+				$this.addEventListener('canplay', function() {
+					$this.parentNode.classList.remove("hide");
+				});
 			});
 
 			$("#main0,#main1").addClass("hide");
@@ -522,9 +528,9 @@
 		if(sourceurl.toLowerCase().indexOf(".swf") > 0) {
 			return '<div class="media-cont audio-cont" style="width:100%;"><embed src="' + sourceurl + '" allowfullscreen="true" quality="high" width="100%"  height="' + height + '" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash"></embed></div>';
 		}
-		//本地视频
+		//本地视频 
 		if(sourceurl.toLowerCase().indexOf(".") > 0) {
-			return '<video style="width:100%;height:' + height + 'px;" autoplay controls preload="none"><source src="' + sourceurl + '" /></video>';
+			return '<video class="video" style="width:100%;height:' + height + 'px;" autoplay="autoplay" controls="controls"><source src="' + sourceurl + '" type="video/mp4" /></video>';
 		}
 		return "";
 	}
