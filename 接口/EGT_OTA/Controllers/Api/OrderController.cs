@@ -50,16 +50,19 @@ namespace EGT_OTA.Controllers.Api
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Order>();
 
-                var fromarray = list.Select(x => x.CreateUserNumber).Distinct().ToList();
-                var toarray = list.Select(x => x.ToUserNumber).Distinct().ToList();
-                fromarray.AddRange(toarray);
-                var allusers = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
+                //var fromarray = list.Select(x => x.CreateUserNumber).Distinct().ToList();
+                //var toarray = list.Select(x => x.ToUserNumber).Distinct().ToList();
+                //fromarray.AddRange(toarray);
+                //var allusers = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().And("Number").In(fromarray.ToArray()).ExecuteTypedList<User>();
 
                 List<OrderJson> newlist = new List<OrderJson>();
                 list.ForEach(x =>
                 {
-                    var fromUser = allusers.FirstOrDefault(y => y.Number == x.CreateUserNumber);
-                    var toUser = allusers.FirstOrDefault(y => y.Number == x.ToUserNumber);
+                    var fromUser = db.Single<User>(y => y.Number == x.CreateUserNumber);
+                    var toUser = db.Single<User>(y => y.Number == x.ToUserNumber);
+
+                    //var fromUser = allusers.FirstOrDefault(y => y.Number == x.CreateUserNumber);
+                    //var toUser = allusers.FirstOrDefault(y => y.Number == x.ToUserNumber);
                     OrderJson model = new OrderJson();
                     model.ID = x.ID;
                     model.CreateDate = x.CreateDate.ToString("yyyy-MM-dd");
@@ -87,7 +90,7 @@ namespace EGT_OTA.Controllers.Api
                     currpage = pager.Index,
                     records = recordCount,
                     totalpage = totalPage,
-                    list = list
+                    list = newlist
                 };
             }
             catch (Exception ex)
