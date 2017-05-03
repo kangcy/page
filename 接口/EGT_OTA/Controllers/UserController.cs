@@ -529,14 +529,17 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var Signature = SqlFilter(ZNRequest.GetString("Signature").Trim());
-                if (string.IsNullOrEmpty(Signature))
+                if (!string.IsNullOrWhiteSpace(Signature))
                 {
-                    return Json(new { result = false, message = "请填写签名信息" }, JsonRequestBehavior.AllowGet);
+                    Signature = CutString(Signature, 200);
+                    if (HasDirtyWord(Signature))
+                    {
+                        return Json(new { result = false, message = "您输入的签名含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
+                    }
                 }
-                Signature = CutString(Signature, 200);
-                if (HasDirtyWord(Signature))
+                else
                 {
-                    return Json(new { result = false, message = "您输入的签名含有敏感内容，请检查后重试哦" }, JsonRequestBehavior.AllowGet);
+                    Signature = "";
                 }
                 var result = new SubSonic.Query.Update<User>(provider).Set("Signature").EqualTo(Signature).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)

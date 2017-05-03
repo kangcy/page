@@ -14,6 +14,7 @@ using System.Web.Http;
 using SubSonic.DataProviders;
 using IRedis;
 using EGT_OTA.Redis;
+using System.Threading;
 
 namespace EGT_OTA.Controllers.Api
 {
@@ -391,6 +392,19 @@ namespace EGT_OTA.Controllers.Api
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 初始化音乐Redis
+        /// </summary>
+        protected List<MusicSearch> InitMusicRedis()
+        {
+            var length = redis.HashLength("MusicSearch");
+            if (length == 0)
+            {
+                return new List<MusicSearch>();
+            }
+            return redis.HashGetAllValues<MusicSearch>("MusicSearch");
         }
 
         /// <summary>

@@ -93,4 +93,11 @@ namespace EGT_OTA.Models
 
         public List<Music> Music { get; set; }
     }
+
+    [Serializable]
+    public class MusicSearch
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+    }
 }

@@ -66,14 +66,19 @@ namespace EGT_OTA.Controllers.Api
                 var page = ZNRequest.GetInt("page", 1);
                 var size = ZNRequest.GetInt("rows", 15);
 
+                LogHelper.ErrorLoger.Error(name);
+
                 if (string.IsNullOrWhiteSpace(name))
                 {
                     result.message = "参数异常";
                     return JsonConvert.SerializeObject(result);
                 }
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(provider).From<Music>().Where("Name").Like(name);
+                var query = new SubSonic.Query.Select(provider, "ID", "Name").From<Music>().Where("Name").Like(name);
                 var recordCount = query.GetRecordCount();
+
+                LogHelper.ErrorLoger.Error(recordCount);
+
                 if (recordCount == 0)
                 {
                     result.message = new { records = recordCount, totalpage = 1 };
@@ -92,7 +97,31 @@ namespace EGT_OTA.Controllers.Api
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("Api_Keep_Search:" + ex.Message);
+                LogHelper.ErrorLoger.Error("Api_Music_Search:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 音乐搜索
+        /// </summary>
+        [DeflateCompression]
+        [HttpGet]
+        [Route("Api/Music/Test")]
+        public string Test()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                var list = InitMusicRedis();
+
+                var name = ZNRequest.GetString("name");
+                result.message = list.FindAll(x => x.Name.Contains(name));
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Music_Test:" + ex.Message);
                 result.message = ex.Message;
             }
             return JsonConvert.SerializeObject(result);

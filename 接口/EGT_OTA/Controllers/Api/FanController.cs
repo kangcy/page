@@ -153,22 +153,18 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "参数异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                var pager = new Pager();
 
-                var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
-                query = query.And("ArticlePower").In(new int[] { Enum_ArticlePower.Public, Enum_ArticlePower.Password });
                 var fans = db.Find<Fan>(x => x.CreateUserNumber == UserNumber).ToList();
-                //未关注，显示推荐关注用户
                 if (fans.Count == 0)
                 {
-                    var users = db.Find<User>(x => x.IsRecommend == 1);
-                    query.And("CreateUserNumber").In(users.Select(x => x.Number).ToArray());
-                }
-                else
-                {
-                    query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray());
+                    result.message = new { records = 0, totalpage = 1 };
+                    return JsonConvert.SerializeObject(result);
                 }
 
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(provider).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                query = query.And("ArticlePower").In(new int[] { Enum_ArticlePower.Public, Enum_ArticlePower.Password });
+                query.And("CreateUserNumber").In(fans.Select(x => x.ToUserNumber).ToArray());
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
@@ -176,7 +172,7 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Recommend", "ID" }).ExecuteTypedList<Article>();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "ID" }).ExecuteTypedList<Article>();
                 List<ArticleJson> newlist = ArticleListInfo(list, UserNumber);
                 result.result = true;
                 result.message = new
