@@ -23,6 +23,10 @@ namespace EGT_OTA.Helper
         /// </summary>
         public static void Insert(string CacheKey, object objObject)
         {
+            if (objObject == null)
+            {
+                return;
+            }
             HttpRuntime.Cache.Insert(CacheKey, objObject);
         }
         /// <summary>
@@ -30,6 +34,10 @@ namespace EGT_OTA.Helper
         /// </summary>
         public static void Insert(string CacheKey, object objObject, TimeSpan Timeout)
         {
+            if (objObject == null)
+            {
+                return;
+            }
             HttpRuntime.Cache.Insert(CacheKey, objObject, null, DateTime.MaxValue, Timeout, CacheItemPriority.NotRemovable, null);
         }
         /// <summary>
@@ -37,6 +45,10 @@ namespace EGT_OTA.Helper
         /// </summary>
         public static void Insert(string CacheKey, object objObject, DateTime absoluteExpiration, TimeSpan slidingExpiration)
         {
+            if (objObject == null)
+            {
+                return;
+            }
             HttpRuntime.Cache.Insert(CacheKey, objObject, null, absoluteExpiration, slidingExpiration);
         }
         /// <summary>

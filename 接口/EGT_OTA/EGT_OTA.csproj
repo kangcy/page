@@ -713,6 +713,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="AutoMusic\" />
     <Folder Include="bin\zh-Hans\" />
+    <Folder Include="Index\Music\" />
     <Folder Include="Upload\" />
   </ItemGroup>
   <ItemGroup>

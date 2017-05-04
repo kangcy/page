@@ -140,11 +140,11 @@ namespace EGT_OTA.Controllers.Api
             try
             {
                 var name = SqlFilter(ZNRequest.GetString("name"));
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    result.message = "参数异常";
-                    return JsonConvert.SerializeObject(result);
-                }
+                //if (string.IsNullOrWhiteSpace(name))
+                //{
+                //    result.message = "参数异常";
+                //    return JsonConvert.SerializeObject(result);
+                //}
                 var pager = new Pager();
 
                 var recordCount = 0;

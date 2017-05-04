@@ -46,18 +46,95 @@ namespace EGT_OTA.Helper.Search
             SimpleRepository db = Repository.GetRepo();
 
             var music01 = db.All<Music01>().ToList();
+            var list = new List<Music>();
+            list.AddRange(music01);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music01");
+
             var music02 = db.All<Music02>().ToList();
+            list = new List<Music>();
+            list.AddRange(music02);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music02");
+
             var music03 = db.All<Music03>().ToList();
+            list = new List<Music>();
+            list.AddRange(music03);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music03");
+
             var music04 = db.All<Music04>().ToList();
+            list = new List<Music>();
+            list.AddRange(music04);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music04");
+
             var music05 = db.All<Music05>().ToList();
+            list = new List<Music>();
+            list.AddRange(music05);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music05");
+
             var music06 = db.All<Music06>().ToList();
+            list = new List<Music>();
+            list.AddRange(music06);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music06");
+
             var music07 = db.All<Music07>().ToList();
+            list = new List<Music>();
+            list.AddRange(music07);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music07");
+
             var music08 = db.All<Music08>().ToList();
+            list = new List<Music>();
+            list.AddRange(music08);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music08");
+
             var music09 = db.All<Music09>().ToList();
+            list = new List<Music>();
+            list.AddRange(music09);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music09");
+
             var music10 = db.All<Music10>().ToList();
+            list = new List<Music>();
+            list.AddRange(music10);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music10");
+
             var music11 = db.All<Music11>().ToList();
+            list = new List<Music>();
+            list.AddRange(music11);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music11");
+
             var music12 = db.All<Music12>().ToList();
+            list = new List<Music>();
+            list.AddRange(music12);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music12");
+
             var music13 = db.All<Music13>().ToList();
+            list = new List<Music>();
+            list.AddRange(music13);
+            Init(list);
+
+            LogHelper.ErrorLoger.Error("初始化索引：Music13");
 
             var count = 0;
             count += music01.Count;
@@ -76,50 +153,42 @@ namespace EGT_OTA.Helper.Search
 
             if (count == 0)
             {
-                Index(new List<Music>(), true);
-            }
-            else
-            {
-                var list = new List<Music>();
-                list.AddRange(music01);
-                list.AddRange(music02);
-                list.AddRange(music03);
-                list.AddRange(music04);
-                list.AddRange(music05);
-                list.AddRange(music06);
-                list.AddRange(music07);
-                list.AddRange(music08);
-                list.AddRange(music09);
-                list.AddRange(music10);
-                list.AddRange(music11);
-                list.AddRange(music12);
-                list.AddRange(music13);
-
-                Init(list);
+                Index(new List<Music>(), false);
             }
         }
 
-        public static void Init(List<Music> list)
+        public static void Init(List<Music> all)
         {
-            if (list == null)
+            if (all == null)
             {
                 return;
             }
-            if (list.Count == 0)
+            if (all.Count == 0)
             {
                 return;
             }
 
-            int recordCount = list.Count;
+            int recordCount = all.Count;
             int currentPage = 0;
             int pageSize = 50;
             double pageCount = Math.Ceiling(recordCount / (double)pageSize);
-            for (int i = 0; i < pageCount; i++)
+            var index = 0;
+            try
             {
-                list = list.Skip(currentPage * pageSize).Take(pageSize).ToList();
-                Index(list, i == 0);
-                currentPage++;
+                for (int i = 0; i < pageCount; i++)
+                {
+                    index++;
+                    var list = all.Skip(currentPage * pageSize).Take(pageSize).ToList();
+                    Index(list, true);
+                    currentPage++;
+                }
             }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("索引数2：" + ex.Message);
+            }
+
+            LogHelper.ErrorLoger.Error("索引数3：" + index);
         }
 
 
@@ -177,7 +246,6 @@ namespace EGT_OTA.Helper.Search
         public static int AddDocument(IndexWriter writer, Music p)
         {
             Document doc = new Document();
-            doc.Add(new Field("ID", p.ID.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
             doc.Add(new Field("Number", p.Number, Field.Store.YES, Field.Index.NOT_ANALYZED));
             doc.Add(new Field("Author", p.Author, Field.Store.YES, Field.Index.ANALYZED));
             doc.Add(new Field("Name", p.Name, Field.Store.YES, Field.Index.ANALYZED));
@@ -202,7 +270,7 @@ namespace EGT_OTA.Helper.Search
             IndexReader reader = IndexReader.Open(FSDirectory.Open(indexPath), false);
             for (int i = 0, len = arrMusicID.Length; i < len; i++)
             {
-                Term term = new Term("ID", arrMusicID[i]);
+                Term term = new Term("Number", arrMusicID[i]);
                 reader.DeleteDocuments(term);
             }
             reader.Commit();
@@ -212,17 +280,9 @@ namespace EGT_OTA.Helper.Search
         /// <summary>
         /// 从资讯索引中将索引删除
         /// </summary>
-        public static void MusicDelete(int id)
-        {
-            MusicDelete(id.ToString());
-        }
-
-        /// <summary>
-        /// 从资讯索引中将索引删除
-        /// </summary>
         public static void MusicDelete(Music model)
         {
-            MusicDelete(model.ID.ToString());
+            MusicDelete(model.Number);
         }
 
         /// <summary>
@@ -233,7 +293,7 @@ namespace EGT_OTA.Helper.Search
             string IDList = "";
             foreach (Music p in pList)
             {
-                IDList += "," + p.ID;
+                IDList += "," + p.Number;
             }
             if (IDList.Length > 0)
             {
@@ -261,10 +321,23 @@ namespace EGT_OTA.Helper.Search
             Analyzer analyzer = new PanGuAnalyzer();
             BooleanQuery totalQuery = new BooleanQuery();
             MultiFieldQueryParser parser = new MultiFieldQueryParser(VERSION, new string[] { "Author", "Name" }, analyzer);
+
+
+
             if (!String.IsNullOrEmpty(keyword))
             {
                 keyword = ClearKeyword(keyword);
-                Lucene.Net.Search.Query query = parser.Parse(SearchBase.AnalysisKeyword(keyword));
+                //Lucene.Net.Search.Query query = parser.Parse(SearchBase.AnalysisKeyword(keyword));
+
+                LogHelper.ErrorLoger.Error("keyword:" + keyword);
+
+                Query query = new WildcardQuery(new Term("Name", "*" + keyword + "*"));
+
+                //Query query = parser.Parse(keyword);
+
+
+                LogHelper.ErrorLoger.Error("keyword:" + query.ToString());
+
                 totalQuery.Add(query, Occur.MUST);
             }
             if (currentPage < 0)
@@ -289,20 +362,10 @@ namespace EGT_OTA.Helper.Search
             {
                 var doc = searcher.Doc(hits[i].Doc);
                 p = new Music();
-                p.ID = Tools.SafeInt(doc.Get("ID"));
                 p.Author = doc.Get("Author");
                 p.Name = doc.Get("Name");
                 p.FileUrl = doc.Get("FileUrl");
                 p.Cover = doc.Get("Cover");
-                ////高亮显示
-                //SimpleHTMLFormatter simpleHTMLFormatter = new SimpleHTMLFormatter("<font color=\"red\">", "</font>");
-                //Highlighter highlighter = new Highlighter(simpleHTMLFormatter, new Segment());
-                //highlighter.FragmentSize = 50;
-                //p.NameHL = highlighter.GetBestFragment(keyword, p.Name);
-                //if (string.IsNullOrEmpty(p.NameHL))
-                //{
-                //    p.NameHL = doc.Get("Name");
-                //}
                 pList.Add(p);
             }
             searcher.Dispose();
