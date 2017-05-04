@@ -23,6 +23,9 @@ namespace EGT_OTA.Models
         {
             //加载log4net的配置文件
             LogHelper.LoadConfig(new FileInfo(context.Server.MapPath("~/Config/log4net.config")));
+
+            ///初始化盘古分词配置
+            PanGu.Segment.Init(context.Server.MapPath("~/Config/PanGu.config"));
         }
 
         /// <summary>

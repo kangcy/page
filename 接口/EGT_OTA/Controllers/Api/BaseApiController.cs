@@ -40,7 +40,7 @@ namespace EGT_OTA.Controllers.Api
             public Pager()
             {
                 this.Index = ZNRequest.GetInt("page", 1);
-                this.Size = ZNRequest.GetInt("rows", 15);
+                this.Size = ZNRequest.GetInt("rows", 20);
             }
         }
 
@@ -392,19 +392,6 @@ namespace EGT_OTA.Controllers.Api
                 }
             }
             return false;
-        }
-
-        /// <summary>
-        /// 初始化音乐Redis
-        /// </summary>
-        protected List<MusicSearch> InitMusicRedis()
-        {
-            var length = redis.HashLength("MusicSearch");
-            if (length == 0)
-            {
-                return new List<MusicSearch>();
-            }
-            return redis.HashGetAllValues<MusicSearch>("MusicSearch");
         }
 
         /// <summary>

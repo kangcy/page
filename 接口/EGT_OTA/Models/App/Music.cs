@@ -94,10 +94,20 @@ namespace EGT_OTA.Models
         public List<Music> Music { get; set; }
     }
 
-    [Serializable]
-    public class MusicSearch
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-    }
+    /// <summary>
+    /// 音乐分库
+    /// </summary>
+    public class Music01 : Music { }
+    public class Music02 : Music { }
+    public class Music03 : Music { }
+    public class Music04 : Music { }
+    public class Music05 : Music { }
+    public class Music06 : Music { }
+    public class Music07 : Music { }
+    public class Music08 : Music { }
+    public class Music09 : Music { }
+    public class Music10 : Music { }
+    public class Music11 : Music { }
+    public class Music12 : Music { }
+    public class Music13 : Music { }
 }

@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using CommonTools;
 using EGT_OTA.Helper;
 using EGT_OTA.Helper.Config;
+using EGT_OTA.Helper.Search;
 using EGT_OTA.Models;
 
 namespace EGT_OTA.Controllers
@@ -32,41 +33,51 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 重置音乐索引
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Build()
+        {
+            MusicSearch.IndexReset();
+            return Content("成功");
+        }
+
+        /// <summary>
         /// 初始化音乐Redis
         /// </summary>
         protected void InitMusicRedis()
         {
-            Thread thread = new Thread(delegate()
-            {
-                var length = redis.HashLength("MusicSearch");
-                if (length == 0)
-                {
-                    var startmusic = Tools.SafeInt(System.Web.Configuration.WebConfigurationManager.AppSettings["startmusic"]);
-                    var endmusic = Tools.SafeInt(System.Web.Configuration.WebConfigurationManager.AppSettings["endmusic"]);
-                    var recordCount = Tools.SafeInt(System.Web.Configuration.WebConfigurationManager.AppSettings["records"]);
-                    var pageSize = 1000;
-                    var query = new SubSonic.Query.Select(provider, "ID", "Name").From<Music>().Where<Music>(x => x.ID >= startmusic && x.ID <= endmusic);
+            //Thread thread = new Thread(delegate()
+            //{
+            //    var length = redis.HashLength("MusicSearch");
+            //    if (length == 0)
+            //    {
+            //        var startmusic = Tools.SafeInt(System.Web.Configuration.WebConfigurationManager.AppSettings["startmusic"]);
+            //        var endmusic = Tools.SafeInt(System.Web.Configuration.WebConfigurationManager.AppSettings["endmusic"]);
+            //        var recordCount = Tools.SafeInt(System.Web.Configuration.WebConfigurationManager.AppSettings["records"]);
+            //        var pageSize = 1000;
+            //        var query = new SubSonic.Query.Select(provider, "ID", "Name").From<Music>().Where<Music>(x => x.ID >= startmusic && x.ID <= endmusic);
 
-                    var totalPage = recordCount % pageSize == 0 ? recordCount / pageSize : recordCount / pageSize + 1;
+            //        var totalPage = recordCount % pageSize == 0 ? recordCount / pageSize : recordCount / pageSize + 1;
 
-                    LogHelper.ErrorLoger.Error(recordCount + "," + totalPage);
+            //        LogHelper.ErrorLoger.Error(recordCount + "," + totalPage);
 
-                    var index = 1;
-                    while (index <= totalPage)
-                    {
-                        var list = query.Paged(index, pageSize).OrderDesc("ID").ExecuteTypedList<MusicSearch>();
-                        list.ForEach(x =>
-                        {
-                            redis.HashSet<MusicSearch>("MusicSearch", x.ID.ToString(), x);
-                        });
-                        index++;
-                        Thread.Sleep(1000);
-                    }
-                }
-            });
-            thread.IsBackground = true;
-            thread.Name = "同步音乐Redis线程";
-            thread.Start();
+            //        var index = 1;
+            //        while (index <= totalPage)
+            //        {
+            //            var list = query.Paged(index, pageSize).OrderDesc("ID").ExecuteTypedList<MusicSearch>();
+            //            list.ForEach(x =>
+            //            {
+            //                redis.HashSet<MusicSearch>("MusicSearch", x.ID.ToString(), x);
+            //            });
+            //            index++;
+            //            Thread.Sleep(1000);
+            //        }
+            //    }
+            //});
+            //thread.IsBackground = true;
+            //thread.Name = "同步音乐Redis线程";
+            //thread.Start();
         }
 
         /// <summary>
