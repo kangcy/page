@@ -71,19 +71,19 @@ namespace EGT_OTA.Controllers.Api
                 }
                 var pager = new Pager();
 
-                var music01 = db.Find<Music01>(x => x.Name.Contains(name));
-                var music02 = db.Find<Music02>(x => x.Name.Contains(name));
-                var music03 = db.Find<Music03>(x => x.Name.Contains(name));
-                var music04 = db.Find<Music04>(x => x.Name.Contains(name));
-                var music05 = db.Find<Music05>(x => x.Name.Contains(name));
-                var music06 = db.Find<Music06>(x => x.Name.Contains(name));
-                var music07 = db.Find<Music07>(x => x.Name.Contains(name));
-                var music08 = db.Find<Music08>(x => x.Name.Contains(name));
-                var music09 = db.Find<Music09>(x => x.Name.Contains(name));
-                var music10 = db.Find<Music10>(x => x.Name.Contains(name));
-                var music11 = db.Find<Music11>(x => x.Name.Contains(name));
-                var music12 = db.Find<Music12>(x => x.Name.Contains(name));
-                var music13 = db.Find<Music13>(x => x.Name.Contains(name));
+                var music01 = db.Find<Music01>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music02 = db.Find<Music02>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music03 = db.Find<Music03>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music04 = db.Find<Music04>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music05 = db.Find<Music05>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music06 = db.Find<Music06>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music07 = db.Find<Music07>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music08 = db.Find<Music08>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music09 = db.Find<Music09>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music10 = db.Find<Music10>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music11 = db.Find<Music11>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music12 = db.Find<Music12>(x => x.Name.Contains(name) || x.Author.Contains(name));
+                var music13 = db.Find<Music13>(x => x.Name.Contains(name) || x.Author.Contains(name));
 
                 var list = new List<Music>();
                 list.AddRange(music01);
@@ -110,7 +110,7 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                list = list.OrderByDescending(x => x.Number).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+                list = list.OrderByDescending(x => x.ID).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
                 result.result = true;
                 result.message = new
                 {

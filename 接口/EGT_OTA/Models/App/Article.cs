@@ -308,6 +308,12 @@ namespace EGT_OTA.Models
         public int IsKeep { get; set; }
 
         /// <summary>
+        /// 是否关注
+        /// </summary>
+        [SubSonicIgnore]
+        public int IsFollow { get; set; }
+
+        /// <summary>
         /// 是否点赞
         /// </summary>
         [SubSonicIgnore]
