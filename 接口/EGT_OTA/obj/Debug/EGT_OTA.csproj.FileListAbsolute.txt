@@ -167,6 +167,7 @@ F:\网站\Web\APP\my\接口\EGT_OTA\bin\StackExchange.Redis.xml
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.dll
 F:\网站\Web\APP\my\接口\EGT_OTA\obj\Debug\EGT_OTA.pdb
+F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\EGT_OTA.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\Castle.Core.dll
@@ -193,7 +194,9 @@ F:\HBuider\Home\接口\EGT_OTA\bin\PanGu.Lucene.Analyzer.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\StackExchange.Redis.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\SubSonic.Core.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Net.Http.Formatting.dll
+F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Cors.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Helpers.dll
+F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Http.Cors.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Http.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Http.WebHost.dll
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Mvc.dll
@@ -211,7 +214,7 @@ F:\HBuider\Home\接口\EGT_OTA\bin\Lucene.Net.pdb
 F:\HBuider\Home\接口\EGT_OTA\bin\Lucene.Net.xml
 F:\HBuider\Home\接口\EGT_OTA\bin\Newtonsoft.Json.xml
 F:\HBuider\Home\接口\EGT_OTA\bin\StackExchange.Redis.xml
+F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Http.Cors.xml
 F:\HBuider\Home\接口\EGT_OTA\bin\System.Web.Http.WebHost.xml
-F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.dll
 F:\HBuider\Home\接口\EGT_OTA\obj\Debug\EGT_OTA.pdb
