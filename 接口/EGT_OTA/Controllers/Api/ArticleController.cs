@@ -175,10 +175,9 @@ namespace EGT_OTA.Controllers.Api
                 }
 
                 //过滤黑名单
-                var Number = ZNRequest.GetString("Number");
-                if (!string.IsNullOrWhiteSpace(Number))
+                if (!string.IsNullOrWhiteSpace(CurrUserNumber))
                 {
-                    var black = db.Find<Black>(x => x.CreateUserNumber == Number);
+                    var black = db.Find<Black>(x => x.CreateUserNumber == CurrUserNumber);
                     if (black.Count > 0)
                     {
                         var userids = black.Select(x => x.ToUserNumber).ToArray();
@@ -200,7 +199,7 @@ namespace EGT_OTA.Controllers.Api
                 }
 
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc(sort).ExecuteTypedList<Article>();
-                List<ArticleJson> newlist = ArticleListInfo(list, Number);
+                List<ArticleJson> newlist = ArticleListInfo(list, CurrUserNumber);
                 result.result = true;
                 result.message = new
                 {
