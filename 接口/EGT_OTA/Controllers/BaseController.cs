@@ -628,12 +628,12 @@ namespace EGT_OTA.Controllers
 
             //判断是否关注、判断是否点赞、判断是否收藏
             var fans = new List<Fan>();
-            var zans = new List<Zan>();
+            var zans = new List<ArticleZan>();
             var keeps = new List<Keep>();
             if (!string.IsNullOrWhiteSpace(usernumber))
             {
                 fans = db.Find<Fan>(x => x.CreateUserNumber == usernumber).ToList();
-                zans = db.Find<Zan>(x => x.CreateUserNumber == usernumber && x.ZanType == Enum_ZanType.Article).ToList();
+                zans = db.Find<ArticleZan>(x => x.CreateUserNumber == usernumber).ToList();
                 keeps = db.Find<Keep>(x => x.CreateUserNumber == usernumber).ToList();
             }
 

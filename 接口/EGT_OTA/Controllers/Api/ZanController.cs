@@ -17,10 +17,10 @@ namespace EGT_OTA.Controllers.Api
     public class ZanController : BaseApiController
     {
         /// <summary>
-        /// 编辑
+        /// 文章点赞编辑
         /// </summary>
         [HttpGet]
-        [Route("Api/Zan/Edit")]
+        [Route("Api/Zan/ArticleZanEdit")]
         public string Edit()
         {
             ApiResult result = new ApiResult();
@@ -29,7 +29,8 @@ namespace EGT_OTA.Controllers.Api
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    result.message = "用户信息验证失败";
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
                     return JsonConvert.SerializeObject(result);
                 }
                 var articleID = ZNRequest.GetInt("ArticleID");
@@ -44,25 +45,38 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "文章信息异常";
                     return JsonConvert.SerializeObject(result);
                 }
-                if (db.Exists<Zan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number && x.ZanType == Enum_ZanType.Article))
+
+                //判断是否拉黑
+                var black = db.Exists<Black>(x => x.CreateUserNumber == article.CreateUserNumber && x.ToUserNumber == user.Number);
+                if (black)
                 {
-                    result.message = "已赞";
-                    result.code = 1;
+                    result.message = "没有权限";
                     return JsonConvert.SerializeObject(result);
                 }
-                Zan model = new Zan();
-                model.CreateDate = DateTime.Now;
-                model.CreateUserNumber = user.Number;
-                model.CreateIP = Tools.GetClientIP;
-                model.ArticleNumber = article.Number;
-                model.ArticleUserNumber = article.CreateUserNumber;
-                model.CommentNumber = string.Empty;
-                model.ZanType = Enum_ZanType.Article;
-                var success = Tools.SafeInt(db.Add<Zan>(model)) > 0;
 
-                if (success)
+                var success = 0;
+                var model = db.Single<ArticleZan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number);
+                if (model == null)
                 {
-                    var goods = article.Goods + 1;
+                    model = new ArticleZan();
+                    model.CreateDate = DateTime.Now;
+                    model.CreateUserNumber = user.Number;
+                    model.CreateIP = Tools.GetClientIP;
+                    model.ArticleNumber = article.Number;
+                    model.ArticleUserNumber = article.CreateUserNumber;
+                    success = Tools.SafeInt(db.Add<ArticleZan>(model));
+                }
+                else
+                {
+                    success = db.Delete<ArticleZan>(model.ID);
+                }
+                if (success > 0)
+                {
+                    var goods = model.ID == 0 ? article.Goods + 1 : article.Goods - 1;
+                    if (goods < 0)
+                    {
+                        goods = 0;
+                    }
                     new SubSonic.Query.Update<Article>(provider).Set("Goods").EqualTo(goods).Where<Article>(x => x.ID == articleID).Execute();
                     result.result = true;
                     result.message = goods;
@@ -70,7 +84,81 @@ namespace EGT_OTA.Controllers.Api
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error("Api_Zan_Edit" + ex.Message);
+                LogHelper.ErrorLoger.Error("Api_Zan_ArticleZanEdit" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 评论点赞编辑
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Zan/CommentZanEdit")]
+        public string CommentZanEdit()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
+                    return JsonConvert.SerializeObject(result);
+                }
+                var number = ZNRequest.GetString("CommentNumber");
+                if (string.IsNullOrWhiteSpace(number))
+                {
+                    result.message = "评论信息异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+
+                Comment comment = new SubSonic.Query.Select(provider, "ID", "CreateUserNumber", "Goods", "Number").From<Comment>().Where<Comment>(x => x.Number == number).ExecuteSingle<Comment>();
+                if (comment == null)
+                {
+                    result.message = "评论信息异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+
+                //判断是否拉黑
+                var black = db.Exists<Black>(x => x.CreateUserNumber == comment.CreateUserNumber && x.ToUserNumber == user.Number);
+                if (black)
+                {
+                    result.message = "没有权限";
+                    return JsonConvert.SerializeObject(result);
+                }
+
+                var success = 0;
+                var model = db.Single<CommentZan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == number);
+                if (model == null)
+                {
+                    model = new CommentZan();
+                    model.CreateDate = DateTime.Now;
+                    model.CreateUserNumber = user.Number;
+                    model.CreateIP = Tools.GetClientIP;
+                    model.CommentNumber = number;
+                    success = Tools.SafeInt(db.Add<CommentZan>(model));
+                }
+                else
+                {
+                    success = db.Delete<CommentZan>(model.ID);
+                }
+                if (success > 0)
+                {
+                    var goods = model.ID == 0 ? comment.Goods + 1 : comment.Goods - 1;
+                    if (goods < 0)
+                    {
+                        goods = 0;
+                    }
+                    new SubSonic.Query.Update<Comment>(provider).Set("Goods").EqualTo(goods).Where<Comment>(x => x.ID == comment.ID).Execute();
+                    result.result = true;
+                    result.message = goods;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Zan_CommentZanEdit" + ex.Message);
                 result.message = ex.Message;
             }
             return JsonConvert.SerializeObject(result);
@@ -94,7 +182,7 @@ namespace EGT_OTA.Controllers.Api
                     return JsonConvert.SerializeObject(result);
                 }
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(provider).From<Zan>().Where<Zan>(x => x.ArticleUserNumber == UserNumber && x.ZanType == Enum_ZanType.Article);
+                var query = new SubSonic.Query.Select(provider).From<ArticleZan>().Where<ArticleZan>(x => x.ArticleUserNumber == UserNumber);
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
@@ -103,7 +191,7 @@ namespace EGT_OTA.Controllers.Api
                 }
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<ArticleZan>();
 
                 var articles = new SubSonic.Query.Select(provider, "ID", "Number", "Cover", "ArticlePower", "CreateUserNumber", "Status", "Title").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).And("CreateUserNumber").IsEqualTo(UserNumber).ExecuteTypedList<Article>();
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).ToArray()).ExecuteTypedList<User>();

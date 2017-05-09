@@ -29,7 +29,8 @@ namespace EGT_OTA.Controllers.Api
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    result.message = "用户信息验证失败";
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
                     return JsonConvert.SerializeObject(result);
                 }
                 var number = ZNRequest.GetString("ArticleNumber");
@@ -138,7 +139,8 @@ namespace EGT_OTA.Controllers.Api
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    result.message = "用户信息验证失败";
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
                     return JsonConvert.SerializeObject(result);
                 }
                 var number = ZNRequest.GetString("Number");
@@ -185,7 +187,8 @@ namespace EGT_OTA.Controllers.Api
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    result.message = "用户信息验证失败";
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
                     return JsonConvert.SerializeObject(result);
                 }
                 var number = ZNRequest.GetString("Number");

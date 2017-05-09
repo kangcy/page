@@ -56,7 +56,8 @@ namespace EGT_OTA.Models
             repo.Single<Comment>(x => x.ID == 0);//评论
             repo.Single<Fan>(x => x.ID == 0);//关注
             repo.Single<Keep>(x => x.ID == 0);//收藏
-            repo.Single<Zan>(x => x.ID == 0);//点赞
+            repo.Single<ArticleZan>(x => x.ID == 0);//文章点赞
+            repo.Single<CommentZan>(x => x.ID == 0);//评论点赞
             repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
             repo.Single<ShareLog>(x => x.ID == 0);//分享记录
             repo.Single<SendSMS>(x => x.ID == 0);//短信发送记录

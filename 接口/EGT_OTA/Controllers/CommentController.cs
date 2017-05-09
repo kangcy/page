@@ -15,69 +15,6 @@ namespace EGT_OTA.Controllers
     public class CommentController : BaseController
     {
         /// <summary>
-        /// 评论点赞
-        /// </summary>
-        public ActionResult Zan()
-        {
-            try
-            {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var commentID = ZNRequest.GetInt("CommentID");
-                if (commentID <= 0)
-                {
-                    return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
-                }
-                Comment comment = db.Single<Comment>(x => x.ID == commentID);
-                if (comment == null)
-                {
-                    return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
-                }
-                //判断是否拉黑
-                var black = db.Exists<Black>(x => x.CreateUserNumber == comment.ArticleUserNumber && x.ToUserNumber == user.Number);
-                if (black)
-                {
-                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
-                }
-
-                Zan model = db.Single<Zan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == comment.Number);
-                if (model == null)
-                {
-                    model = new Zan();
-                    model.CreateDate = DateTime.Now;
-                    model.CreateUserNumber = user.Number;
-                    model.CreateIP = Tools.GetClientIP;
-                }
-                else
-                {
-                    return Json(new { result = false, message = "已赞" }, JsonRequestBehavior.AllowGet);
-                }
-                model.ArticleNumber = string.Empty;
-                model.CommentNumber = comment.Number;
-                model.ArticleUserNumber = comment.ArticleUserNumber;
-                model.ZanType = Enum_ZanType.Comment;
-                var result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
-                if (result)
-                {
-                    comment.Goods += 1;
-                    result = db.Update<Comment>(comment) > 0;
-                }
-                if (result)
-                {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error("CommentController_Zan:" + ex.Message);
-            }
-            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
         /// 评论编辑
         /// </summary>
         public ActionResult Edit()

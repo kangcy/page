@@ -148,7 +148,7 @@ namespace EGT_OTA.Controllers.Api
                     list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
                 }
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
-
+                var articles = new SubSonic.Query.Select(provider, "ID", "Number").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
                 var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
 
                 List<CommentJson> newlist = new List<CommentJson>();
@@ -170,6 +170,8 @@ namespace EGT_OTA.Controllers.Api
                     model.NickName = user.NickName;
                     model.Avatar = user.Avatar;
                     model.SubCommentCount = parentComments.Count(y => y.ParentCommentNumber == x.Number);
+                    var article = articles.FirstOrDefault(y => y.Number == x.ArticleNumber);
+                    model.ArticleID = articles == null ? 0 : article.ID;
                     newlist.Add(model);
                 });
                 result.result = true;
@@ -217,19 +219,12 @@ namespace EGT_OTA.Controllers.Api
                     result.message = new { records = recordCount, totalpage = 1 };
                     return JsonConvert.SerializeObject(result);
                 }
-                var id = ZNRequest.GetInt("NewId");
-                if (recordCount == 1 && id > 0)
-                {
-                    result.result = true;
-                    result.message = new { records = recordCount, totalpage = 1 };
-                    return JsonConvert.SerializeObject(result);
-                }
-                query = query.And("ID").IsNotEqualTo(id);
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
 
                 var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
+                var articles = new SubSonic.Query.Select(provider, "ID", "Number").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
                 var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
 
                 List<CommentJson> newlist = new List<CommentJson>();
@@ -251,6 +246,8 @@ namespace EGT_OTA.Controllers.Api
                     model.NickName = user.NickName;
                     model.Avatar = user.Avatar;
                     model.SubCommentCount = parentComments.Count(y => y.ParentCommentNumber == x.Number);
+                    var article = articles.FirstOrDefault(y => y.Number == x.ArticleNumber);
+                    model.ArticleID = articles == null ? 0 : article.ID;
                     newlist.Add(model);
                 });
                 result.result = true;
@@ -300,10 +297,10 @@ namespace EGT_OTA.Controllers.Api
             }
 
             //判断是否点赞
-            var zans = new List<Zan>();
+            var zans = new List<CommentZan>();
             if (!string.IsNullOrWhiteSpace(UserNumber))
             {
-                zans = db.Find<Zan>(x => x.CreateUserNumber == UserNumber && x.ZanType == Enum_ZanType.Comment).ToList();
+                zans = db.Find<CommentZan>(x => x.CreateUserNumber == UserNumber).ToList();
             }
 
             newlist.ForEach(x =>

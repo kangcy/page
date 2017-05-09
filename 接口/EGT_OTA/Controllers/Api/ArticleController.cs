@@ -92,7 +92,7 @@ namespace EGT_OTA.Controllers.Api
                 model.IsFollow = new SubSonic.Query.Select(provider, "ID").From<Fan>().Where<Fan>(x => x.CreateUserNumber == UserNumber && x.ToUserNumber == model.CreateUserNumber).GetRecordCount() == 0 ? 0 : 1;
 
                 //是否点赞
-                model.IsZan = new SubSonic.Query.Select(provider, "ID").From<Zan>().Where<Zan>(x => x.CreateUserNumber == UserNumber && x.ArticleNumber == model.Number && x.ZanType == Enum_ZanType.Article).GetRecordCount() == 0 ? 0 : 1;
+                model.IsZan = new SubSonic.Query.Select(provider, "ID").From<ArticleZan>().Where<ArticleZan>(x => x.CreateUserNumber == UserNumber && x.ArticleNumber == model.Number).GetRecordCount() == 0 ? 0 : 1;
 
                 //类型
                 ArticleType articleType = GetArticleType().FirstOrDefault<ArticleType>(x => x.ID == model.TypeID);

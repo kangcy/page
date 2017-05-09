@@ -22,10 +22,10 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 点赞
+    /// 文章点赞
     /// </summary>
     [Serializable]
-    public class Zan : BaseModelShort
+    public class ArticleZan : BaseModelShort
     {
         /// <summary>
         /// 文章编号
@@ -34,22 +34,25 @@ namespace EGT_OTA.Models
         public string ArticleNumber { get; set; }
 
         /// <summary>
-        /// 评论编号
-        /// </summary>
-        [SubSonicStringLength(30), SubSonicNullString]
-        public string CommentNumber { get; set; }
-
-        /// <summary>
         /// 文章作者
         /// </summary>
         [SubSonicStringLength(30), SubSonicNullString]
         public string ArticleUserNumber { get; set; }
-
-        /// <summary>
-        /// 点赞类型
-        /// </summary>
-        public int ZanType { get; set; }
     }
+
+    /// <summary>
+    /// 评论点赞
+    /// </summary>
+    [Serializable]
+    public class CommentZan : BaseModelShort
+    {
+        /// <summary>
+        /// 评论编号
+        /// </summary>
+        [SubSonicStringLength(30), SubSonicNullString]
+        public string CommentNumber { get; set; }
+    }
+
 
     public class ZanJson
     {
