@@ -56,6 +56,7 @@ namespace EGT_OTA.Controllers.Api
 
                 var success = 0;
                 var model = db.Single<ArticleZan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number);
+                var goods = model == null ? article.Goods + 1 : article.Goods - 1;
                 if (model == null)
                 {
                     model = new ArticleZan();
@@ -72,7 +73,6 @@ namespace EGT_OTA.Controllers.Api
                 }
                 if (success > 0)
                 {
-                    var goods = model.ID == 0 ? article.Goods + 1 : article.Goods - 1;
                     if (goods < 0)
                     {
                         goods = 0;
@@ -128,9 +128,9 @@ namespace EGT_OTA.Controllers.Api
                     result.message = "没有权限";
                     return JsonConvert.SerializeObject(result);
                 }
-
                 var success = 0;
                 var model = db.Single<CommentZan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == number);
+                var goods = model == null ? comment.Goods + 1 : comment.Goods - 1;
                 if (model == null)
                 {
                     model = new CommentZan();
@@ -146,7 +146,6 @@ namespace EGT_OTA.Controllers.Api
                 }
                 if (success > 0)
                 {
-                    var goods = model.ID == 0 ? comment.Goods + 1 : comment.Goods - 1;
                     if (goods < 0)
                     {
                         goods = 0;
