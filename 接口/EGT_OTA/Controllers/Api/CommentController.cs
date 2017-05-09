@@ -98,7 +98,6 @@ namespace EGT_OTA.Controllers.Api
             return JsonConvert.SerializeObject(result);
         }
 
-
         /// <summary>
         /// 文章评论
         /// </summary>
@@ -120,7 +119,7 @@ namespace EGT_OTA.Controllers.Api
                 }
                 var UserNumber = ZNRequest.GetString("UserNumber");
 
-                var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ArticleNumber == ArticleNumber);
+                var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ArticleNumber == ArticleNumber && x.ParentCommentNumber == "");
                 var recordCount = query.GetRecordCount();
                 if (recordCount == 0)
                 {
@@ -150,25 +149,29 @@ namespace EGT_OTA.Controllers.Api
                 }
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
 
-                var newlist = (from l in list
-                               join u in users on l.CreateUserNumber equals u.Number
-                               select new CommentJson
-                               {
-                                   ID = l.ID,
-                                   Summary = l.Summary,
-                                   Goods = l.Goods,
-                                   Number = l.Number,
-                                   CreateDateText = isNew > 0 ? FormatTime(l.CreateDate) : l.CreateDate.ToString("yyyy-MM-dd"),
-                                   UserID = u.ID,
-                                   UserNumber = u.Number,
-                                   NickName = u.NickName,
-                                   Avatar = u.Avatar,
-                                   ParentCommentNumber = l.ParentCommentNumber,
-                                   ParentUserNumber = l.ParentUserNumber,
-                                   ParentNickName = "",
-                                   ParentSummary = ""
-                               }).ToList();
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
 
+                List<CommentJson> newlist = new List<CommentJson>();
+                list.ForEach(x =>
+                {
+                    CommentJson model = new CommentJson();
+                    var user = users.FirstOrDefault(y => y.Number == x.CreateUserNumber);
+                    if (user == null)
+                    {
+                        return;
+                    }
+                    model.ID = x.ID;
+                    model.Summary = x.Summary;
+                    model.Goods = x.Goods;
+                    model.Number = x.Number;
+                    model.CreateDateText = isNew > 0 ? FormatTime(x.CreateDate) : x.CreateDate.ToString("yyyy-MM-dd");
+                    model.UserID = user.ID;
+                    model.UserNumber = user.Number;
+                    model.NickName = user.NickName;
+                    model.Avatar = user.Avatar;
+                    model.SubCommentCount = parentComments.Count(y => y.ParentCommentNumber == x.Number);
+                    newlist.Add(model);
+                });
                 result.result = true;
                 result.message = new
                 {
@@ -181,6 +184,87 @@ namespace EGT_OTA.Controllers.Api
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("Api_ArticleComment_All:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 文章评论回复
+        /// </summary>
+        [DeflateCompression]
+        [HttpGet]
+        [Route("Api/Comment/SubComment")]
+        public string SubComment()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                var pager = new Pager();
+                var Number = ZNRequest.GetString("Number");
+                if (string.IsNullOrWhiteSpace(Number))
+                {
+                    result.message = "参数异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var UserNumber = ZNRequest.GetString("UserNumber");
+
+                var query = new SubSonic.Query.Select(provider).From<Comment>().Where<Comment>(x => x.ParentCommentNumber == Number);
+                var recordCount = query.GetRecordCount();
+                if (recordCount == 0)
+                {
+                    result.result = true;
+                    result.message = new { records = recordCount, totalpage = 1 };
+                    return JsonConvert.SerializeObject(result);
+                }
+                var id = ZNRequest.GetInt("NewId");
+                if (recordCount == 1 && id > 0)
+                {
+                    result.result = true;
+                    result.message = new { records = recordCount, totalpage = 1 };
+                    return JsonConvert.SerializeObject(result);
+                }
+                query = query.And("ID").IsNotEqualTo(id);
+
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+
+                var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
+                var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+
+                List<CommentJson> newlist = new List<CommentJson>();
+                list.ForEach(x =>
+                {
+                    CommentJson model = new CommentJson();
+                    var user = users.FirstOrDefault(y => y.Number == x.CreateUserNumber);
+                    if (user == null)
+                    {
+                        return;
+                    }
+                    model.ID = x.ID;
+                    model.Summary = x.Summary;
+                    model.Goods = x.Goods;
+                    model.Number = x.Number;
+                    model.CreateDateText = x.CreateDate.ToString("yyyy-MM-dd");
+                    model.UserID = user.ID;
+                    model.UserNumber = user.Number;
+                    model.NickName = user.NickName;
+                    model.Avatar = user.Avatar;
+                    model.SubCommentCount = parentComments.Count(y => y.ParentCommentNumber == x.Number);
+                    newlist.Add(model);
+                });
+                result.result = true;
+                result.message = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = FormatCommentInfo(list, newlist, UserNumber)
+                };
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Comment_SubComment:" + ex.Message);
                 result.message = ex.Message;
             }
             return JsonConvert.SerializeObject(result);
