@@ -160,18 +160,16 @@ namespace EGT_OTA.Models
         public string Avatar { get; set; }
         public string UserNumber { get; set; }
         public string Title { get; set; }
-        public int ArticleID { get; set; }
+        public string ArticleNumber { get; set; }
         public string ArticleUserNumber { get; set; }
         public int ArticlePower { get; set; }
-        public string ParentCommentNumber { get; set; }
-        public string ParentUserNumber { get; set; }
-        public string ParentNickName { get; set; }
-        public string ParentSummary { get; set; }
         /// <summary>
         /// 子评论数量
         /// </summary>
         public int SubCommentCount { get; set; }
         public int IsZan { get; set; }
+        public string SubUserName { get; set; }
+        public string SubSummary { get; set; }
     }
 
     public class CommentJson2

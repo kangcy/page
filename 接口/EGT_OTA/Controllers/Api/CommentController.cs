@@ -146,7 +146,7 @@ namespace EGT_OTA.Controllers.Api
             {
                 var pager = new Pager();
                 var id = ZNRequest.GetInt("NewId");
-                var ArticleUserNumber = ZNRequest.GetString("ArticleUserNumber");//文章作者
+                var ArticleUserNumber = ZNRequest.GetString("ArticleUserNumber");
                 if (string.IsNullOrWhiteSpace(ArticleUserNumber))
                 {
                     result.message = "参数异常";
@@ -171,40 +171,56 @@ namespace EGT_OTA.Controllers.Api
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
-                var articles = new SubSonic.Query.Select(provider, "ID", "Title", "ArticlePower", "Number", "CreateUserNumber").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).ToArray()).ExecuteTypedList<User>();
-
-                var newlist = (from l in list
-                               join a in articles on l.ArticleNumber equals a.Number
-                               join u in users on l.CreateUserNumber equals u.Number
-                               select new CommentJson
-                               {
-                                   ID = l.ID,
-                                   Number = l.Number,
-                                   Summary = l.Summary,
-                                   Goods = l.Goods,
-                                   CreateDateText = FormatTime(l.CreateDate),
-                                   UserID = u.ID,
-                                   NickName = u.NickName,
-                                   Avatar = u.Avatar,
-                                   UserNumber = u.Number,
-                                   ArticleID = a.ID,
-                                   Title = a.Title,
-                                   ArticleUserNumber = a.CreateUserNumber,
-                                   ArticlePower = a.ArticlePower,
-                                   ParentCommentNumber = l.ParentCommentNumber,
-                                   ParentUserNumber = l.ParentUserNumber,
-                                   ParentNickName = "",
-                                   ParentSummary = ""
-                               }).ToList();
-
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+                var zans = db.Find<CommentZan>(x => x.CreateUserNumber == ArticleUserNumber).ToList();
+                List<CommentJson> newlist = new List<CommentJson>();
+                list.ForEach(x =>
+                {
+                    CommentJson model = new CommentJson();
+                    var user = users.FirstOrDefault(y => y.Number == x.CreateUserNumber);
+                    if (user == null)
+                    {
+                        return;
+                    }
+                    model.ID = x.ID;
+                    model.Summary = x.Summary;
+                    model.Goods = x.Goods;
+                    model.Number = x.Number;
+                    model.CreateDateText = x.CreateDate.ToString("yyyy-MM-dd");
+                    model.UserID = user.ID;
+                    model.UserNumber = user.Number;
+                    model.NickName = user.NickName;
+                    model.Avatar = user.Avatar;
+                    model.SubCommentCount = parentComments.Count(y => y.ParentCommentNumber == x.Number);
+                    if (model.SubCommentCount == 1)
+                    {
+                        var subuser = db.Single<User>(y => y.Number == parentComments[0].CreateUserNumber);
+                        var comment = db.Single<Comment>(y => y.Number == parentComments[0].Number);
+                        if (subuser == null && comment == null)
+                        {
+                            model.SubCommentCount = 0;
+                        }
+                        if (subuser != null)
+                        {
+                            model.SubUserName = subuser.NickName;
+                        }
+                        if (comment != null)
+                        {
+                            model.SubSummary = comment.Summary;
+                        }
+                    }
+                    model.ArticleNumber = x.ArticleNumber;
+                    model.IsZan = zans.Count(y => y.CommentNumber == x.Number);
+                    newlist.Add(model);
+                });
                 result.result = true;
                 result.message = new
                     {
                         currpage = pager.Index,
                         records = recordCount,
                         totalpage = totalPage,
-                        list = FormatCommentInfo(list, newlist, ArticleUserNumber)
+                        list = newlist
                     };
             }
             catch (Exception ex)
@@ -265,9 +281,8 @@ namespace EGT_OTA.Controllers.Api
                     list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
                 }
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
-                var articles = new SubSonic.Query.Select(provider, "ID", "Number").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
-                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
-
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+                var zans = db.Find<CommentZan>(x => x.CreateUserNumber == UserNumber).ToList();
                 List<CommentJson> newlist = new List<CommentJson>();
                 list.ForEach(x =>
                 {
@@ -287,8 +302,25 @@ namespace EGT_OTA.Controllers.Api
                     model.NickName = user.NickName;
                     model.Avatar = user.Avatar;
                     model.SubCommentCount = parentComments.Count(y => y.ParentCommentNumber == x.Number);
-                    var article = articles.FirstOrDefault(y => y.Number == x.ArticleNumber);
-                    model.ArticleID = articles == null ? 0 : article.ID;
+                    if (model.SubCommentCount == 1)
+                    {
+                        var subuser = db.Single<User>(y => y.Number == parentComments[0].CreateUserNumber);
+                        var comment = db.Single<Comment>(y => y.Number == parentComments[0].Number);
+                        if (subuser == null && comment == null)
+                        {
+                            model.SubCommentCount = 0;
+                        }
+                        if (subuser != null)
+                        {
+                            model.SubUserName = subuser.NickName;
+                        }
+                        if (comment != null)
+                        {
+                            model.SubSummary = comment.Summary;
+                        }
+                    }
+                    model.ArticleNumber = x.ArticleNumber;
+                    model.IsZan = zans.Count(y => y.CommentNumber == x.Number);
                     newlist.Add(model);
                 });
                 result.result = true;
@@ -297,7 +329,7 @@ namespace EGT_OTA.Controllers.Api
                     currpage = pager.Index,
                     records = recordCount,
                     totalpage = totalPage,
-                    list = FormatCommentInfo(list, newlist, UserNumber)
+                    list = newlist
                 };
             }
             catch (Exception ex)
@@ -341,9 +373,8 @@ namespace EGT_OTA.Controllers.Api
 
                 var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
-                var articles = new SubSonic.Query.Select(provider, "ID", "Number").From<Article>().Where("Number").In(list.Select(x => x.ArticleNumber).ToArray()).ExecuteTypedList<Article>();
-                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
-
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+                var zans = db.Find<CommentZan>(x => x.CreateUserNumber == UserNumber).ToList();
                 List<CommentJson> newlist = new List<CommentJson>();
                 list.ForEach(x =>
                 {
@@ -363,8 +394,25 @@ namespace EGT_OTA.Controllers.Api
                     model.NickName = user.NickName;
                     model.Avatar = user.Avatar;
                     model.SubCommentCount = parentComments.Count(y => y.ParentCommentNumber == x.Number);
-                    var article = articles.FirstOrDefault(y => y.Number == x.ArticleNumber);
-                    model.ArticleID = articles == null ? 0 : article.ID;
+                    if (model.SubCommentCount == 1)
+                    {
+                        var subuser = db.Single<User>(y => y.Number == parentComments[0].CreateUserNumber);
+                        var comment = db.Single<Comment>(y => y.Number == parentComments[0].Number);
+                        if (subuser == null && comment == null)
+                        {
+                            model.SubCommentCount = 0;
+                        }
+                        if (subuser != null)
+                        {
+                            model.SubUserName = subuser.NickName;
+                        }
+                        if (comment != null)
+                        {
+                            model.SubSummary = comment.Summary;
+                        }
+                    }
+                    model.ArticleNumber = x.ArticleNumber;
+                    model.IsZan = zans.Count(y => y.CommentNumber == x.Number);
                     newlist.Add(model);
                 });
                 result.result = true;
@@ -373,7 +421,7 @@ namespace EGT_OTA.Controllers.Api
                     currpage = pager.Index,
                     records = recordCount,
                     totalpage = totalPage,
-                    list = FormatCommentInfo(list, newlist, UserNumber)
+                    list = newlist
                 };
             }
             catch (Exception ex)
@@ -382,66 +430,6 @@ namespace EGT_OTA.Controllers.Api
                 result.message = ex.Message;
             }
             return JsonConvert.SerializeObject(result);
-        }
-
-        /// <summary>
-        /// 获取父评论信息,格式化数据
-        /// </summary>
-        protected List<CommentJson> FormatCommentInfo(List<Comment> list, List<CommentJson> newlist, string UserNumber)
-        {
-            var ParentCommentNumber = new List<string>();
-            var ParentUserNumber = new List<string>();
-            list.ForEach(x =>
-            {
-                if (!string.IsNullOrWhiteSpace(x.ParentCommentNumber))
-                {
-                    ParentCommentNumber.Add(x.ParentCommentNumber);
-                }
-                if (!string.IsNullOrWhiteSpace(x.ParentUserNumber))
-                {
-                    ParentUserNumber.Add(x.ParentUserNumber);
-                }
-            });
-            var parentComment = new List<Comment>();
-            var parentUser = new List<User>();
-            if (ParentCommentNumber.Count > 0)
-            {
-                parentComment = new SubSonic.Query.Select(provider, "ID", "Summary", "Number").From<Comment>().Where("Number").In(ParentCommentNumber.Distinct().ToArray()).ExecuteTypedList<Comment>();
-            }
-            if (ParentUserNumber.Count > 0)
-            {
-                parentUser = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(ParentUserNumber.Distinct().ToArray()).ExecuteTypedList<User>();
-            }
-
-            //判断是否点赞
-            var zans = new List<CommentZan>();
-            if (!string.IsNullOrWhiteSpace(UserNumber))
-            {
-                zans = db.Find<CommentZan>(x => x.CreateUserNumber == UserNumber).ToList();
-            }
-
-            newlist.ForEach(x =>
-            {
-                if (!string.IsNullOrWhiteSpace(x.ParentCommentNumber))
-                {
-                    var comment = parentComment.FirstOrDefault(y => y.Number == x.ParentCommentNumber);
-                    if (comment != null)
-                    {
-                        x.ParentSummary = comment.Summary;
-                    }
-                }
-                if (!string.IsNullOrWhiteSpace(x.ParentUserNumber))
-                {
-                    var user = parentUser.FirstOrDefault(y => y.Number == x.ParentUserNumber);
-                    if (user != null)
-                    {
-                        x.ParentNickName = user.NickName;
-                    }
-                }
-                x.IsZan = zans.Count(y => y.CommentNumber == x.Number);
-            });
-
-            return newlist;
         }
     }
 }
