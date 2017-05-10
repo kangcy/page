@@ -17,6 +17,123 @@ namespace EGT_OTA.Controllers.Api
     public class CommentController : BaseApiController
     {
         /// <summary>
+        /// 详情
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Comment/Detail")]
+        public string Detail()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                var id = ZNRequest.GetInt("ID");
+                if (id <= 0)
+                {
+                    result.message = "参数异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var model = db.Single<Comment>(x => x.ID == id);
+                if (model == null)
+                {
+                    result.message = "数据异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var user = db.Single<User>(x => x.Number == model.CreateUserNumber);
+                model.UserID = user == null ? 0 : user.ID;
+                model.UserNumber = user == null ? "" : user.Number;
+                model.NickName = user == null ? "" : user.NickName;
+                model.Avatar = user == null ? "" : user.Avatar;
+                model.ArticleID = model.ArticleID;
+                model.CreateDateText = model.CreateDate.ToString("yyyy-MM-dd");
+                result.result = true;
+                result.message = model;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Comment_Detail:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 评论编辑
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Comment/Edit")]
+        public string Edit()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
+                    return JsonConvert.SerializeObject(result);
+                }
+                var ArticleNumber = ZNRequest.GetString("ArticleNumber");
+                if (string.IsNullOrWhiteSpace(ArticleNumber))
+                {
+                    result.message = "文章信息异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+
+                var summary = SqlFilter(ZNRequest.GetString("Summary"), false, false);
+                if (string.IsNullOrWhiteSpace(summary))
+                {
+                    result.message = "请填写评论内容";
+                    return JsonConvert.SerializeObject(result);
+                }
+                summary = CutString(summary, 2000);
+                if (HasDirtyWord(summary))
+                {
+                    result.message = "您的输入内容含有敏感内容，请检查后重试哦";
+                    return JsonConvert.SerializeObject(result);
+                }
+
+                Article article = new SubSonic.Query.Select(provider, "Number", "CreateUserNumber").From<Article>().Where<Article>(x => x.Number == ArticleNumber).ExecuteSingle<Article>();
+                if (article == null)
+                {
+                    result.message = "文章信息异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+
+                //判断是否拉黑
+                var black = db.Exists<Black>(x => x.CreateUserNumber == article.CreateUserNumber && x.ToUserNumber == user.Number);
+                if (black)
+                {
+                    result.message = "没有权限";
+                    return JsonConvert.SerializeObject(result);
+                }
+
+                Comment model = new Comment();
+                model.ArticleNumber = article.Number;
+                model.ArticleUserNumber = article.CreateUserNumber;
+                model.Summary = summary;
+                model.Number = BuildNumber();
+                model.CreateDate = DateTime.Now;
+                model.CreateUserNumber = user.Number;
+                model.CreateIP = Tools.GetClientIP;
+                model.ParentCommentNumber = ZNRequest.GetString("ParentCommentNumber");
+                model.ParentUserNumber = ZNRequest.GetString("ParentUserNumber");
+                model.ID = Tools.SafeInt(db.Add<Comment>(model));
+                if (model.ID > 0)
+                {
+                    result.result = true;
+                    result.message = model.ID;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Comment_Edit:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
         /// 评论列表
         /// </summary>
         [DeflateCompression]

@@ -90,7 +90,7 @@ namespace EGT_OTA.Controllers.Api
         /// <summary>
         /// 防注入
         /// </summary>
-        protected string SqlFilter(string inputString, bool nohtml = true)
+        protected string SqlFilter(string inputString, bool nohtml = true, bool xss = true)
         {
             string SqlStr = @"script|and|or|exec|execute|insert|select|delete|update|alter|create|drop|count|\*|chr|char|asc|mid|substring|master|truncate|declare|xp_cmdshell|restore|backup|net +user|net +localgroup +administrators";
             try
@@ -113,7 +113,14 @@ namespace EGT_OTA.Controllers.Api
             {
                 LogHelper.ErrorLoger.Error("SQL注入", ex);
             }
-            return inputString;
+            if (xss)
+            {
+                return AntiXssChineseString.ChineseStringSanitize(EmotionHelper.EmotionFilter(inputString));
+            }
+            else
+            {
+                return EmotionHelper.EmotionFilter(inputString);
+            }
         }
 
         /// <summary>

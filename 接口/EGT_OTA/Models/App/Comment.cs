@@ -139,6 +139,12 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public int IsZan { get; set; }
 
+        [SubSonicIgnore]
+        public int SubCommentCount { get; set; }
+
+        [SubSonicIgnore]
+        public int ArticleID { get; set; }
+
         #endregion
     }
 
