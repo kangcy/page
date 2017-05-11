@@ -172,7 +172,7 @@ namespace EGT_OTA.Controllers.Api
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).ToArray()).ExecuteTypedList<User>();
-                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number", "CreateUserNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
                 var zans = db.Find<CommentZan>(x => x.CreateUserNumber == ArticleUserNumber).ToList();
                 List<CommentJson> newlist = new List<CommentJson>();
                 list.ForEach(x =>
@@ -281,7 +281,7 @@ namespace EGT_OTA.Controllers.Api
                     list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
                 }
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
-                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number", "CreateUserNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
                 var zans = db.Find<CommentZan>(x => x.CreateUserNumber == UserNumber).ToList();
                 List<CommentJson> newlist = new List<CommentJson>();
                 list.ForEach(x =>
@@ -373,7 +373,7 @@ namespace EGT_OTA.Controllers.Api
 
                 var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
                 var users = new SubSonic.Query.Select(provider, "ID", "NickName", "Avatar", "Number").From<User>().Where("Number").In(list.Select(x => x.CreateUserNumber).Distinct().ToArray()).ExecuteTypedList<User>();
-                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
+                var parentComments = new SubSonic.Query.Select(provider, "ID", "ParentCommentNumber", "Number", "CreateUserNumber").From<Comment>().Where("ParentCommentNumber").In(list.Select(x => x.Number).ToArray()).ExecuteTypedList<Comment>();
                 var zans = db.Find<CommentZan>(x => x.CreateUserNumber == UserNumber).ToList();
                 List<CommentJson> newlist = new List<CommentJson>();
                 list.ForEach(x =>
