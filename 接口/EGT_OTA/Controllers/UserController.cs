@@ -900,21 +900,19 @@ namespace EGT_OTA.Controllers
                 var phone = ZNRequest.GetString("Phone");
                 if (string.IsNullOrEmpty(phone))
                 {
-                    return Json(new { result = false, message = "请填写手机号码" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "手机号码不能为空" }, JsonRequestBehavior.AllowGet);
                 }
                 var code = ZNRequest.GetString("Code");
-                var sms = ZNRequest.GetString("SMS");
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    return Json(new { result = false, message = "验证码不能为空" }, JsonRequestBehavior.AllowGet);
+                }
 
-                //if (string.IsNullOrWhiteSpace(code))
-                //{
-                //    return Json(new { result = false, message = "请填写验证码" }, JsonRequestBehavior.AllowGet);
-                //}
-
-                //var value = CookieHelper.GetCookieValue("SMS");
-                //if (value != phone + sms + code)
-                //{
-                //    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
-                //}
+                var value = CookieHelper.GetCookieValue("Validate");
+                if (value != code)
+                {
+                    return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
+                }
 
                 if (db.Exists<User>(x => x.Phone == phone && x.ID != user.ID))
                 {
@@ -923,7 +921,7 @@ namespace EGT_OTA.Controllers
                 var result = new SubSonic.Query.Update<User>(provider).Set("Phone").EqualTo(phone).Where<User>(x => x.ID == user.ID).Execute() > 0;
                 if (result)
                 {
-                    CookieHelper.ClearCookie("SMS");
+                    CookieHelper.ClearCookie("Validate");
 
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }

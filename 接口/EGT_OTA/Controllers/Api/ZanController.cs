@@ -57,6 +57,9 @@ namespace EGT_OTA.Controllers.Api
                 var success = 0;
                 var model = db.Single<ArticleZan>(x => x.CreateUserNumber == user.Number && x.ArticleNumber == article.Number);
                 var goods = model == null ? article.Goods + 1 : article.Goods - 1;
+
+                //是否新增
+                var isadd = model == null ? 0 : 1;
                 if (model == null)
                 {
                     model = new ArticleZan();
@@ -79,7 +82,7 @@ namespace EGT_OTA.Controllers.Api
                     }
                     new SubSonic.Query.Update<Article>(provider).Set("Goods").EqualTo(goods).Where<Article>(x => x.ID == articleID).Execute();
                     result.result = true;
-                    result.message = goods;
+                    result.message = isadd + "|" + goods;
                 }
             }
             catch (Exception ex)
@@ -131,6 +134,9 @@ namespace EGT_OTA.Controllers.Api
                 var success = 0;
                 var model = db.Single<CommentZan>(x => x.CreateUserNumber == user.Number && x.CommentNumber == number);
                 var goods = model == null ? comment.Goods + 1 : comment.Goods - 1;
+
+                //是否新增
+                var isadd = model == null ? 0 : 1;
                 if (model == null)
                 {
                     model = new CommentZan();
@@ -152,7 +158,7 @@ namespace EGT_OTA.Controllers.Api
                     }
                     new SubSonic.Query.Update<Comment>(provider).Set("Goods").EqualTo(goods).Where<Comment>(x => x.ID == comment.ID).Execute();
                     result.result = true;
-                    result.message = goods;
+                    result.message = isadd + "|" + goods;
                 }
             }
             catch (Exception ex)

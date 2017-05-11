@@ -17,6 +17,60 @@ namespace EGT_OTA.Controllers.Api
     public class FanController : BaseApiController
     {
         /// <summary>
+        /// 编辑
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Fan/Edit")]
+        public string Edit()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
+                    return JsonConvert.SerializeObject(result);
+                }
+                var number = ZNRequest.GetString("ToUserNumber");
+                if (string.IsNullOrWhiteSpace(number))
+                {
+                    result.message = "信息异常,请刷新重试";
+                    return JsonConvert.SerializeObject(result);
+                }
+                Fan model = db.Single<Fan>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == number);
+                if (model == null)
+                {
+                    model = new Fan();
+                    model.CreateUserNumber = user.Number;
+                    model.ToUserNumber = number;
+                    model.CreateDate = DateTime.Now;
+                    model.CreateIP = Tools.GetClientIP;
+                    var success = Tools.SafeInt(db.Add<Fan>(model)) > 0;
+                    if (success)
+                    {
+                        user.Follows = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Count;
+                        result.result = true;
+                        result.message = user.Follows;
+                    }
+                }
+                else
+                {
+                    user.Follows = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Count;
+                    result.result = true;
+                    result.message = user.Follows;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Fan_Edit:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
         /// 关注列表
         /// </summary>
         [DeflateCompression]

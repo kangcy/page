@@ -12,6 +12,8 @@ using System.Web.Security;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Net;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace EGT_OTA.Controllers
 {
@@ -316,6 +318,22 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error("SystemController_Banner:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        /// <summary>
+        /// 图片验证码
+        /// </summary>
+        public ActionResult Validate()
+        {
+            Bitmap bmp = new Bitmap(80, 40);
+            Graphics g = Graphics.FromImage(bmp);
+            SolidBrush sb = new SolidBrush(ValidateCodeHelper.GetColor());
+            var code = ValidateCodeHelper.BuildCode(4);
+            CookieHelper.SetCookie("Validate", code, DateTime.Now.AddMinutes(5));
+            g.DrawString(code, new Font("宋体", 20), sb, 0, 0);
+            MemoryStream ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Png);
+            return File(ms.GetBuffer(), "application/x-png");
         }
     }
 }

@@ -27,7 +27,7 @@ namespace EGT_OTA.Helper
             }
             Bitmap bmp = new Bitmap(50, 25);
             Graphics g = Graphics.FromImage(bmp);
-            SolidBrush sb = new SolidBrush(getColor());
+            SolidBrush sb = new SolidBrush(GetColor());
             g.DrawString(BuildCode(5), new Font("宋体", 16), sb, 0, 0);
             MemoryStream ms = new MemoryStream();
             bmp.Save(ms, ImageFormat.Png);
@@ -63,7 +63,7 @@ namespace EGT_OTA.Helper
         /// <summary>
         /// 随机生成背景色
         /// </summary>
-        public static Color getColor()
+        public static Color GetColor()
         {
             Random r = new Random();
             return Color.FromArgb(r.Next(256), r.Next(256), r.Next(256));

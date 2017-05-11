@@ -17,6 +17,110 @@ namespace EGT_OTA.Controllers.Api
     public class BlackController : BaseApiController
     {
         /// <summary>
+        /// 编辑
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Black/Edit")]
+        public string Edit()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
+                    return JsonConvert.SerializeObject(result);
+                }
+                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+                if (string.IsNullOrWhiteSpace(ToUserNumber))
+                {
+                    result.message = "参数异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var exist = db.Exists<Black>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
+                if (exist)
+                {
+                    user.Follows = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Count;
+
+                    result.result = true;
+                    result.message = user.Follows;
+                }
+                Black model = new Black();
+                model.ToUserNumber = ToUserNumber;
+                model.CreateDate = DateTime.Now;
+                model.CreateUserNumber = user.Number;
+                model.CreateIP = Tools.GetClientIP;
+                var success = Tools.SafeInt(db.Add<Black>(model)) > 0;
+                if (success)
+                {
+                    //取消关注
+                    var fan = db.Single<Fan>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
+                    if (fan != null)
+                    {
+                        db.Delete<Fan>(fan.ID);
+                    }
+
+                    user.Follows = db.Find<Fan>(x => x.CreateUserNumber == user.Number).Count;
+
+                    result.result = true;
+                    result.message = user.Follows;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Black_Edit:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        [HttpGet]
+        [Route("Api/Black/Delete")]
+        public string Delete()
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result.message = EnumBase.GetDescription(typeof(Enum_ErrorCode), Enum_ErrorCode.UnLogin);
+                    result.code = Enum_ErrorCode.UnLogin;
+                    return JsonConvert.SerializeObject(result);
+                }
+                var ToUserNumber = ZNRequest.GetString("ToUserNumber");
+                if (string.IsNullOrWhiteSpace(ToUserNumber))
+                {
+                    result.message = "参数异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var model = db.Single<Black>(x => x.CreateUserNumber == user.Number && x.ToUserNumber == ToUserNumber);
+                if (model == null)
+                {
+                    result.message = "信息异常";
+                    return JsonConvert.SerializeObject(result);
+                }
+                var success = db.Delete<Black>(model.ID) > 0;
+                if (success)
+                {
+                    result.result = true;
+                    result.message = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("Api_Black_Delete:" + ex.Message);
+                result.message = ex.Message;
+            }
+            return JsonConvert.SerializeObject(result);
+        }
+
+        /// <summary>
         /// 黑名单列表
         /// </summary>
         [HttpGet]
