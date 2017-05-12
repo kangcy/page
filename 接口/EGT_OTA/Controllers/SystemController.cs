@@ -335,5 +335,30 @@ namespace EGT_OTA.Controllers
             bmp.Save(ms, ImageFormat.Png);
             return File(ms.GetBuffer(), "application/x-png");
         }
+        
+        /// <summary>
+        /// 判断远程文件是否存在
+        /// </summary>
+        public ActionResult FileExist()
+        {
+            string url = "http://m2.music.126.net/SYf_XliJkNYVx6yFfiYyEA==/5725157045913981.mp3";
+
+            return Json(CheckFileExist(url), JsonRequestBehavior.AllowGet);
+        }
+
+        protected bool CheckFileExist(string url)
+        {
+            try
+            {
+                System.Net.HttpWebRequest httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.CreateDefault(new Uri(url));
+                httpWebRequest.Method = "HEAD";
+                httpWebRequest.Timeout = 2000;
+                return (((System.Net.HttpWebResponse)httpWebRequest.GetResponse()).StatusCode == System.Net.HttpStatusCode.OK);
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
