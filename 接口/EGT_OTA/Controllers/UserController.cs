@@ -909,7 +909,8 @@ namespace EGT_OTA.Controllers
                 }
 
                 var value = CookieHelper.GetCookieValue("Validate");
-                if (value != code)
+
+                if (value.ToLower() != code.ToLower())
                 {
                     return Json(new { result = false, message = "验证码不正确" }, JsonRequestBehavior.AllowGet);
                 }
